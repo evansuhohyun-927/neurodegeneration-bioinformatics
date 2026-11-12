@@ -1,0 +1,10 @@
+# 원본 데이터는 올리지 않는다 (각 데이터셋의 라이선스·재배포 조건을 따름). 내려받는 방법은 data/README.md에.
+data/*
+!data/README.md
+
+# 개인 기록
+learning-log.md
+
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
