@@ -278,6 +278,19 @@ for strand_name, strand in [("+", dna), ("-", reverse_complement(dna))]:
 
 </details>
 
+## 더 알아보기
+
+> **📚 R에서 서열을 다룬다면**
+> 오늘 Python 문자열로 한 역상보 서열 만들기는 R에서도 `chartr()`, `strsplit()`, `rev()`, `paste()`로 몇 줄이면 됩니다. 실제 서열 분석에는 Bioconductor의 Biostrings 패키지가 DNA·단백질 서열 전용 객체와 패턴 찾기·정렬 함수를 제공합니다. 같은 문제를 두 언어로 풀어 보면 어느 도구가 손에 맞는지 알게 됩니다.
+> → [심화 A — Day A2: 벡터, 자료형, 부분 선택: R의 기본 단위 다루기](../advanced/A-r-bioconductor/day-A2.md), [심화 A — Day A6: S3·S4 객체와 Bioconductor의 자료 구조](../advanced/A-r-bioconductor/day-A6.md)
+
+> **📚 직접 짠 함수를 Biopython으로 검산하기**
+> 오늘 만든 FASTA 읽기, 역상보, 번역 함수는 Biopython의 `SeqIO`와 `Seq`가 이미 제공하는 기능입니다. 같은 입력을 두 방법에 넣어 결과가 같은지 비교하면 내 코드의 버그를 찾는 좋은 점검이 됩니다. 실제 분석에서는 GenBank feature 위치, 여러 줄 FASTA, 소문자·모호 염기 같은 예외를 라이브러리가 처리해 주므로 검증된 도구가 안전합니다. Biopython은 이 과정의 기본 환경에 없으니 필요할 때만 선택 설치합니다(`conda install -c conda-forge biopython`).
+
+> **📚 서열 다음은 구조: PDB와 AlphaFold DB**
+> UniProt 레코드에는 3차원 구조로 가는 연결도 있습니다. 실험으로 푼 구조는 PDB에, 예측 구조는 AlphaFold DB에 있고, 둘 다 원자 좌표를 담은 텍스트 파일(PDB/mmCIF)이라 코드로 읽을 수 있습니다. 구조 파일의 서열이 UniProt 서열보다 짧을 수 있는데, 일부 구간만 풀렸거나 결정화용으로 잘라 냈기 때문입니다. α-synuclein처럼 정해진 구조가 없는 구간이 긴 단백질은 예측 신뢰도(pLDDT)가 낮은 것이 정상이므로, 구조 그림을 볼 때 신뢰도 색부터 확인합니다.
+> → [심화 G — Day G5: 단백질: 구조 예측과 단백질 언어 모델](../advanced/G-ai-biomed/day-G5.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] `S1_sequence_databases.ipynb`에서 `read_fasta`, CDS 추출, `translate`, `reverse_complement`가 실행되어 있다.
 - [ ] NM_000345의 version, CDS 위치, protein_id를 직접 확인해 적었다.

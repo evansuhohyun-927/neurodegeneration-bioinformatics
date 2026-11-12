@@ -391,6 +391,12 @@ dtype: int64
 
 </details>
 
+## 더 알아보기
+
+> **📚 표가 여러 장일 때의 열쇠**
+> 병원 데이터는 사람·입원·ICU 입실처럼 여러 층의 표로 나뉘어 있습니다. 합칠 때 열쇠를 잘못 고르면 행이 조용히 불어나거나 다른 입원의 값이 섞입니다. pandas `merge`의 `validate=` 인자(`"one_to_one"`, `"many_to_one"` 등)로 "몇 대 몇 합치기인지"를 코드로 검사할 수 있습니다.
+> → [심화 E — Day E2: 표 구조, 접근, 윤리, 비식별화: MIMIC 계열 데이터 읽는 법](../advanced/E-ehr/day-E2.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] `notebooks/01_setup_and_metadata.ipynb`에 예시 1–3이 실행되어 있다.
 - [ ] `qc_report()` 함수가 있고, 고치기 전·후 표에 각각 돌려 보았다.

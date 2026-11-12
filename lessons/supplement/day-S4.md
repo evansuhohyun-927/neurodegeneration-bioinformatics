@@ -308,6 +308,11 @@ seq2  3  KTKQGVVH  10
 
 </details>
 
+## 더 알아보기
+
+> **📚 Biopython PairwiseAligner로 표 채우기 검산**
+> 손으로 채운 Needleman–Wunsch와 Smith–Waterman 표는 Biopython의 `PairwiseAligner`가 같은 원리로 계산합니다. 같은 일치·불일치·gap 점수를 설정하고 mode를 global/local로 바꿔 돌리면 내가 구한 최고 점수와 같은 값이 나와야 합니다. 점수가 다르면 대개 gap 시작·연장 점수 설정이 다르거나 동점 정렬 중 다른 것을 골랐기 때문이니, 점수 파라미터는 항상 명시합니다. Biopython은 기본 환경에 없으므로 선택 설치합니다(`conda install -c conda-forge biopython`).
+
 ## 오늘의 산출물 체크리스트
 - [ ] dot plot을 window 1과 3으로 그려 차이를 설명할 수 있다.
 - [ ] `GAT`/`GT` 표를 손으로 채워 코드 결과와 맞춰 보았다.

@@ -14,6 +14,9 @@ dependencies:
   - seaborn
   - scikit-learn
   - statsmodels
+  - pywavelets   # 심화 C (wavelet)
+  - rdkit        # 심화 G (분자 표현)
+  - biopython    # 보충 단원 검산용 (선택)
   - pip
   - pip:
       - wfdb   # PhysioNet의 WFDB 형식을 읽을 때만 필요 (선택)

@@ -294,6 +294,12 @@ Housekeeping 유전자와 Positive/Negative 대조 프로브입니다. 이들은
 
 </details>
 
+## 더 알아보기
+
+> **📚 R에서는 객체가 짝을 지켜 준다**
+> "샘플 표와 행렬을 이름으로 맞추고 확인하기"를 R에서는 `match()`와 `stopifnot(identical(...))`로 합니다. Bioconductor는 한 걸음 더 나아가 행렬과 샘플 정보를 SummarizedExperiment라는 한 객체에 담아, 부분 선택할 때 둘이 항상 함께 잘리도록 보장합니다. 사람이 매번 확인하던 일을 자료 구조가 대신하는 것입니다.
+> → [심화 A — Day A3: factor, list, matrix, data.frame: 실험 정보를 담는 그릇](../advanced/A-r-bioconductor/day-A3.md), [심화 A — Day A6: S3·S4 객체와 Bioconductor의 자료 구조](../advanced/A-r-bioconductor/day-A6.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] 연습 데이터로 1–6번이 오류 없이 실행되었다.
 - [ ] `data/osdr_536/processed/`에 `counts_raw.csv`, `probes.csv`, `samples.csv`, `qc_summary.csv`가 있다.

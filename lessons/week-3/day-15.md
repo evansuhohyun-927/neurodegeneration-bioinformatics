@@ -320,6 +320,12 @@ Holley JM, Stanbouly S, Pecaut MJ, Willey JS, Delp M, Mao XW. Characterization o
 
 </details>
 
+## 더 알아보기
+
+> **📚 합성 데이터를 받았거나 만들 때의 provenance**
+> 데이터셋에 합성(또는 증강) 레코드가 섞여 있으면 provenance 기록에 그 사실, 사용한 생성기와 설정, 몇 배를 섞었는지, 어떤 점검을 통과했는지까지 남겨야 합니다. 받는 쪽에서는 "실제인가 합성인가"를 가르는 열이 없으면 결과를 신뢰할 수 없습니다. 공개용 합성 데이터라면 충실도·유용성·프라이버시 점검 결과를 데이터 설명 문서에 함께 넣습니다.
+> → [심화 G — Day G3: 영상·신호·EHR의 생성형 AI: 증강, 합성 데이터, 프라이버시](../advanced/G-ai-biomed/day-G3.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] `data/osdr_536_practice/`에 연습 파일 14개가 있다.
 - [ ] `data/osdr_536/`에 RCC 파일 12개, ISA zip과 풀린 파일, `download_manifest.csv`가 있다.

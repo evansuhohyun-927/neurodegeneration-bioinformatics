@@ -233,6 +233,16 @@ seed=42 2회: [ 8 77 65 43 43]
 
 </details>
 
+## 더 알아보기
+
+> **📚 R 프로젝트의 environment.yml은 renv.lock**
+> R에서 환경을 기록하는 가장 간단한 방법은 분석 끝에 `sessionInfo()` 출력을 파일로 저장하는 것입니다. 다른 컴퓨터에서 같은 버전을 되살리려면 renv가 만드는 `renv.lock`을 저장소에 함께 올리고 `renv::restore()`로 복원합니다. 글과 코드와 결과를 한 문서로 묶어 다시 실행하는 Quarto는 Jupyter 노트북의 Run All과 같은 역할입니다.
+> → [심화 A — Day A7: Bioconductor 분석 맛보기와 재현성: 선형 모델, limma·DESeq2의 발상, sessionInfo, renv](../advanced/A-r-bioconductor/day-A7.md)
+
+> **📚 난수 씨앗은 프로그램마다 다르다**
+> `rng(1)`처럼 씨앗을 고정해도 MATLAB과 Octave(그리고 numpy)는 서로 다른 난수를 냅니다. 재현성 기록에는 씨앗뿐 아니라 프로그램 이름과 버전을 함께 적어야 합니다. 핵심 함수에는 답을 아는 입력으로 `assert` 테스트를 붙여, 코드를 고칠 때마다 결과가 바뀌지 않았는지 확인합니다.
+> → [심화 B — Day B6: 좋은 코드 습관, 디버깅, 테스트, 속도](../advanced/B-matlab/day-B6.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] `environment.yml`에 실제로 사용한 라이브러리가 모두 들어 있다.
 - [ ] 모든 노트북이 Restart Kernel and Run All Cells로 오류 없이 실행된다.

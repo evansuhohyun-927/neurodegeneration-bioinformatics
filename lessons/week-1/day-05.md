@@ -293,6 +293,16 @@ boxplot에서 보이는 군 차이의 일부가 질환이 아니라 나이 차�
 
 </details>
 
+## 더 알아보기
+
+> **📚 같은 그림을 R ggplot2로 그린다면**
+> ggplot2는 그림을 데이터, 축·색에 연결할 변수(aes), 그리는 모양(geom)의 층으로 쌓습니다. 유전자별 작은 칸을 나란히 두는 `facet_wrap()`과 개별 점을 흩뿌리는 `geom_jitter()`로 "작은 표본은 점을 보여 준다"는 원칙을 그대로 지킬 수 있습니다. 논문 그림의 상당수가 ggplot2로 만들어지므로, 문법을 알면 그림이 어떻게 만들어졌는지 읽는 데도 도움이 됩니다.
+> → [심화 A — Day A5: 표 다루기와 그림: base R, dplyr, ggplot2](../advanced/A-r-bioconductor/day-A5.md)
+
+> **📚 MATLAB 그림은 핸들로 고친다**
+> MATLAB 그림은 figure → axes → 선·면·영상 객체의 계층이고, 각 객체를 핸들로 받아 `set`으로 한꺼번에 고칠 수 있습니다. 축 눈금을 바깥으로, 위·오른쪽 테두리를 없애고, 패널끼리 축 범위를 맞추는 원칙은 matplotlib과 같습니다. 개별 시행 전체를 `imagesc`로 그려 보면 평균에 묻힌 이상 시행을 쉽게 찾습니다.
+> → [심화 B — Day B5: 데이터 입출력과 시각화: 파일을 읽고, 쓰고, 그림으로 남기기](../advanced/B-matlab/day-B5.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] `figures/`에 `fig01_histogram.png`, `fig02_boxplot.png`, `fig03_scatter.png`가 있다.
 - [ ] 세 그림 모두 축 이름(단위 포함)과 제목이 있고, scatter plot에는 범례가 있다.

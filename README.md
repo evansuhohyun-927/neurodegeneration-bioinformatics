@@ -8,6 +8,7 @@
 | 0주차 — 코딩 기초 | 7일 | 코딩이 처음이면 필수 | 터미널, Python, pandas, Git |
 | 1–6주차 — 본 과정 | 42일 | 필수 | NASA OSDR OSD-536(마우스 뇌 nCounter 패널) + PhysioNet PD 운동 데이터 |
 | 보충 단원 | 7일 | 선택 | 서열 데이터베이스, 정렬, 치환 행렬, BLAST, 계통수 |
+| 심화 파트 A–G | 파트당 7일 | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI |
 
 필수 과정은 7주(49일)이고, 한 주에 약 9–11시간(레슨 7개)이 듭니다. 복습과 보고서 작성 주간(3·5·6주차)은 더 걸릴 수 있습니다.
 
@@ -137,9 +138,83 @@
 | Day 19 후보 유전자 검토 | S2, S5, S6 | 보존 구간, 상동 서열 찾기 |
 | Day 30 bootstrap 신뢰구간 | S7 | bootstrap 지지도 |
 
+## 심화 파트 — 7주 과정 이후 (선택)
+
+정규과정을 마친 뒤 관심 분야에 맞게 골라 듣는다. 파트마다 하루 한 레슨이고, 순서는 자유다. 파트마다 급할 때 보는 [Crash Course](crash-course/README.md) 가이드가 하나씩 있다.
+
+| 파트 | 언어 | 언제 필요한가 | 급할 때 |
+|---|---|---|---|
+| [A — R과 Bioconductor](lessons/advanced/A-r-bioconductor/day-A1.md) | R | Python 다음으로 생명정보학에서 가장 많이 쓰는 언어. Bioconductor 패키지를 쓰려면 필요하다. | [가이드](crash-course/r-bioconductor.md) |
+| [B — MATLAB/Octave 과학 계산](lessons/advanced/B-matlab/day-B1.md) | MATLAB(또는 무료 Octave) | 신경과학 실험실의 기존 코드를 읽고 고칠 때 필요하다. | [가이드](crash-course/matlab-octave.md) |
+| [C — 신경신호·시간-주파수 분석](lessons/advanced/C-neural-signals/day-C1.md) | Python | 4주차 웨어러블 신호의 다음 단계. EEG, LFP, spike 데이터. | [가이드](crash-course/neural-time-frequency.md) |
+| [D — fMRI 데이터 분석](lessons/advanced/D-fmri/day-D1.md) | Python | 뇌 영상 연구를 읽고 분석할 때. | [가이드](crash-course/fmri.md) |
+| [E — EHR(전자건강기록) 2차 분석](lessons/advanced/E-ehr/day-E1.md) | Python | 병원 기록으로 임상 질문에 답할 때. 교란과 편향이 핵심. | [가이드](crash-course/ehr.md) |
+| [G — AI·생성형 AI in 바이오메디컬](lessons/advanced/G-ai-biomed/day-G1.md) | Python | 5주차 모델링의 다음 단계. 생성 모델, 신약 ML, 단백질 구조, LLM 검증. | [가이드](crash-course/ai-biomed.md) |
+
+### 심화 A — R과 Bioconductor
+
+- [ ] [Day A1 — Python에서 R로: 설치, RStudio, 첫 문법](lessons/advanced/A-r-bioconductor/day-A1.md)
+- [ ] [Day A2 — 벡터, 자료형, 부분 선택: R의 기본 단위 다루기](lessons/advanced/A-r-bioconductor/day-A2.md)
+- [ ] [Day A3 — factor, list, matrix, data.frame: 실험 정보를 담는 그릇](lessons/advanced/A-r-bioconductor/day-A3.md)
+- [ ] [Day A4 — 함수, 제어문, apply 계열, 오류 다루기](lessons/advanced/A-r-bioconductor/day-A4.md)
+- [ ] [Day A5 — 표 다루기와 그림: base R, dplyr, ggplot2](lessons/advanced/A-r-bioconductor/day-A5.md)
+- [ ] [Day A6 — S3·S4 객체와 Bioconductor의 자료 구조](lessons/advanced/A-r-bioconductor/day-A6.md)
+- [ ] [Day A7 — Bioconductor 분석 맛보기와 재현성: 선형 모델, limma·DESeq2의 발상, sessionInfo, renv](lessons/advanced/A-r-bioconductor/day-A7.md)
+
+### 심화 B — MATLAB/Octave 과학 계산
+
+- [ ] [Day B1 — MATLAB과 Octave 시작하기: 설치, 명령 창, 첫 스크립트](lessons/advanced/B-matlab/day-B1.md)
+- [ ] [Day B2 — 행렬로 생각하기: 만들기, 인덱싱, 원소별 연산과 행렬 연산](lessons/advanced/B-matlab/day-B2.md)
+- [ ] [Day B3 — 자료형: 숫자와 정밀도, 문자열, cell, struct, table](lessons/advanced/B-matlab/day-B3.md)
+- [ ] [Day B4 — 제어문과 함수: 스크립트에서 재사용할 수 있는 도구로](lessons/advanced/B-matlab/day-B4.md)
+- [ ] [Day B5 — 데이터 입출력과 시각화: 파일을 읽고, 쓰고, 그림으로 남기기](lessons/advanced/B-matlab/day-B5.md)
+- [ ] [Day B6 — 좋은 코드 습관, 디버깅, 테스트, 속도](lessons/advanced/B-matlab/day-B6.md)
+- [ ] [Day B7 — 수치 계산·최적화·시뮬레이션, 그리고 GUI와 실험 제어의 개념](lessons/advanced/B-matlab/day-B7.md)
+
+### 심화 C — 신경신호·시간-주파수 분석
+
+- [ ] [Day C1 — 신경 데이터의 네 얼굴: spike, LFP, EEG/MEG, 칼슘 이미징](lessons/advanced/C-neural-signals/day-C1.md)
+- [ ] [Day C2 — convolution과 필터 설계: 커널을 밀어 보면 필터가 보인다](lessons/advanced/C-neural-signals/day-C2.md)
+- [ ] [Day C3 — Fourier 변환과 power spectrum: 해상도, 테이퍼, Welch, 다중 테이퍼](lessons/advanced/C-neural-signals/day-C3.md)
+- [ ] [Day C4 — 시간-주파수 분석: Morlet wavelet, STFT, 기저선 정규화](lessons/advanced/C-neural-signals/day-C4.md)
+- [ ] [Day C5 — 위상과 연결성: Hilbert, ITPC, PLV, 위상-진폭 결합](lessons/advanced/C-neural-signals/day-C5.md)
+- [ ] [Day C6 — spike train 분석: raster, PSTH, 발화율, ISI, tuning curve](lessons/advanced/C-neural-signals/day-C6.md)
+- [ ] [Day C7 — 차원 축소, 분류, 통계: spike sorting, 순열 검정, 군집 기반 보정](lessons/advanced/C-neural-signals/day-C7.md)
+
+### 심화 D — fMRI 데이터 분석
+
+- [ ] [Day D1 — BOLD 신호와 fMRI 데이터의 생김새: 4D 배열, voxel, NIfTI, BIDS](lessons/advanced/D-fmri/day-D1.md)
+- [ ] [Day D2 — 전처리와 QC: slice timing, 움직임, 왜곡, smoothing](lessons/advanced/D-fmri/day-D2.md)
+- [ ] [Day D3 — 공간 정규화, 템플릿, 아틀라스: 서로 다른 뇌를 한 좌표에 놓기](lessons/advanced/D-fmri/day-D3.md)
+- [ ] [Day D4 — 한 사람의 GLM: HRF convolution, 설계 행렬, contrast, 잡음과 자기상관](lessons/advanced/D-fmri/day-D4.md)
+- [ ] [Day D5 — 집단 분석과 다중비교: 혼합효과, FWE, cluster, FDR, 순열, 검정력](lessons/advanced/D-fmri/day-D5.md)
+- [ ] [Day D6 — 연결성: seed 상관, PPI, ICA, 유효 연결성, 휴지기 네트워크](lessons/advanced/D-fmri/day-D6.md)
+- [ ] [Day D7 — 패턴 분석과 ROI: decoding, 교차검증 누수, circularity, % 신호 변화](lessons/advanced/D-fmri/day-D7.md)
+
+### 심화 E — EHR(전자건강기록) 2차 분석
+
+- [ ] [Day E1 — EHR 데이터는 누가, 왜 남긴 기록인가: 임상 질문을 연구 질문으로](lessons/advanced/E-ehr/day-E1.md)
+- [ ] [Day E2 — 표 구조, 접근, 윤리, 비식별화: MIMIC 계열 데이터 읽는 법](lessons/advanced/E-ehr/day-E2.md)
+- [ ] [Day E3 — 코호트 정의: 포함·제외, index time, 그리고 불멸 시간 편향](lessons/advanced/E-ehr/day-E3.md)
+- [ ] [Day E4 — 데이터 정제: 단위, 이상치, 결측, 시간 정렬](lessons/advanced/E-ehr/day-E4.md)
+- [ ] [Day E5 — 탐색 분석과 교란 통제: 회귀 보정, 성향점수, 민감도 분석](lessons/advanced/E-ehr/day-E5.md)
+- [ ] [Day E6 — 예측 모델과 검증: 판별, 보정, 시간적 외부 검증, 누수](lessons/advanced/E-ehr/day-E6.md)
+- [ ] [Day E7 — 재현성과 보고: 코드 공개, 흐름도, STROBE·RECORD·TRIPOD](lessons/advanced/E-ehr/day-E7.md)
+
+### 심화 G — AI·생성형 AI in 바이오메디컬
+
+- [ ] [Day G1 — 바이오메디컬 AI 지도: 무엇을 배우고, 무엇을 만드는가](lessons/advanced/G-ai-biomed/day-G1.md)
+- [ ] [Day G2 — 생성 모델의 원리: 분포를 배우고 새 점을 뽑기](lessons/advanced/G-ai-biomed/day-G2.md)
+- [ ] [Day G3 — 영상·신호·EHR의 생성형 AI: 증강, 합성 데이터, 프라이버시](lessons/advanced/G-ai-biomed/day-G3.md)
+- [ ] [Day G4 — 분자 표현과 활성 예측: SMILES, 지문, QSAR, 분자 생성](lessons/advanced/G-ai-biomed/day-G4.md)
+- [ ] [Day G5 — 단백질: 구조 예측과 단백질 언어 모델](lessons/advanced/G-ai-biomed/day-G5.md)
+- [ ] [Day G6 — LLM 활용: 임상 텍스트, 문헌 요약, 코드 보조, 그리고 검증](lessons/advanced/G-ai-biomed/day-G6.md)
+- [ ] [Day G7 — 평가·편향·설명·규제, 그리고 정직한 미니 프로젝트](lessons/advanced/G-ai-biomed/day-G7.md)
+
 ## 저작권과 출처
 
 - 레슨의 글·예시·퀴즈·코드는 이 과정을 위해 새로 쓴 것이다. 글은 CC BY 4.0, 코드는 MIT ([LICENSE.md](LICENSE.md)).
+- 심화 파트는 여러 교재를 읽고 주제와 깊이를 정했지만, 설명·예시·코드·퀴즈는 모두 새로 썼다. 교재는 각 레슨의 "더 읽을거리"에 서지와 출판사 공식 페이지로만 소개한다.
 - 영상은 **링크로만** 소개한다. 영상·자막·썸네일·슬라이드는 각 제작자의 저작물이며 이 저장소에 복제하지 않는다.
 - 데이터셋 원본은 저장소에 넣지 않는다. 내려받는 방법과 버전·인용은 `data/README.md`에 기록한다.
 - 그림은 직접 만든 코드로 생성한 것만 쓴다. 논문·교과서 그림은 옮기지 않고 출처를 링크한다.

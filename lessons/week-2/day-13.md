@@ -269,6 +269,16 @@ count가 0인 유전자의 log2(0)은 −∞가 되어 계산이 불가능하기
 
 </details>
 
+## 더 알아보기
+
+> **📚 VST와 limma는 어디에 있나**
+> 오늘 언급한 DESeq2의 VST, limma, edgeR은 모두 R의 Bioconductor 패키지입니다. 이 도구들은 행렬, 샘플 정보, 설계식(`~ batch + group`)을 함께 받아 유전자마다 모델을 적합하고, 반복이 적을 때 다른 유전자에서 분산 정보를 빌려 옵니다. RNA-seq raw count용 모델(DESeq2, edgeR)을 nCounter 값에 그대로 쓰지 않는다는 원칙은 R로 가도 같습니다.
+> → [심화 A — Day A7: Bioconductor 분석 맛보기와 재현성: 선형 모델, limma·DESeq2의 발상, sessionInfo, renv](../advanced/A-r-bioconductor/day-A7.md)
+
+> **📚 "안 쟀다"도 정보다**
+> 임상 기록에서는 검사를 필요할 때만 하므로, 값이 없다는 사실 자체가 환자 상태를 알려 줍니다. 잰 사람만으로 평균을 내거나 평균으로 채우면 결과가 기웁니다. 결측 비율을 군별로 보고하고, 결측 가정을 바꾼 민감도 분석을 붙이세요.
+> → [심화 E — Day E4: 데이터 정제: 단위, 이상치, 결측, 시간 정렬](../advanced/E-ehr/day-E4.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] `notebooks/02_osdr_qc_and_pca.ipynb`에 Day 13 섹션이 있고 예시 1–3이 실행된다.
 - [ ] 세 가지 값의 boxplot 그림(`day13_three_scales.png`)이 있다.

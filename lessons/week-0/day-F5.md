@@ -306,6 +306,15 @@ x = double(5)
 
 </details>
 
+## 더 알아보기
+
+> **📚 자주 쓰는 함수는 .py 파일로 빼기**
+> 여러 노트북에 같은 함수(예: log2 fold change)를 복사해 쓰면 한 곳만 고치고 다른 곳은 잊기 쉽습니다. 함수들을 `mytools.py` 같은 파일 하나에 모아 노트북과 같은 폴더에 두면 `from mytools import log2fc`로 불러 쓸 수 있습니다. 파일을 고친 뒤에는 커널을 다시 시작해야 바뀐 내용이 반영됩니다.
+
+> **📚 MATLAB의 함수 파일과 함수 핸들**
+> MATLAB에서는 파일 하나가 함수 하나이고, 파일 이름이 곧 함수 이름입니다. 함수는 입력을 복사해 받으므로 안에서 바꿔도 밖의 변수는 그대로입니다. Python의 `lambda`에 해당하는 것은 `@(x) x.^2` 같은 익명 함수이며, 최적화·적분·GUI 콜백이 모두 이런 핸들을 받습니다.
+> → [심화 B — Day B4: 제어문과 함수: 스크립트에서 재사용할 수 있는 도구로](../advanced/B-matlab/day-B4.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] `F5_functions.ipynb`의 첫 셀에 `import math`, `import numpy as np`가 있다.
 - [ ] `fold_change`, `log2_fold_change`, `mean_log2fc` 함수가 실행되어 있다.

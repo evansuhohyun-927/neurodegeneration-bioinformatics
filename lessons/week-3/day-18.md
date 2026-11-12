@@ -302,6 +302,12 @@ count가 잡음 수준인 유전자는 몇 개 차이로도 log2FC가 크게 흔
 
 </details>
 
+## 더 알아보기
+
+> **📚 Methods 절의 설계식 읽기**
+> 논문에 "limma로 `~ batch + condition` 모델을 적합했다"고 쓰여 있으면, 배치 차이를 고려한 뒤 조건 효과를 추정했다는 뜻입니다. 결과의 방향은 factor의 기준 수준이 정합니다. 기준을 명시하지 않으면 알파벳순이 되어 fold change 부호가 뒤집힐 수 있으므로, R 코드를 받으면 `levels()`와 계수 이름부터 확인하세요.
+> → [심화 A — Day A7: Bioconductor 분석 맛보기와 재현성: 선형 모델, limma·DESeq2의 발상, sessionInfo, renv](../advanced/A-r-bioconductor/day-A7.md)
+
 ## 오늘의 산출물 체크리스트
 - [ ] `processed/de_table.csv`와 `processed/top_candidates.csv`가 실제 데이터로 저장되었다.
 - [ ] contrast 방향, 검정 방법, 보정 방법을 노트북에 적었다.

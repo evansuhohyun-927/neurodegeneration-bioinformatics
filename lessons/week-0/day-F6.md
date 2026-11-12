@@ -345,6 +345,11 @@ df.round(3).to_csv("toy_expression_with_fc.csv", index=False)
 
 </details>
 
+## 더 알아보기
+
+> **📚 폴더 안 파일 여러 개를 한 번에**
+> 실제 데이터는 샘플마다 파일 하나씩 오는 경우가 많습니다. `pathlib.Path("data").glob("*.csv")`로 파일 목록을 얻어 하나씩 읽고, 파일 이름에서 샘플 ID를 떼어 열로 붙인 뒤 `pd.concat`으로 합칩니다. 목록을 `sorted()`로 정렬해 두면 실행할 때마다 순서가 같고, 읽은 파일 수를 출력하면 빠진 파일이 없는지 확인할 수 있습니다.
+
 ## 오늘의 산출물 체크리스트
 - [ ] `notebooks/week-0/`에 `toy_expression.csv`, `toy_expression_with_fc.csv`, `toy_metadata.csv`가 있다.
 - [ ] `F6_pandas_first.ipynb`에서 `head`, `shape`, `columns`를 실행했다.
