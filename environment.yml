@@ -1,0 +1,19 @@
+# 이 과정 전체(0–6주차, 보충 단원, Crash Course)의 코드를 돌리는 환경
+# 만들기:  conda env create -f environment.yml
+# 켜기:    conda activate neurobio
+name: neurobio
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - pandas
+  - numpy
+  - scipy
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - statsmodels
+  - pip
+  - pip:
+      - wfdb   # PhysioNet의 WFDB 형식을 읽을 때만 필요 (선택)

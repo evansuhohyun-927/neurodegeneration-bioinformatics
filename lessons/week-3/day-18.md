@@ -2,6 +2,8 @@
 
 > **주차:** 3주차 · **예상 시간:** 75–90분 · **산출물:** 상위 후보 유전자 표 (`data/osdr_536/processed/top_candidates.csv`)
 
+> **이 분석의 성격:** 교육용 탐색 근사입니다. 원 논문의 분석을 재현한 것이 아니며, 정규화와 검정 방법이 논문과 다를 수 있습니다. 결과는 가설 생성용으로만 읽고, 논문 Methods와의 차이를 보고서의 한계에 적습니다.
+
 ## 오늘의 목표
 - contrast의 방향(무엇에서 무엇을 뺐는가)을 정하고 log2 fold change를 해석할 수 있다.
 - p-value와 adjusted p-value(FDR)의 차이를 설명하고, 표에서 두 값을 구분해 읽을 수 있다.
@@ -28,6 +30,14 @@
 복권을 한 장 사서 당첨되면 놀랍지만, 600장을 사서 몇 장 당첨되는 것은 놀랍지 않습니다. 유전자 600개를 검정하면, 실제로는 아무 차이가 없어도 p < 0.05인 유전자가 평균 30개쯤(600 × 0.05) 나옵니다. 그래서 "p < 0.05인 유전자 수"만으로는 진짜 신호가 있는지 알 수 없습니다. **FDR(false discovery rate, 거짓 발견 비율)** 보정은 "내가 유의하다고 부른 목록 중 거짓이 차지하는 비율"을 통제합니다. Benjamini-Hochberg(BH) 방법으로 구한 **adjusted p-value**가 0.05보다 작은 유전자만 고르면, 그 목록의 약 5%만 거짓일 것으로 기대합니다.
 
 이 구분은 OSD-536을 읽을 때 특히 중요합니다. study 설명에는 "A set of 54 differently expressed genes (p less than 0.05)"라고 적혀 있습니다. 이 0.05가 보정 전 p-value인지 보정 후인지는 설명문만으로는 알 수 없으니 논문의 Methods에서 직접 확인하세요. 그리고 여러분의 표에서 p < 0.05인 유전자 수와 FDR < 0.05인 유전자 수를 나란히 적어 두세요. 군당 6마리에서는 FDR 기준을 통과하는 유전자가 매우 적거나 없을 수 있습니다. 그것은 실패가 아니라 "이 표본 크기로 말할 수 있는 범위"를 정직하게 보여 주는 결과입니다.
+
+### 이 레슨의 검정은 교육용 근사다
+
+오늘 쓰는 방법은 유전자마다 Welch t-test를 하고 BH로 보정하는 것입니다. 원리를 눈으로 따라가기 좋아서 고른 방법이고, nCounter 데이터의 공식 분석법이나 원 논문의 방법이라는 뜻은 아닙니다. 군당 6마리에서는 분산 추정이 불안정해서 t-test 결과가 샘플 한두 개에 크게 흔들립니다.
+
+반대 방향의 실수도 조심합니다. nCounter count는 정해진 probe에 붙은 분자를 센 값이라 RNA-seq의 raw read count와 성질이 다릅니다. 그래서 RNA-seq용으로 만든 모델(DESeq2, edgeR)에 그대로 넣지 않습니다. 인터넷의 RNA-seq 튜토리얼을 이 데이터에 따라 하면 안 되는 이유입니다.
+
+숫자를 읽을 때 두 가지를 기억합니다. 첫째, "검정 수 × 0.05"는 모든 유전자에 차이가 없고 검정들이 서로 독립일 때의 대략적인 눈대중입니다. 유전자들은 함께 움직이므로 실제 기대값은 이와 다를 수 있고, 이 숫자로 유의성을 판정하지 않습니다. 둘째, FDR < 0.05는 같은 분석을 여러 번 반복했을 때 목록 속 거짓 발견의 평균 비율이 5% 이하로 기대된다는 뜻이지, 이번 목록의 실제 거짓 비율이 5%라는 보장이 아닙니다.
 
 ## 예시로 이해하기
 
@@ -206,7 +216,7 @@ for _, row in de.head(8).iterrows():
                 xytext=(3, 3), textcoords="offset points")
 ax.set_xlabel("log2 fold change (FLT - GC)")
 ax.set_ylabel("-log10(p-value)")
-ax.set_title("Volcano plot (dashed line: unadjusted p = 0.05)")
+ax.set_title(f"Volcano plot (dashed line: unadjusted p = 0.05; color: FDR) [data: {MODE}]")
 ax.legend(fontsize=8)
 fig.tight_layout()
 fig.savefig(FIG_DIR / f"osdr_{MODE}_volcano.png", dpi=150)
@@ -272,7 +282,7 @@ Prac42  0.6228   0.0014 0.0156    FLT_up             True
 
 <details><summary>정답 보기</summary>
 
-(나). FDR은 개별 유전자가 아니라 "유의하다고 부른 목록 전체"에 대한 비율입니다. 효과가 큰지 작은지는 FDR이 아니라 log2FC가 알려 줍니다.
+(나). FDR은 개별 유전자가 아니라 "유의하다고 부른 목록 전체"에 대한 비율입니다. 효과가 큰지 작은지는 FDR이 아니라 log2FC가 알려 줍니다. "기대됨"이라는 말에 주의하세요. 반복했을 때의 평균이 그렇다는 뜻이고, 이번 목록의 실제 거짓 비율은 알 수 없습니다.
 
 </details>
 

@@ -2,6 +2,8 @@
 
 > **주차:** 3주차 · **예상 시간:** 75–90분 · **산출물:** pathway 표 (`processed/pathway_table.csv`) + dotplot (`figures/osdr_real_pathway_dotplot.png`)
 
+> **이 분석의 성격:** 교육용 탐색 근사입니다. 원 논문의 분석을 재현한 것이 아니며, 정규화와 검정 방법이 논문과 다를 수 있습니다. 결과는 가설 생성용으로만 읽고, 논문 Methods와의 차이를 보고서의 한계에 적습니다.
+
 ## 오늘의 목표
 - over-representation analysis(ORA)가 무엇을 세고 무엇과 비교하는지 설명할 수 있다.
 - 패널 데이터에서는 "검정한 유전자"를 배경(background)으로 써야 하는 이유를 설명할 수 있다.
@@ -244,7 +246,7 @@ sc = ax.scatter(top["fold_enrichment"], top["label"], s=top["overlap"] * 40,
                 c=-np.log10(top["p_value"]), cmap="viridis")
 ax.axvline(1, linestyle="--", linewidth=0.8, color="grey")
 ax.set_xlabel("Fold enrichment (observed / expected overlap)")
-ax.set_title("ORA of genes with unadjusted p < 0.05 (exploratory)\nbackground = tested panel genes; dot size = overlap", fontsize=9)
+ax.set_title(f"ORA of genes with unadjusted p < 0.05 (exploratory) [data: {MODE}]\nbackground = tested panel genes; dot size = overlap", fontsize=9)
 fig.colorbar(sc, ax=ax, label="-log10(p-value)")
 fig.tight_layout()
 fig.savefig(FIG_DIR / f"osdr_{MODE}_pathway_dotplot.png", dpi=150)

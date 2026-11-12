@@ -2,6 +2,8 @@
 
 > **주차:** 4주차 · **예상 시간:** 75–90분 · **산출물:** `reports/pd-qc-table.md` (QC 표와 flowchart), 노트북 `notebooks/04_pd_data_qc.ipynb`
 
+> **기본 경로:** Gait in Parkinson's Disease 데이터로 진행합니다. PADS(스마트워치) 관련 부분은 선택 실습이므로 읽기만 해도 됩니다. ([Day 24](day-24.md)에서 정한 경로)
+
 ## 오늘의 목표
 - 참가자 ID, 진단군, 과제, 반복 횟수, 결측값, class imbalance를 pandas로 점검할 수 있다.
 - "사람 수"와 "기록 수"를 구분해 세고, 왜 둘을 섞으면 안 되는지 설명할 수 있다.

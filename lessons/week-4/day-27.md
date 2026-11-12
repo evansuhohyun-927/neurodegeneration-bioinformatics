@@ -2,6 +2,8 @@
 
 > **주차:** 4주차 · **예상 시간:** 75–90분 · **산출물:** feature figure 2개 — `figures/pd_spaghetti.png`, `figures/pd_group_box.png`
 
+> **기본 경로:** Gait in Parkinson's Disease 데이터로 진행합니다. PADS(스마트워치) 관련 부분은 선택 실습이므로 읽기만 해도 됩니다. ([Day 24](day-24.md)에서 정한 경로)
+
 ## 오늘의 목표
 - 한 사람이 선 하나로 보이는 spaghetti plot을 그릴 수 있다.
 - 한 사람이 점 하나로 보이는 box/violin plot으로 군별 분포를 비교할 수 있다.

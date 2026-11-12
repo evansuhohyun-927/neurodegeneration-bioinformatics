@@ -2,6 +2,8 @@
 
 > **주차:** 4주차 · **예상 시간:** 75–90분 · **산출물:** feature table 2개 — `data/physionet_pd/derived/pd_features_records.csv`, `pd_features_participants.csv`
 
+> **기본 경로:** Gait in Parkinson's Disease 데이터로 진행합니다. PADS(스마트워치) 관련 부분은 선택 실습이므로 읽기만 해도 됩니다. ([Day 24](day-24.md)에서 정한 경로)
+
 ## 오늘의 목표
 - 신호 하나에서 요약 통계 feature(크기, 범위, 주파수)를 계산하는 함수를 만들 수 있다.
 - 모든 기록에 함수를 적용해 record-level feature table을 만들고, 이를 participant-level table로 접을 수 있다.

@@ -133,7 +133,7 @@ Hello, bioinformatics!
 4. **코스 전용 환경 만들기.** 몇 분 걸립니다. 중간에 `Proceed ([y]/n)?`가 나오면 `y`를 누릅니다.
 
    ```bash
-   conda create -n neurobio python=3.12 jupyterlab pandas numpy matplotlib
+   conda create -n neurobio python=3.12 jupyterlab pandas numpy scipy matplotlib seaborn scikit-learn statsmodels
    ```
 
 5. **환경 켜기와 확인.**

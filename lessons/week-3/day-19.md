@@ -2,6 +2,8 @@
 
 > **주차:** 3주차 · **예상 시간:** 75–90분 · **산출물:** gene-level figure (`figures/osdr_real_gene_level.png`)
 
+> **이 분석의 성격:** 교육용 탐색 근사입니다. 원 논문의 분석을 재현한 것이 아니며, 정규화와 검정 방법이 논문과 다를 수 있습니다. 결과는 가설 생성용으로만 읽고, 논문 Methods와의 차이를 보고서의 한계에 적습니다.
+
 ## 오늘의 목표
 - 신경염증, ROS, 시냅스, 수초, apoptosis 범주에서 후보 유전자 5–10개를 근거와 함께 고를 수 있다.
 - 후보 유전자가 패널에 있는지, 안정적으로 검출되었는지 확인할 수 있다.
@@ -204,7 +206,7 @@ for ax, row in zip(axes.ravel(), plot_genes.itertuples()):
 
 for ax in axes[:, 0]:
     ax.set_ylabel("log2 normalized count")
-fig.suptitle("Candidate genes, one dot per animal (exploratory)", fontsize=10)
+fig.suptitle(f"Candidate genes, one dot per animal (exploratory) [data: {MODE}]", fontsize=10)
 fig.tight_layout()
 fig.savefig(FIG_DIR / f"osdr_{MODE}_gene_level.png", dpi=150)
 print("그린 유전자 수:", len(plot_genes))

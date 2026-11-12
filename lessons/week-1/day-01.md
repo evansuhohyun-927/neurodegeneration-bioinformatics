@@ -183,10 +183,11 @@ neurodegeneration-bioinformatics/
    .DS_Store
    EOF
 
-   echo "# 데이터 출처 기록 (3주차 Day 15에 채운다)" > data/README.md
+   # data/README.md가 없을 때만 만든다 (저장소를 내려받았다면 양식이 이미 들어 있다)
+   [ -f data/README.md ] || echo "# 데이터 출처 기록 (3주차 Day 15에 채운다)" > data/README.md
    ```
 
-   > 0주차에 이미 `.gitignore`를 만들었다면 `>`가 덮어쓰니, 이 단계 대신 `open -e .gitignore`로 열어 위 내용을 추가하세요.
+   > 저장소를 내려받아 시작했다면 `.gitignore`와 `data/README.md`가 이미 있으니 이 단계의 `.gitignore` 부분은 건너뜁니다. 0주차에 이미 `.gitignore`를 만들었다면 `>`가 덮어쓰니, 이 단계 대신 `open -e .gitignore`로 열어 위 내용을 추가하세요.
 
 6. **환경을 파일로 기록합니다.**
 

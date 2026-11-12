@@ -2,6 +2,8 @@
 
 > **주차:** 3주차 · **예상 시간:** 75–90분 · **산출물:** `02_osdr_qc_and_pca.ipynb`
 
+> **이 분석의 성격:** 교육용 탐색 근사입니다. 원 논문의 분석을 재현한 것이 아니며, 정규화와 검정 방법이 논문과 다를 수 있습니다. 결과는 가설 생성용으로만 읽고, 논문 Methods와의 차이를 보고서의 한계에 적습니다.
+
 ## 오늘의 목표
 - 대조 프로브와 housekeeping 유전자를 이용해 샘플별 품질을 점검하고 count를 정규화할 수 있다.
 - 조건별 boxplot, density plot, PCA 그림을 그릴 수 있다.
@@ -210,7 +212,7 @@ for ax, data, title in [(axes[0], log2_raw, "Before normalization"),
     ax.set_xticks(range(1, len(data) + 1), samples["source"], rotation=90)
     ax.set_title(title)
 axes[0].set_ylabel("log2(count + 1)")
-fig.suptitle("Per-sample distribution (red = FLT, blue = GC)")
+fig.suptitle(f"Per-sample distribution (red = FLT, blue = GC) [data: {MODE}]")
 fig.tight_layout()
 fig.savefig(FIG_DIR / f"osdr_{MODE}_boxplot.png", dpi=150)
 ```
@@ -222,7 +224,7 @@ fig, ax = plt.subplots(figsize=(6, 4))
 for sid in log2_norm.index:
     log2_norm.loc[sid].plot.density(ax=ax, color=colors[sid], alpha=0.7, linewidth=1)
 ax.set_xlabel("log2(normalized count + 1)")
-ax.set_title("Density per sample (red = FLT, blue = GC)")
+ax.set_title(f"Density per sample (red = FLT, blue = GC) [data: {MODE}]")
 fig.tight_layout()
 fig.savefig(FIG_DIR / f"osdr_{MODE}_density.png", dpi=150)
 ```
@@ -242,7 +244,7 @@ for sid, row in pcs.iterrows():
                 xytext=(4, 4), textcoords="offset points", fontsize=8)
 ax.set_xlabel(f"PC1 ({var[0]:.1f}%)")
 ax.set_ylabel(f"PC2 ({var[1]:.1f}%)")
-ax.set_title("PCA of normalized log2 counts (red = FLT, blue = GC)")
+ax.set_title(f"PCA of normalized log2 counts (red = FLT, blue = GC) [data: {MODE}]")
 fig.tight_layout()
 fig.savefig(FIG_DIR / f"osdr_{MODE}_pca.png", dpi=150)
 
