@@ -7,6 +7,8 @@
 - 추가된 것: **0주차 — 코딩 기초** 7일 (터미널, Python, pandas, Git)
 - 선택: **보충 단원** 7일 (서열 데이터베이스, 정렬, 치환 행렬, BLAST, 계통수)
 
+> **급한가요?** 7주를 따라갈 시간이 없으면 [Crash Course](crash-course/README.md)로 가세요. 생리 신호, genomics, transcriptomics, proteomics, 그 밖의 omics, 통계 응급 키트를 분야별 30–45분 가이드로 정리했습니다.
+
 ## 사용법
 
 1. 아래 지도에서 오늘 레슨을 연다. 영상부터 본다.
