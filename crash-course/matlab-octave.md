@@ -48,7 +48,8 @@ MATLAB은 **행렬을 기본 단위로 계산하는 과학 계산 언어이자 �
 
 | 항목 | MATLAB | Octave 11.3 |
 |---|---|---|
-| `table`, `readtable`, `writetable`, `readmatrix`, `writematrix` | 있음 | 없음 → `dlmread`/`csvread`/`textscan`/`fprintf` |
+| `table`, `readtable`, `writetable` | 있음 | 기본 설치에는 없음 → `pkg install -forge datatypes` 후 `pkg load datatypes`로 사용 가능 |
+| `readmatrix`, `writematrix` | 있음 | 없음 → `dlmread`/`csvread`/`textscan`/`fprintf` |
 | `string` 자료형, `contains` | 있음(큰따옴표 = string) | 없음(큰따옴표도 char) → char + cell + `strcmp`/`regexp` |
 | `histogram`, `histcounts`, `tiledlayout`, `sgtitle`, `exportgraphics` | 있음 | 없음 → `hist`/`histc`, `subplot`, `print` |
 | `datetime`, `categorical`, `timeit`, `runtests` | 있음 | 없음 |

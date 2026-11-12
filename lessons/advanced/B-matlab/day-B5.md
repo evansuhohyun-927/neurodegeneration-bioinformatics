@@ -37,7 +37,7 @@ CSV 같은 텍스트 파일은 어떤 프로그램과도 주고받을 수 있어
 | 숫자 표 쓰기 | `writematrix` | `csvwrite`, `dlmwrite` |
 | 서식 있게 쓰기 | `fprintf(fid, ...)` | 같음 |
 
-Octave 11에는 `readmatrix`, `writematrix`, `readtable`, `readcell`이 없으므로 오른쪽 열을 씁니다. `fopen`으로 파일을 열면 파일 식별자(`fid`)를 받고, 다 쓰면 반드시 `fclose(fid)`로 닫습니다. `fid`가 −1이면 열기 실패이니 바로 오류를 내 멈추게 합니다.
+Octave 11에는 `readmatrix`, `writematrix`, `readcell`이 없고, `readtable`은 `datatypes` 패키지를 설치해야 생기므로([Day B3](day-B3.md) 참고) 기본으로는 오른쪽 열을 씁니다. `fopen`으로 파일을 열면 파일 식별자(`fid`)를 받고, 다 쓰면 반드시 `fclose(fid)`로 닫습니다. `fid`가 −1이면 열기 실패이니 바로 오류를 내 멈추게 합니다.
 
 참가자 파일이 여러 개면 `files = dir('io/sub-*_stride.csv')`로 목록을 얻고 `for k = 1:numel(files)`로 돕니다. 파일 이름은 `sprintf('sub-%02d_stride.csv', k)`처럼 **규칙으로 만들고(soft-coding)**, 경로는 `fullfile`로 이어 운영체제마다 다른 구분자(`/`, `\`) 문제를 피합니다. 장비 회사 고유 형식(EEG, 영상 등)은 회사가 주는 읽기 함수나 EEGLAB·FieldTrip 같은 툴박스의 함수를 쓰는 것이 보통입니다.
 

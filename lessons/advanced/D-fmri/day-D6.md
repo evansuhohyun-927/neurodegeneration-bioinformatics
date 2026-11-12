@@ -221,10 +221,13 @@ fig.colorbar(im, ax=axes, shrink=0.8)
 fig.savefig("figures/advanced/D/D6_connectivity_matrix.png", dpi=150, bbox_inches="tight")
 ```
 
-### 참고 — 실제 자료에서 ROI 시계열과 연결 행렬을 얻는 형태 (실행 확인 안 됨, 패키지 미설치)
+### 참고 — 실제 자료에서 ROI 시계열과 연결 행렬을 얻는 형태 (nilearn 필요)
+
+> 이 코드는 `pip install nibabel nilearn`으로 설치한 환경(nibabel 5.5, nilearn 0.14.1)에서, 같은 이름의 **가상 파일**을 만들어 그대로 실행해 오류 없이 도는 것을 확인했습니다. 출력은 여러분의 실제 파일에 따라 달라지므로 싣지 않았습니다.
+> 첫 실행 때 Harvard-Oxford 아틀라스(약 26 MB)를 홈 폴더의 `nilearn_data/`에 내려받습니다.
 
 ```python
-# nilearn이 설치된 환경에서만 동작한다. 이 저장소 환경에서는 실행하지 않았다.
+# nilearn이 필요하다: pip install nilearn
 from nilearn import datasets
 from nilearn.maskers import NiftiLabelsMasker
 from nilearn.connectome import ConnectivityMeasure

@@ -197,10 +197,12 @@ contrast [2, -2]: 그대로 0.149% → 배율 보정 0.074%
 
 1초 자극 하나의 회귀변수 봉우리 높이(0.1740)를 자로 정해 두면, β와 시계열 평균만으로 PSC를 계산할 수 있습니다. contrast [1, −1]과 [2, −2]는 같은 가설을 검정하지만(t 값도 같음) 값이 두 배 다릅니다. 양수 가중치 합이 1이 되도록 배율을 곱하면 둘 다 0.074%로 같아집니다. 보고서에는 "1초 사건 기준, 이중 감마 HRF로 계산한 PSC"처럼 자의 정의를 함께 적습니다.
 
-### 참고 — nilearn으로 run 단위 decoding을 할 때의 형태 (실행 확인 안 됨, 패키지 미설치)
+### 참고 — nilearn으로 run 단위 decoding을 할 때의 형태 (nilearn 필요)
+
+> 이 코드는 `pip install nibabel nilearn`으로 설치한 환경(nibabel 5.5, nilearn 0.14.1)에서, 같은 이름의 **가상 파일**을 만들어 그대로 실행해 오류 없이 도는 것을 확인했습니다. 출력은 여러분의 실제 파일에 따라 달라지므로 싣지 않았습니다.
 
 ```python
-# nilearn이 설치된 환경에서만 동작한다. 이 저장소 환경에서는 실행하지 않았다.
+# nilearn이 필요하다: pip install nilearn
 from nilearn.decoding import Decoder
 from sklearn.model_selection import LeaveOneGroupOut
 decoder = Decoder(estimator="svc", mask=roi_mask_img, standardize="zscore_sample",

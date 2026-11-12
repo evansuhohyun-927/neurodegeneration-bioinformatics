@@ -215,7 +215,7 @@ N = 60: 검정력 0.94
 
 평균 0.5%, 사람 간 표준편차 1.2%라면 80% 검정력에 38명이 필요하고, 효과가 20%만 작아도 58명으로 늘어납니다. 마지막 줄은 공식이 맞는지 시뮬레이션으로 확인한 것입니다. 이 계산은 단측 검정, 한 ROI, 한 집단이라는 가장 단순한 상황입니다. 두 집단 비교, 다중비교 보정, 탈락자를 고려하면 숫자는 더 커집니다.
 
-### 참고 — 실제 집단 분석·순열 검정 도구의 명령 형태 (실행 확인 안 됨, 패키지 미설치)
+### 참고 — 실제 집단 분석·순열 검정 도구의 명령 형태 (FSL 부분은 실행 확인 안 됨)
 
 ```bash
 # FSL randomise: 사람별 contrast 지도를 4D로 쌓은 파일에 one-sample t, 부호 뒤집기 5,000번, TFCE.
@@ -223,7 +223,7 @@ randomise -i all_subjects_cope.nii.gz -o grp -1 -T -n 5000 -m group_mask.nii.gz
 ```
 
 ```python
-# nilearn 2수준 모형(실행 확인 안 됨). second_level_input은 사람별 contrast 지도 목록.
+# nilearn 2수준 모형. nilearn 0.14.1에서 가상 contrast 지도 8개로 실행 확인(n_perm만 줄여서). FSL randomise는 FSL 미설치로 실행 확인 안 됨.
 from nilearn.glm.second_level import SecondLevelModel, non_parametric_inference
 import pandas as pd
 design = pd.DataFrame({"intercept": [1] * len(cmap_files)})

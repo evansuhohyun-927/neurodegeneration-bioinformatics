@@ -42,6 +42,10 @@ LLM은 G2의 자기회귀 모델을 아주 크게 만든 것입니다. 엄청난
 
 LLM 출력은 "검증할 주장들의 목록"으로 다룹니다. (1) 숫자는 원자료에서 다시 찾는다. (2) 인용은 DOI·PubMed로 실재와 내용을 확인한다. (3) 인과·진단·확증 같은 강한 표현은 내 분석이 지지하는 수준으로 낮춘다. (4) 코드는 실행하고, 결과를 손으로 계산한 작은 사례와 맞춰 본다. (5) 사용한 모델·날짜·용도를 방법 절에 적는다. 예시 2는 (1)–(3)을 자동으로 표시하는 작은 점검기입니다. 이것이 사람의 확인을 대신하지는 못하고, 확인할 곳을 표시해 줄 뿐입니다.
 
+"사람이 최종 확인한다"는 장치도 저절로 작동하지 않습니다. 사람은 자동화된 시스템의 제안을 지나치게 믿고 따르는 경향이 있습니다. 틀린 제안을 그대로 받아들이거나, 시스템이 경고하지 않은 문제를 놓치는 식인데, 이를 **자동화 편향(automation bias)** 이라고 합니다(Goddard 2012). 업무량이 많고 과제가 복잡할수록 심해진다고 보고되었고, 막힘없이 매끄러운 LLM 문장은 이런 과신을 부추기기 쉽습니다. 그래서 확인 단계는 "읽어 보고 괜찮으면 통과"가 아니라 위 (1)–(5)처럼 구체적인 점검 목록으로 만듭니다.
+
+텍스트에서 정보를 뽑는 자동 추출(LLM이든 규칙이든)의 정확도도 **변수마다 다릅니다**. 성별·사망 여부처럼 정형 칸에 있는 값은 거의 다 맞아도, 부작용·동반질환처럼 서술 속에 흩어진 값은 훨씬 덜 맞는 것이 보통입니다. "추출 정확도 95%" 같은 숫자 하나를 보면, 내가 쓰려는 변수에서의 정확도를 따로 확인합니다.
+
 ## 예시로 이해하기
 
 > 메모와 요약문은 모두 연습용으로 지어낸 **가상 텍스트**입니다. "Smith et al. (2019)"도 일부러 넣은 가짜 인용입니다.
@@ -219,6 +223,7 @@ prompt = ("아래 가상 진료 메모에 낙상 언급이 있으면 1, 없으�
 - Lee P, Bubeck S, Petro J. Benefits, limits, and risks of GPT-4 as an AI chatbot for medicine. *N Engl J Med.* 2023;388:1233–1239. doi:[10.1056/NEJMsr2214184](https://doi.org/10.1056/NEJMsr2214184)
 - Ji Z, et al. Survey of hallucination in natural language generation. *ACM Comput Surv.* 2023;55:1–38. doi:[10.1145/3571730](https://doi.org/10.1145/3571730)
 - Omiye JA, et al. Large language models propagate race-based medicine. *npj Digit Med.* 2023;6:195. doi:[10.1038/s41746-023-00939-z](https://doi.org/10.1038/s41746-023-00939-z)
+- Goddard K, Roudsari A, Wyatt JC. Automation bias: a systematic review of frequency, effect mediators, and mitigators. *J Am Med Inform Assoc.* 2012;19:121–127. doi:[10.1136/amiajnl-2011-000089](https://doi.org/10.1136/amiajnl-2011-000089)
 - Moor M, et al. Foundation models for generalist medical artificial intelligence. *Nature.* 2023;616:259–265. doi:[10.1038/s41586-023-05881-4](https://doi.org/10.1038/s41586-023-05881-4)
 
 ---

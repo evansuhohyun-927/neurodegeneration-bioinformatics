@@ -47,17 +47,37 @@ char 배열 여러 개를 한 행렬에 쌓으려면 길이가 모두 같아야 
 
 MATLAB R2013b부터 있는 **table**은 pandas DataFrame과 같은 역할을 합니다. 열마다 이름과 자료형이 다를 수 있고, `T.age`, `T(T.group == "PD", :)`처럼 쓰며, `readtable`로 CSV를 바로 읽습니다. 본 과정 Day 4의 tidy data 원칙(한 행 = 한 관측, 한 열 = 한 변수)이 그대로 적용됩니다.
 
-**Octave 11 기본 설치에는 `table`, `readtable`, `categorical`, `datetime`이 없습니다**(Octave Packages의 `datatypes` 같은 외부 패키지가 일부를 제공하지만, 이 레슨에서는 설치하지 않았고 실행 확인도 하지 않았습니다). 아래 코드는 형태만 보여 주는 **MATLAB 전용** 예이며 **실행 확인 안 됨(Octave 미지원)** 입니다.
+**Octave 11 기본 설치에는 `table`, `readtable`, `categorical`, `datetime`이 없습니다.** Octave Packages의 `datatypes` 패키지를 설치하면 이 함수들과 `writetable`을 쓸 수 있습니다. 한 번만 설치하고, 쓸 때마다 불러옵니다.
 
 ```matlab
-% MATLAB 전용 (R2013b 이상). Octave 11 기본 설치에서는 실행되지 않음 — 실행 확인 안 됨
+pkg install -forge datatypes   % 처음 한 번 (인터넷 필요)
+pkg load datatypes             % Octave를 켤 때마다
+```
+
+아래 코드는 MATLAB(R2013b 이상)에서는 그대로, Octave에서는 `pkg load datatypes` 뒤에 실행됩니다. 출력은 Octave 11.3 + datatypes 패키지에서 실행한 그대로입니다(MATLAB은 표의 테두리 모양이 조금 다릅니다).
+
+```matlab
+% MATLAB: 그대로 실행 / Octave: 먼저 pkg load datatypes
 T = table({'P01'; 'C01'; 'P02'}, {'PD'; 'control'; 'PD'}, [67; 64; 71], ...
           'VariableNames', {'id', 'group', 'age'});
 T(strcmp(T.group, 'PD'), :)
 mean(T.age)
 ```
 
-Octave에서 같은 일을 하려면 struct 배열(예시 3)이나 "열마다 변수 하나 + cell 열"을 씁니다. 표 형태 분석이 길어지면 그 부분은 본 과정의 pandas로 처리하는 것이 현실적인 선택입니다.
+```text
+ans =
+  2x3 table
+
+      id       group     age    
+    _______    ______    ___    
+
+    {'P01'}    {'PD'}     67    
+    {'P02'}    {'PD'}     71    
+
+ans = 67.333
+```
+
+패키지를 설치할 수 없는 환경이라면, Octave에서 같은 일을 하려면 struct 배열(예시 3)이나 "열마다 변수 하나 + cell 열"을 씁니다. 표 형태 분석이 길어지면 그 부분은 본 과정의 pandas로 처리하는 것이 현실적인 선택입니다.
 
 ## 예시로 이해하기
 

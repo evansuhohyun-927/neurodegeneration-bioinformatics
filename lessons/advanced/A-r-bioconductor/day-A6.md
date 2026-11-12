@@ -172,9 +172,9 @@ x="CountPanel"
 
 맨 위의 `[1] "counts"`는 `setGeneric()`이 새 generic의 이름을 알려 주는 출력입니다. 핵심은 세 군데입니다. (1) **validity**: 샘플 표의 순서를 뒤집어 넣자(`cd[4:1, ]`) 객체가 만들어지지 않고 우리가 쓴 메시지로 거부됩니다. Day A3에서 `stopifnot`으로 손수 하던 확인을 이제 클래스가 매번 대신합니다. (2) **`[` method**: 처리군 샘플만 고르자 행렬과 샘플 표가 **함께** 잘렸습니다. (3) **접근자** `counts(sub)`: slot 이름을 몰라도 값을 꺼냅니다. SummarizedExperiment가 하는 일을 아주 작게 흉내 낸 것입니다.
 
-### 예시 3 — 진짜 SummarizedExperiment (실행 확인 안 됨: 패키지 미설치)
+### 예시 3 — 진짜 SummarizedExperiment
 
-> 이 레슨을 쓴 컴퓨터에는 Bioconductor 패키지가 설치되어 있지 않아 아래 코드는 **실행하지 않았고 출력도 싣지 않았습니다.** 설치는 처음 한 번만 하면 되고, 인터넷 연결과 몇 분이 필요합니다.
+> 설치는 처음 한 번만 하면 되고, 인터넷 연결과 몇 분(소스에서 컴파일하면 수십 분)이 필요합니다. 아래 출력은 R 4.3.2 + Bioconductor 3.18(SummarizedExperiment 설치 후)에서 "# 사용" 아래 줄을 실행한 그대로입니다. 패키지를 불러올 때 나오는 긴 "masked" 안내문은 뺐습니다.
 
 ```r
 # 설치 (처음 한 번)
@@ -195,8 +195,38 @@ se_treat <- se[, se$group == "treat"]   # assay와 colData가 함께 잘린다
 dim(se_treat)
 assay(se, "log2") <- log2(assay(se, "counts") + 1)   # 같은 그릇에 두 번째 assay 추가
 assayNames(se)
-browseVignettes("SummarizedExperiment")
+browseVignettes("SummarizedExperiment")   # 브라우저에 공식 안내서가 열린다 (출력 생략)
 ```
+
+출력:
+
+```text
+class: SummarizedExperiment 
+dim: 3 4 
+metadata(0):
+assays(1): counts
+rownames(3): Gfap Aif1 Cd68
+rowData names(1): probe_class
+colnames(4): S1 S2 S3 S4
+colData names(1): group
+     S1 S2 S3 S4
+Gfap  1  4  7 10
+Aif1  2  5  8 11
+Cd68  3  6  9 12
+DataFrame with 4 rows and 1 column
+         group
+   <character>
+S1        ctrl
+S2        ctrl
+S3       treat
+S4       treat
+[1] 3 2
+[1] "counts" "log2"  
+```
+
+`se_treat`의 `dim`이 `3 2`인 것을 보세요. 열(샘플)을 고르자 assay와 colData가 함께 잘렸습니다.
+
+⚠️ **설치 중 흔한 문제:** 내려받기 도중 네트워크 오류(`SSL connect error`, `HTTP2 framing layer`)가 나면 설치 명령은 끝나도 일부 의존 패키지가 빠집니다. 그러면 `library()`에서 "there is no package called ..."로 멈춥니다. 같은 `BiocManager::install()`을 다시 실행하면 빠진 것만 채워집니다. `RCurl`처럼 소스 컴파일에 실패하는 패키지는 `install.packages("RCurl", type = "binary")`로 미리 만든 판을 받습니다.
 
 예시 2와 비교해 보세요. `CountPanel`의 `counts`/`colData` slot이 여기서는 `assay`/`colData`이고, 유전자 정보를 담는 `rowData`와 여러 assay를 담는 기능이 더해졌습니다. `DataFrame`(대문자 D)은 Bioconductor의 S4판 data.frame입니다. 3주차의 nCounter 데이터라면 rowData의 `probe_class`에 Endogenous/Housekeeping/Positive/Negative를 넣어 두고 `se[rowData(se)$probe_class == "Housekeeping", ]`처럼 고를 수 있습니다.
 

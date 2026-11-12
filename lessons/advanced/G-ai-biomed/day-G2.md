@@ -164,12 +164,11 @@ print("학습 서열을 그대로 복사한 개수:", sum(g in train for g in ge
 
 (2) 앞 글자 하나만 보는 모델은 학습 서열에 없던 조합을 만들지만, 길이가 들쭉날쭉합니다. `K` 다음에 서열이 끝나는 경우(`...AK$`)를 배운 탓에 `MK`에서 바로 끝나 버리기도 합니다. 문맥을 한 글자밖에 기억하지 못해서 생기는 일입니다. Transformer는 앞의 모든 글자를 보고 판단하므로 이런 실수가 줄어듭니다. 이 원리는 G4(SMILES 생성), G5(단백질 서열), G6(LLM)에서 그대로 다시 나옵니다.
 
-### 예시 3 — 실행 확인 안 됨(패키지 미설치): PyTorch로 쓴 아주 작은 VAE의 뼈대
+### 예시 3 — PyTorch로 쓴 아주 작은 VAE
 
-아래는 형태만 보여 주는 코드입니다. 이 환경에 PyTorch가 없어 **실행 확인 안 됨(패키지 미설치)** 입니다. 구조만 읽어 보세요.
+> PyTorch가 필요합니다. 과정의 conda 환경이라면 `conda install -n neurobio -c conda-forge pytorch`로 설치합니다. 출력은 PyTorch 2.14(conda-forge)에서 실행한 그대로입니다.
 
 ```python
-# 실행 확인 안 됨(패키지 미설치): torch 필요
 import torch, torch.nn as nn
 
 class TinyVAE(nn.Module):
@@ -189,7 +188,35 @@ def vae_loss(x, x_hat, mu, logvar):
     recon = ((x - x_hat) ** 2).sum(dim=1).mean()                        # 복원 오차
     kl = (-0.5 * (1 + logvar - mu ** 2 - logvar.exp()).sum(dim=1)).mean()  # 구름을 표준정규 쪽으로
     return recon + kl
+
+# 사용 예: 가상 데이터 300개 × 100차원(3개 잠재 요인 + 잡음)으로 200번 학습
+torch.manual_seed(0)
+x = torch.randn(300, 3) @ torch.randn(3, 100) + 0.1 * torch.randn(300, 100)
+vae = TinyVAE()
+opt = torch.optim.Adam(vae.parameters(), lr=1e-2)
+for step in range(201):
+    x_hat, mu, logvar = vae(x)
+    loss = vae_loss(x, x_hat, mu, logvar)
+    opt.zero_grad(); loss.backward(); opt.step()
+    if step % 100 == 0:
+        print(f"step {step:3d}  loss {loss.item():.1f}")
+with torch.no_grad():
+    new = vae.dec(torch.randn(5, 3))       # 잠재 공간에서 5점을 뽑아 새 샘플 만들기
+print(new.shape)
 ```
+
+출력:
+
+```text
+step   0  loss 270.6
+step 100  loss 12.7
+step 200  loss 10.8
+torch.Size([5, 100])
+```
+
+손실이 줄어드는 것은 "학습이 된다"는 뜻일 뿐, 만든 샘플이 쓸 만하다는 뜻은 아닙니다. 새 샘플의 품질은 G3의 방법(실제 데이터와 분포 비교, 기억해 베낀 샘플이 없는지 확인)으로 따로 평가합니다.
+
+⚠️ **설치 중 흔한 오류 — `OMP: Error #15: Initializing libomp.dylib, but found libomp.dylib already initialized`.** conda 환경에 PyTorch를 `pip`로 설치하면, conda가 깐 numpy·scikit-learn과 PyTorch가 서로 다른 OpenMP 라이브러리를 들고 와서 `import torch`만으로도 이 오류가 납니다(이 레슨을 쓸 때 실제로 겪었습니다). `pip uninstall torch` 뒤 `conda install -c conda-forge pytorch`로 다시 설치하면 해결됩니다. 오류 메시지가 권하는 `KMP_DUPLICATE_LIB_OK=TRUE`는 결과가 조용히 틀어질 수 있어 쓰지 않습니다.
 
 예시 1과 비교하면, 인코더·디코더가 `nn.Linear` + 곡선 함수(`ReLU`)로 바뀌었고, 잠재 공간을 정규분포 근처로 모으는 `kl` 벌점이 추가된 것이 전부입니다.
 

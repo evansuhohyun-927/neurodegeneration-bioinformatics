@@ -39,9 +39,21 @@ AI로 설계한 분자의 임상 성과는 아직 초기 단계입니다. 편집
 
 화합물 데이터는 한 연구팀이 같은 골격에 치환기만 바꾼 **유사체 시리즈**로 몰려 있습니다. 무작위로 나누면 평가셋의 분자마다 거의 같은 형제가 학습셋에 있으니, 모델은 "형제 값 베끼기"만 해도 잘 맞힙니다. 새 골격의 분자를 예측하려는 실제 상황과 다르죠. 그래서 **Bemis–Murcko 골격**(곁사슬을 떼고 남은 고리·연결 사슬)으로 묶어 같은 골격은 한쪽에만 두는 **scaffold split**을 씁니다. Day 33에서 같은 참가자를 한쪽에만 둔 GroupKFold와 똑같은 논리입니다. 평가할 때는 평균만 답하는 기준선과 비교하고, 학습 분자와 너무 다른 분자(**적용 영역, applicability domain** 밖)의 예측은 믿지 않습니다.
 
+유사도 기반 모델은 "비슷한 분자는 비슷하게 작용한다"를 전제로 합니다. 그 전제가 깨지는 곳이 **활성 절벽(activity cliff)** 입니다. 원자 하나만 다른 두 분자의 활성이 수십~수백 배 차이 나는 경우입니다. 여러 공개 데이터셋에서 비교한 연구에서는 딥러닝을 포함한 모든 모델이 이런 분자쌍에서 크게 틀렸고, 지문 + 고전 ML이 복잡한 그래프 모델보다 오히려 조금 나았습니다(van Tilborg 2022). 그래서 평균 오차와 함께 "절벽 분자에서의 오차"를 따로 보고, 새 모델은 늘 지문 기준선과 비교합니다. 고전 QSAR에서 쓰던 **y-무작위화**(활성 값을 섞어 다시 학습했을 때 성능이 무너지는지 확인)도 "모델이 우연한 패턴을 외운 건 아닌가"를 보는 값싼 점검입니다.
+
+### 구조 기반 vs 리간드 기반 가상 스크리닝, 그리고 벤치마크의 함정
+
+가상 스크리닝에는 두 갈래가 있습니다. **리간드 기반**은 이미 알려진 활성 분자를 출발점으로 삼아 지문 유사도나 QSAR로 비슷한 후보를 고릅니다. 위에서 다룬 방법들이 여기에 속합니다. **구조 기반**은 표적 단백질의 3D 구조(실험 구조, 또는 G5의 예측 구조)가 출발점입니다. **도킹(docking)** 으로 분자가 결합 자리에 놓일 자세(pose)를 찾고, **점수 함수**로 줄을 세웁니다. 흔한 흐름은 도킹 → (선택) 분자동역학(MD)으로 결합 안정성 확인 → ADMET 거르기 → 실험입니다.
+
+도킹 점수는 **측정한 결합력이 아니라 순위를 매기는 대략적인 추정치**입니다. 단백질을 대개 고정된 모양으로 다루고, 물·엔트로피 효과를 크게 단순화하기 때문입니다. 도킹 점수가 좋다는 것은 "실험해 볼 후보 목록에 넣을 만하다"는 뜻일 뿐입니다. 예측 구조로 도킹할 때는 결합 자리의 pLDDT부터 확인합니다(G5).
+
+ML 스크리닝 모델을 평가하는 벤치마크에도 함정이 있습니다. 대부분의 데이터셋에서 "비활성" 분자는 실제로 측정한 값이 아니라, 활성 분자와 물성은 비슷하지만 구조가 다르게 골라 넣은 **디코이(decoy)** 입니다. 널리 쓰인 DUD-E에서는 활성 분자와 디코이를 고르는 방식 자체에 숨은 차이가 있어서, 모델이 결합을 배우지 않고도 높은 점수를 받을 수 있다는 분석이 나왔습니다(Chen 2019). 그래서 실제 측정된 활성·비활성으로 만들고 편향을 줄인 LIT-PCBA 같은 데이터셋이 제안되었습니다(Tran-Nguyen 2020). 교훈은 G7과 같습니다. 높은 벤치마크 점수가 나오면 먼저 데이터를 만든 방식이 정답을 흘리고 있지 않은지 봅니다.
+
+예측이 실험까지 이어진 대표적 사례로는 대장균 생장 억제 데이터로 학습한 그래프 신경망이 약물 재창출 라이브러리에서 고른 항생제 후보 halicin이 있습니다(Stokes 2020). 시험관 실험과 생쥐 감염 모델로 확인했기 때문에 사례가 되었습니다. 모델 점수만으로 사례가 된 것은 아닙니다.
+
 ### 분자 생성과 그 지표
 
-G2의 자기회귀·VAE·GAN은 SMILES나 분자 그래프에도 쓸 수 있습니다. 생성 결과는 보통 **validity**(문법상 분자가 되는 비율), **uniqueness**(유효 분자 중 서로 다른 비율), **novelty**(학습셋에 없는 비율)로 먼저 봅니다(MOSES, GuacaMol 벤치마크). 하지만 세 지표가 높아도 그 분자가 합성 가능한지, 활성이 있는지, 안전한지는 전혀 말해 주지 않습니다. 학습 분자에서 메틸 하나만 뗀 분자도 "새롭다"로 셉니다.
+G2의 자기회귀·VAE·GAN은 SMILES나 분자 그래프에도 쓸 수 있습니다. 생성 결과는 보통 **validity**(문법상 분자가 되는 비율), **uniqueness**(유효 분자 중 서로 다른 비율), **novelty**(학습셋에 없는 비율)로 먼저 봅니다(MOSES, GuacaMol 벤치마크). 하지만 세 지표가 높아도 그 분자가 합성 가능한지, 활성이 있는지, 안전한지는 전혀 말해 주지 않습니다. 학습 분자에서 메틸 하나만 뗀 분자도 "새롭다"로 셉니다. 그래서 분포 수준의 지표를 함께 봅니다. **FCD**(Fréchet ChemNet Distance)는 생성 분자 묶음과 실제 분자 묶음이 신경망 특징 공간에서 얼마나 떨어져 있는지를 재고(Preuer 2018), **내부 다양성**은 생성 분자끼리 서로 얼마나 다른지를 잽니다. 합성 가능성은 역합성 소프트웨어로 따로 확인해야 하고, 벤치마크 목표 점수만 최적화한 생성 분자 중에는 합성 경로를 찾기 어려운 것이 많다는 보고가 있습니다(Gao & Coley 2020). 잘못된 SMILES가 나오는 문제를 표현 쪽에서 막은 것이 **SELFIES**입니다. 어떤 문자열이든 유효한 분자로 해독되도록 설계한 표기법입니다(Krenn 2020). 이렇게 하면 validity는 처음부터 100%가 되므로, validity 숫자만으로 모델을 비교하는 일은 더욱 의미가 없어집니다.
 
 ## 예시로 이해하기
 
@@ -333,6 +345,9 @@ QED가 높은 새 분자 3개:
 - Lipinski CA, et al. *Adv Drug Deliv Rev.* 2001;46:3–26. doi:[10.1016/S0169-409X(00)00129-0](https://doi.org/10.1016/S0169-409X%2800%2900129-0) · Bickerton GR, et al. Quantifying the chemical beauty of drugs. *Nat Chem.* 2012;4:90–98. doi:[10.1038/nchem.1243](https://doi.org/10.1038/nchem.1243)
 - Wu Z, et al. MoleculeNet. *Chem Sci.* 2018;9:513–530. doi:[10.1039/C7SC02664A](https://doi.org/10.1039/C7SC02664A) · Yang K, et al. (Chemprop) *J Chem Inf Model.* 2019;59:3370–3388. doi:[10.1021/acs.jcim.9b00237](https://doi.org/10.1021/acs.jcim.9b00237)
 - Polykovskiy D, et al. MOSES. *Front Pharmacol.* 2020;11:565644. doi:[10.3389/fphar.2020.565644](https://doi.org/10.3389/fphar.2020.565644) · Brown N, et al. GuacaMol. *J Chem Inf Model.* 2019;59:1096–1108. doi:[10.1021/acs.jcim.8b00839](https://doi.org/10.1021/acs.jcim.8b00839) · Gao W, Coley CW. The synthesizability of molecules proposed by generative models. *J Chem Inf Model.* 2020;60:5714–5723. doi:[10.1021/acs.jcim.0c00174](https://doi.org/10.1021/acs.jcim.0c00174)
+- van Tilborg D, Alenicheva A, Grisoni F. Exposing the limitations of molecular machine learning with activity cliffs. *J Chem Inf Model.* 2022;62:5938–5951. doi:[10.1021/acs.jcim.2c01073](https://doi.org/10.1021/acs.jcim.2c01073)
+- Chen L, et al. Hidden bias in the DUD-E dataset leads to misleading performance of deep learning in structure-based virtual screening. *PLoS One.* 2019;14:e0220113. doi:[10.1371/journal.pone.0220113](https://doi.org/10.1371/journal.pone.0220113) · Tran-Nguyen VK, Jacquemard C, Rognan D. LIT-PCBA: an unbiased data set for machine learning and virtual screening. *J Chem Inf Model.* 2020;60:4263–4273. doi:[10.1021/acs.jcim.0c00155](https://doi.org/10.1021/acs.jcim.0c00155)
+- Preuer K, et al. Fréchet ChemNet Distance. *J Chem Inf Model.* 2018;58:1736–1741. doi:[10.1021/acs.jcim.8b00234](https://doi.org/10.1021/acs.jcim.8b00234) · Krenn M, et al. Self-referencing embedded strings (SELFIES). *Mach Learn: Sci Technol.* 2020;1:045024. doi:[10.1088/2632-2153/aba947](https://doi.org/10.1088/2632-2153/aba947)
 - Gaulton A, et al. The ChEMBL database in 2017. *Nucleic Acids Res.* 2017;45:D945–D954. doi:[10.1093/nar/gkw1074](https://doi.org/10.1093/nar/gkw1074) · ChEMBL: <https://www.ebi.ac.uk/chembl/> · RDKit: <https://www.rdkit.org/>
 - Stokes JM, et al. A deep learning approach to antibiotic discovery. *Cell.* 2020;180:688–702. doi:[10.1016/j.cell.2020.01.021](https://doi.org/10.1016/j.cell.2020.01.021) · Ren F, et al. A small-molecule TNIK inhibitor targets fibrosis in preclinical and clinical models. *Nat Biotechnol.* 2025;43:63–75 (온라인 공개 2024). doi:[10.1038/s41587-024-02143-0](https://doi.org/10.1038/s41587-024-02143-0) · Jayatunga MKP, et al. How successful are AI-discovered drugs in clinical trials? *Drug Discov Today.* 2024;29:104009. doi:[10.1016/j.drudis.2024.104009](https://doi.org/10.1016/j.drudis.2024.104009)
 

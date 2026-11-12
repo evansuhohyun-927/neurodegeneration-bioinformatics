@@ -187,10 +187,12 @@ TR = 2.0 s | 슬라이스 수 = 10
 
 파일 이름만으로 피험자·과제·run이 표로 풀립니다. 이 규칙 덕분에 "rest 과제의 모든 bold 파일" 같은 질문을 코드 한 줄로 던질 수 있습니다. 아래쪽 결과는 처리된 값을 정수로 다시 저장하면 서로 다른 값이 3,533개에서 142개로 줄어든다는 것, 즉 대부분의 정보가 반올림으로 사라진다는 것을 보여 줍니다.
 
-### 참고 — 실제 NIfTI 파일을 읽을 때의 명령 형태 (실행 확인 안 됨, 패키지 미설치)
+### 참고 — 실제 NIfTI 파일을 읽을 때의 명령 형태 (nibabel 필요)
+
+> 이 코드는 `pip install nibabel nilearn`으로 설치한 환경(nibabel 5.5, nilearn 0.14.1)에서, 같은 이름의 **가상 파일**을 만들어 그대로 실행해 오류 없이 도는 것을 확인했습니다. 출력은 여러분의 실제 파일에 따라 달라지므로 싣지 않았습니다.
 
 ```python
-# pip/conda로 nibabel을 설치한 환경에서만 동작한다. 이 저장소 환경에서는 실행하지 않았다.
+# nibabel이 필요하다: pip install nibabel
 import nibabel as nib
 img = nib.load("sub-01/func/sub-01_task-rest_run-1_bold.nii.gz")
 print(img.shape)        # (x, y, z, 시간)

@@ -23,6 +23,26 @@
 
 5주차에서 AUC·민감도·특이도를 배웠습니다(Day 34). 실제 배포에서 문제가 되는 것은 대개 **누구에게서** 틀리느냐입니다. 흉부 X선 모델이 병원마다 성능이 크게 달랐던 연구, 코로나19 X선 모델이 병변 대신 병원·촬영 방식의 표식(shortcut)을 배운 연구, 의료비를 건강 필요의 대리 지표로 쓴 알고리즘이 흑인 환자의 필요를 과소평가한 연구가 대표적입니다. 그래서 사이트·성별·연령대·기기별로 성능을 나눠 보고합니다. 이때 하위집단이 작으면 신뢰구간이 매우 넓어져, "B에서 더 좋다/나쁘다"를 말할 수 없는 경우가 많습니다. 숫자와 함께 n, 양성 수, 신뢰구간을 같이 씁니다.
 
+### 공정성 지표: "편향이 없다"는 말의 여러 뜻
+
+하위집단 차이를 숫자 하나로 요약하는 기준은 여러 가지이고, 서로 다른 것을 잽니다.
+- **인구집단 동등성(demographic parity):** 집단마다 "양성"으로 예측받는 비율이 같은가.
+- **동등화된 오즈(equalized odds):** 실제 상태가 같은 사람들 사이에서 집단마다 민감도·위양성률이 같은가.
+- **기회 균등(equal opportunity):** 그중 민감도만 같은가(Hardt 2016).
+
+실제 유병률이 집단마다 다르면 첫째 기준과 둘째 기준을 동시에 맞추기는 일반적으로 불가능합니다. 그래서 "공정하다"고 쓰려면 **어떤 기준으로** 보았는지를 밝혀야 합니다. 차이를 줄이는 방법도 세 단계로 나눕니다. 학습 전에는 표본 가중치를 주거나 다시 뽑고, 학습 중에는 손실 함수에 격차 벌점을 더하고, 학습 후에는 집단별 임곗값을 조정합니다. 마지막 방법은 집단 정보를 결정에 직접 쓰는 것이라 법적·윤리적 논란이 있을 수 있습니다. 어느 방법이든, 바로잡기 전에 측정 기기·라벨 자체가 집단에 따라 다르게 작동하는지(영상의 예)를 먼저 봅니다.
+
+### 숫자를 믿기 전에: 기준선, 라벨, 전처리 순서
+
+논문이나 편집서의 "정확도 97%"는 다음 순서로 점검합니다. 실제 출판물에서 반복해서 보이는 문제들입니다.
+
+1. **아무것도 안 배운 기준선과 비교했나.** 비정상 72%인 데이터에서는 "전부 비정상"이라고만 답해도 정확도가 0.72입니다. 그보다 낮은 모델은 쓸모가 없습니다. 클래스가 8개로 균형이면 우연 수준은 0.125입니다. 불균형 데이터에서는 정확도 대신 balanced accuracy, 클래스별 민감도, PR-AUC를 봅니다(Day 34). 표 데이터 임상 예측에서는 로지스틱 회귀가 복잡한 ML과 성능 차이가 없는 경우가 많다는 체계적 문헌고찰도 있습니다(Christodoulou 2019). 그러니 로지스틱 회귀 기준선은 꼭 같이 둡니다.
+2. **숫자끼리 맞나.** 초록·본문·표의 정확도, 표본 수, 분할 크기가 서로 일치하는지 봅니다. 정확도와 정밀도·재현율이 산술적으로 함께 나올 수 있는 값인지도 확인합니다. 어긋나면 그 결과는 재현할 수 없습니다.
+3. **라벨이 입력에 들어 있지 않나.** 진단 라벨이 설문 문항 점수의 합으로 정해지는데 그 문항들이 그대로 입력 변수라면, 모델은 채점 규칙을 다시 배울 뿐입니다. 정확도가 거의 100%여도 아무 의미가 없습니다. 어떤 입력 열이 라벨을 결정하거나 라벨에서 계산된 것은 아닌지 확인합니다.
+4. **라벨 자체는 얼마나 믿을 만한가.** 전문가 판독(병리 등급, 영상 판독)도 사람마다 다릅니다. 두 판독자의 일치도는 우연히 일치할 몫을 뺀 **Cohen의 kappa**로 잽니다(Cohen 1960). 판독자끼리도 잘 일치하지 않는 과제에서 "모델이 한 명의 전문가보다 낫다"는 약한 근거입니다. 라벨 기준(진단 기준의 판)이 바뀌면 같은 모델의 "정확도"도 달라집니다.
+5. **전처리를 분할 뒤에 했나.** 결측 대체, 표준화, 변수 선택, SMOTE는 학습 fold 안에서만 맞춥니다(G3). 한 사람이 여러 기록을 남기는 데이터, 예를 들어 심전도 박동 수천 개, 3D 영상의 2D 단면들, 같은 환자의 여러 부위 검체는 사람 단위로 한쪽에만 둡니다(Day 33).
+6. **여러 라벨을 한 숫자로 뭉치지 않았나.** 진단 25개를 동시에 예측하는 다중 라벨 문제에서 **micro 평균**은 흔한 진단에 끌려가고, **macro 평균**은 모든 진단을 같은 무게로 봅니다. 희귀 진단에서 실패해도 micro AUROC는 높게 나올 수 있으니, 라벨별 AUROC와 macro 평균을 함께 보고합니다.
+
 ### 보정: 확률이 확률다운가
 
 **판별력**(AUC: 환자를 비환자보다 높게 줄 세우는가)과 **보정**(calibration: "30%"라고 한 사람들 중 실제로 30%가 환자인가)은 다른 성질입니다. 위험 확률을 숫자 그대로 쓰는 임상 상황에서는 보정이 중요합니다. 간단히는 평균 예측 확률과 실제 양성 비율을 비교하고, Brier 점수(확률과 0/1 정답의 제곱 오차 평균, 작을수록 좋음)를 봅니다. 유병률이 다른 집단에 그대로 적용하면 AUC는 비슷해도 보정은 깨지기 쉽습니다. 외부 검증에서 상용 패혈증 예측 모델의 성능이 개발사 보고보다 훨씬 낮았던 사례가 이런 차이를 보여 줍니다.
@@ -234,6 +254,9 @@ B 합성 증강 사이트 B  32   7 0.909  0.73–1.00     0.71  0.068   0.21 vs
 - Zech JR, et al. *PLoS Med.* 2018;15:e1002683. doi:[10.1371/journal.pmed.1002683](https://doi.org/10.1371/journal.pmed.1002683) · DeGrave AJ, et al. AI for radiographic COVID-19 detection selects shortcuts over signal. *Nat Mach Intell.* 2021;3:610–619. doi:[10.1038/s42256-021-00338-7](https://doi.org/10.1038/s42256-021-00338-7) · Roberts M, et al. *Nat Mach Intell.* 2021;3:199–217. doi:[10.1038/s42256-021-00307-0](https://doi.org/10.1038/s42256-021-00307-0)
 - Wong A, et al. External validation of a widely implemented proprietary sepsis prediction model. *JAMA Intern Med.* 2021;181:1065. doi:[10.1001/jamainternmed.2021.2626](https://doi.org/10.1001/jamainternmed.2021.2626)
 - Rudin C. *Nat Mach Intell.* 2019;1:206–215. doi:[10.1038/s42256-019-0048-x](https://doi.org/10.1038/s42256-019-0048-x) · Lundberg SM, Lee S-I. A unified approach to interpreting model predictions (SHAP). 2017. [arXiv:1705.07874](https://arxiv.org/abs/1705.07874) · Kapoor S, Narayanan A. Leakage and the reproducibility crisis in ML-based science. *Patterns.* 2023;4:100804. doi:[10.1016/j.patter.2023.100804](https://doi.org/10.1016/j.patter.2023.100804)
+- Hardt M, Price E, Srebro N. Equality of opportunity in supervised learning. *NeurIPS.* 2016. [arXiv:1610.02413](https://arxiv.org/abs/1610.02413)
+- Christodoulou E, et al. A systematic review shows no performance benefit of machine learning over logistic regression for clinical prediction models. *J Clin Epidemiol.* 2019;110:12–22. doi:[10.1016/j.jclinepi.2019.02.004](https://doi.org/10.1016/j.jclinepi.2019.02.004)
+- Cohen J. A coefficient of agreement for nominal scales. *Educ Psychol Meas.* 1960;20:37–46. doi:[10.1177/001316446002000104](https://doi.org/10.1177/001316446002000104)
 - WHO. *Ethics and governance of artificial intelligence for health.* 2021. <https://www.who.int/publications/i/item/9789240029200> · EU AI Act, Regulation (EU) 2024/1689: <https://eur-lex.europa.eu/eli/reg/2024/1689/oj>
 
 ---

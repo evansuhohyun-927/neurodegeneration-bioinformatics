@@ -7,7 +7,7 @@ channels:
 dependencies:
   - python=3.12
   - jupyterlab
-  - pandas
+  - pandas<3   # 레슨의 출력은 pandas 2.x 기준 (3.x는 문자열 dtype 표시 등이 다름)
   - numpy
   - scipy
   - matplotlib

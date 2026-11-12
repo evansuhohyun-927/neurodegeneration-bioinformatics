@@ -167,9 +167,9 @@ gene059 0.0023 0.0268
 
 이 코드는 발상을 보여 주려는 **학습용 대역**입니다. `d0`와 `s0sq`를 고정값으로 정했지만, 실제 limma는 이 둘을 전체 유전자 분산 분포에서 추정하고, 발현 수준에 따른 추세까지 고려할 수 있습니다. 실제 분석에는 이 코드가 아니라 limma를 씁니다.
 
-### 예시 3 — 실제 도구의 모양 (실행 확인 안 됨: 패키지 미설치)
+### 예시 3 — 실제 도구의 모양: limma와 DESeq2
 
-> 이 레슨을 쓴 컴퓨터에는 limma와 DESeq2가 설치되어 있지 않아 아래 코드는 **실행하지 않았고 출력도 싣지 않았습니다.** 설치: `BiocManager::install(c("limma", "DESeq2"))`. 함수 이름과 인자는 각 패키지의 공식 문서([limma](https://bioconductor.org/packages/release/bioc/html/limma.html), [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))에서 설치한 버전에 맞춰 확인하세요.
+> 설치: `BiocManager::install(c("limma", "DESeq2"))`. 아래 출력은 R 4.3.2 + Bioconductor 3.18(limma, DESeq2 1.42.1)에서 실행한 그대로입니다. 함수 이름과 인자는 각 패키지의 공식 문서([limma](https://bioconductor.org/packages/release/bioc/html/limma.html), [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))에서 설치한 버전에 맞춰 확인하세요.
 
 ```r
 # (가) limma: 정규화된 log 척도 행렬 y와 meta가 있을 때 (예시 1–2의 진짜 도구판)
@@ -181,10 +181,54 @@ topTable(fit, coef = "grouptreat", number = 10, adjust.method = "BH")
 
 # (나) DESeq2: RNA-seq의 raw count 정수 행렬일 때만. nCounter 정규화 값에는 쓰지 않는다
 library(DESeq2)
+set.seed(7)                                   # 연습용 가상 RNA-seq count (y와 같은 크기·같은 진짜 변화)
+mu <- matrix(200, nrow(y), ncol(y), dimnames = dimnames(y))
+mu[truth, meta$group == "treat"] <- 200 * 2^1.5
+raw_counts <- matrix(rnbinom(length(mu), mu = mu, size = 10), nrow(y), dimnames = dimnames(y))
 dds <- DESeqDataSetFromMatrix(countData = raw_counts, colData = meta, design = ~ batch + group)
-dds <- DESeq(dds)
-results(dds, contrast = c("group", "treat", "ctrl"))
+dds <- DESeq(dds, quiet = TRUE)
+res <- results(dds, contrast = c("group", "treat", "ctrl"))
+head(res[order(res$pvalue), ], 5)
+c(BH = sum(res$padj < 0.05, na.rm = TRUE), BH_true = sum(res$padj < 0.05 & truth, na.rm = TRUE))
+is(dds, "SummarizedExperiment")
 ```
+
+출력 (가)의 `topTable`:
+
+```text
+           logFC  AveExpr         t      P.Value   adj.P.Val        B
+gene021 1.530572 8.905316 10.411649 4.259483e-05 0.004068793 2.905341
+gene028 1.470847 8.890946 10.073948 5.153826e-05 0.004068793 2.714762
+gene020 1.381015 8.874323  9.646133 6.616927e-05 0.004068793 2.462658
+gene011 1.413596 8.869767  9.527368 7.104739e-05 0.004068793 2.390457
+gene027 1.629679 8.863229  9.350477 7.910438e-05 0.004068793 2.281066
+gene002 1.693190 8.964544  9.304346 8.137585e-05 0.004068793 2.252167
+gene017 1.381692 8.950872  8.547233 1.319344e-04 0.004506015 1.754705
+gene023 1.558961 8.778328  8.388112 1.467289e-04 0.004506015 1.644300
+gene004 1.605775 8.814415  8.313363 1.543334e-04 0.004506015 1.591694
+gene014 1.312508 8.938527  8.263461 1.596630e-04 0.004506015 1.556307
+```
+
+출력 (나):
+
+```text
+converting counts to integer mode
+log2 fold change (MLE): group treat vs ctrl 
+Wald test p-value: group treat vs ctrl 
+DataFrame with 5 rows and 6 columns
+         baseMean log2FoldChange     lfcSE      stat      pvalue        padj
+        <numeric>      <numeric> <numeric> <numeric>   <numeric>   <numeric>
+gene004   354.664        1.87164  0.359449   5.20696 1.91960e-07 1.40131e-05
+gene021   361.785        1.55357  0.337078   4.60893 4.04753e-06 1.14784e-04
+gene014   378.455        1.62676  0.355970   4.56992 4.87915e-06 1.14784e-04
+gene027   350.834        1.75992  0.389672   4.51641 6.28956e-06 1.14784e-04
+gene019   316.314        1.71160  0.385261   4.44271 8.88335e-06 1.29123e-04
+     BH BH_true 
+     24      23 
+[1] TRUE
+```
+
+limma의 상위 10개가 모두 앞 30개(진짜 변화) 안에 있고, 예시 2에서 손으로 만든 moderated t와 같은 방향으로 움직입니다. DESeq2는 별도로 만든 가상 count라 순위가 다르지만, BH 기준 24개 중 23개가 진짜 변화 유전자입니다. 마지막 `TRUE`는 DESeq2 객체가 Day A6의 SummarizedExperiment를 상속했다는 뜻입니다. `converting counts to integer mode`는 오류가 아니라 count를 정수형으로 바꿨다는 안내입니다.
 
 두 도구 모두 입력이 **행렬 + 샘플 표 + 설계식**이라는 점, 그리고 contrast 방향(`treat` 대 `ctrl`)을 명시한다는 점을 보세요. `DESeqDataSetFromMatrix`가 만드는 객체는 Day A6의 SummarizedExperiment를 상속한 S4 객체입니다.
 
@@ -215,7 +259,7 @@ sort(unique(deps$Package))
 
 `sessionInfo()`의 전체 출력은 길어서 파일로 저장하고, 여기서는 R 버전과 `library()`로 불러온 패키지 이름만 꺼냈습니다. `renv::dependencies()`는 폴더 안의 R 파일을 읽어 어떤 패키지를 쓰는지 찾아 줍니다. 아무것도 설치하지 않으므로 지금 바로 써 볼 수 있습니다. `library()`뿐 아니라 `stats::median`처럼 `::`로 부른 패키지도 잡아낸다는 점을 보세요. renv가 `renv.lock`에 기록할 대상이 바로 이 목록입니다.
 
-renv를 실제 프로젝트에 적용하는 명령은 아래와 같습니다. 이 명령은 프로젝트 폴더에 `renv/`와 `renv.lock`을 만들고 패키지를 프로젝트 라이브러리로 설치하므로, 이 레슨을 쓸 때는 **실행하지 않았습니다**. 연습은 저장소가 아닌 별도의 빈 폴더에서 하세요.
+renv를 실제 프로젝트에 적용하는 명령은 아래와 같습니다. 이 명령은 프로젝트 폴더에 `renv/`와 `renv.lock`을 만들고 패키지를 프로젝트 라이브러리로 설치하므로, 연습은 저장소가 아닌 별도의 빈 폴더에서 하세요. 이 레슨을 쓸 때 빈 연습 폴더(R 파일 하나)에서 네 명령을 차례로 실행해 `renv/`, `renv.lock`, `.Rprofile`이 생기고 `renv::status()`가 동기화됨(synchronized)으로 나오는 것을 확인했습니다. 스크립트에서 실행할 때는 `renv::init(restart = FALSE)`, `renv::snapshot(prompt = FALSE)`처럼 확인 질문을 끄는 인자를 붙입니다.
 
 ```r
 renv::init()       # 프로젝트 전용 라이브러리를 만들고 지금 쓰는 패키지를 기록

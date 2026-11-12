@@ -35,6 +35,8 @@ AlphaFold2는 서열과 MSA(공진화 정보)를 입력으로 3D 좌표를 예�
 
 예측 구조를 쓸 때 가장 먼저 볼 것은 **잔기별 신뢰도 pLDDT**(0–100)입니다. 파일의 B-factor 칸에 들어 있습니다. 흔한 해석 구간은 >90 매우 높음, 70–90 높음(골격은 대체로 맞음), 50–70 낮음, <50 매우 낮음입니다. 도메인 간 상대 위치는 별도의 **PAE**(예측 정렬 오차) 그림으로 봅니다. 신경퇴행 질환의 핵심 단백질인 α-synuclein, tau는 고정된 구조가 없는 **무질서 단백질(IDP)** 이거나 긴 무질서 구간을 가집니다. 이들의 낮은 pLDDT는 "예측 실패"라기보다 "한 가지 구조가 없다"는 신호에 가깝습니다. 그 영역의 좌표를 구조처럼 해석하거나 도킹에 쓰면 안 됩니다. 또 예측은 한 가지 상태(대개 단량체)를 보여 줄 뿐이라, 섬유(fibril)처럼 응집한 상태나 돌연변이의 영향은 실험 구조(PDB)와 별도 근거가 필요합니다.
 
+예측 구조를 실험 구조와 비교할 때는 두 구조를 가장 잘 겹친 뒤 대응 원자 사이 거리의 제곱평균제곱근, 즉 **RMSD**(Å)를 흔히 씁니다. 직관적이지만 약점이 있습니다. 대부분은 잘 맞아도 유연한 고리(loop)나 꼬리 몇 군데가 크게 어긋나면 값이 확 커지고, 단백질이 길수록 커지는 경향이 있어 크기가 다른 단백질끼리 비교하기 어렵습니다. **TM-score**(0–1)는 이 문제를 줄이려고 거리 기준을 단백질 길이에 맞춰 조정한 점수입니다. 대략 0.5를 넘으면 같은 접힘(fold)으로 봅니다(Zhang & Skolnick 2004). CASP 같은 평가는 이런 전역 점수와 잔기 단위 점수를 함께 씁니다. 무질서 구간이 긴 단백질은 비교 전에 그 구간을 빼고 계산했는지부터 확인합니다.
+
 ## 예시로 이해하기
 
 > MSA와 구조 파일은 모두 연습용으로 지어낸 **가상 데이터**입니다.
@@ -138,17 +140,44 @@ pLDDT<50 연속 구간(5잔기 이상): [(63, 100)]
 
 잔기마다 값이 들쭉날쭉해 원값으로 자르면 구간이 잘게 끊기므로, 창 5짜리 평균으로 다듬은 뒤 찾았습니다(`mode="same"`은 양 끝을 0으로 채워 끝 두 잔기의 평균이 조금 낮게 나온다는 점은 알아 두세요). 결과는 63–100번, 즉 일부러 넣은 무질서 꼬리입니다. 실제 파일이라면 이 구간은 "구조 없음"으로 표시하고 해석에서 뺍니다.
 
-### 예시 3 — 실행 확인 안 됨(패키지 미설치): ESM 임베딩 뽑기의 형태
+### 예시 3 — ESM-2로 단백질 서열을 벡터로 바꾸기
+
+ESM-2는 두 가지 방법으로 받을 수 있습니다. 공식 패키지 `fair-esm`은 Meta 서버에서 가중치를 받는데, **2026년 11월 11일에 그 서버(`dl.fbaipublicfiles.com`)의 보안 인증서가 만료되어** 이 레슨을 쓴 시점에는 `CERTIFICATE_VERIFY_FAILED` 오류로 내려받기가 실패했습니다. 인증서 검증을 끄고 받는 것은 안전하지 않으므로 하지 않습니다. 같은 모델이 Hugging Face에도 공식 게시되어 있어, 아래에서는 `transformers`로 그쪽에서 받습니다.
 
 ```python
-# 실행 확인 안 됨(패키지 미설치): torch, fair-esm 필요. 모델 가중치도 내려받아야 한다.
+# 필요: pip install transformers (PyTorch는 G2 예시 3 참고). 첫 실행 때 모델 약 30 MB를 내려받는다.
+import torch
+from transformers import AutoTokenizer, EsmModel
+name = "facebook/esm2_t6_8M_UR50D"                        # 가장 작은 ESM-2
+tok = AutoTokenizer.from_pretrained(name)
+model = EsmModel.from_pretrained(name, add_pooling_layer=False).eval()
+tokens = tok(["MKVLAAGIVGLLAQ"], return_tensors="pt")
+with torch.no_grad():
+    out = model(**tokens)
+emb = out.last_hidden_state[0, 1:-1].mean(0)             # 시작·끝 토큰을 빼고 평균: 서열 하나 → 벡터 하나
+print(tokens["input_ids"].shape, emb.shape)
+print(emb[:5].round(decimals=3))
+```
+
+출력 (transformers + PyTorch 2.14):
+
+```text
+torch.Size([1, 16]) torch.Size([320])
+tensor([ 0.1400,  0.0090,  0.3070,  0.1410, -0.1590])
+```
+
+아미노산 14개에 시작·끝 토큰 2개가 붙어 16개 토큰이 되고, 평균을 내면 320차원 벡터 하나가 됩니다. 불러올 때 `lm_head ... UNEXPECTED`라는 안내가 나오는데, 이는 마스크 언어 모델용 머리(쓰지 않는 부분)를 버렸다는 뜻이라 무시해도 됩니다.
+
+공식 `fair-esm` 패키지로 쓸 때의 형태는 아래와 같습니다. 서버 인증서가 갱신되면 그대로 동작해야 하지만, 위 이유로 이 레슨을 쓸 때는 **실행 확인 안 됨(가중치 서버 인증서 만료)** 입니다.
+
+```python
 import torch, esm
-model, alphabet = esm.pretrained.esm2_t6_8M_UR50D()      # 가장 작은 ESM-2
+model, alphabet = esm.pretrained.esm2_t6_8M_UR50D()
 batch = alphabet.get_batch_converter()
 _, _, tokens = batch([("demo", "MKVLAAGIVGLLAQ")])
 with torch.no_grad():
     out = model(tokens, repr_layers=[6])
-emb = out["representations"][6][0, 1:-1].mean(0)        # 서열 하나 → 벡터 하나(평균)
+emb = out["representations"][6][0, 1:-1].mean(0)
 ```
 
 이렇게 얻은 벡터를 G1·G4처럼 표의 한 행으로 놓고 로지스틱 회귀나 랜덤 포레스트에 넣는 것이 흔한 사용법입니다. 공식 저장소: <https://github.com/facebookresearch/esm>
@@ -217,6 +246,7 @@ emb = out["representations"][6][0, 1:-1].mean(0)        # 서열 하나 → 벡�
 - Abramson J, et al. Accurate structure prediction of biomolecular interactions with AlphaFold 3. *Nature.* 2024;630:493–500. doi:[10.1038/s41586-024-07487-w](https://doi.org/10.1038/s41586-024-07487-w)
 - Rives A, et al. *PNAS.* 2021;118:e2016239118. doi:[10.1073/pnas.2016239118](https://doi.org/10.1073/pnas.2016239118) · Lin Z, et al. Evolutionary-scale prediction of atomic-level protein structure with a language model. *Science.* 2023;379:1123–1130. doi:[10.1126/science.ade2574](https://doi.org/10.1126/science.ade2574)
 - Cheng J, et al. AlphaMissense. *Science.* 2023;381:eadg7492. doi:[10.1126/science.adg7492](https://doi.org/10.1126/science.adg7492)
+- Zhang Y, Skolnick J. Scoring function for automated assessment of protein structure template quality (TM-score). *Proteins.* 2004;57:702–710. doi:[10.1002/prot.20264](https://doi.org/10.1002/prot.20264)
 - Ruff KM, Pappu RV. AlphaFold and implications for intrinsically disordered proteins. *J Mol Biol.* 2021;433:167208. doi:[10.1016/j.jmb.2021.167208](https://doi.org/10.1016/j.jmb.2021.167208)
 
 ---

@@ -103,7 +103,7 @@ conda activate neurobio
 jupyter lab
 ```
 
-예상 출력(실행하지 않은 예시): 첫 명령은 패키지를 내려받아 설치한 뒤 `done`과 함께 `conda activate neurobio` 안내문을 보여 줍니다. 수 분이 걸릴 수 있습니다.
+첫 명령은 패키지를 내려받아 설치한 뒤 `done`과 함께 `conda activate neurobio` 안내문을 보여 줍니다. 수 분이 걸릴 수 있습니다. 이 저장소의 `environment.yml`은 실제로 새 환경을 만들어 과정 패키지가 모두 불러와지는지 확인했습니다. 그때 겪은 일 두 가지: (1) 마지막 pip 단계가 일시적인 네트워크 오류(`Failed to resolve 'pypi.org'`)로 실패했는데, 환경은 이미 만들어져 있으므로 `conda activate neurobio` 뒤 `pip install wfdb`만 다시 하면 됩니다. (2) 버전을 정하지 않으면 pandas 3.x가 깔려 레슨 출력과 표시가 달라질 수 있어, `pandas<3`으로 고정했습니다. 버전 고정이 재현성에 왜 필요한지 보여 주는 실제 사례입니다.
 
 conda를 쓰지 않는 사람을 위해 `requirements.txt`도 함께 두고 싶다면, 같은 패키지 이름을 한 줄에 하나씩 적으면 됩니다(`pandas`, `numpy`, …). 설치 명령은 `pip install -r requirements.txt`입니다.
 
