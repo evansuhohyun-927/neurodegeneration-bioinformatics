@@ -1,0 +1,14 @@
+{
+  "lessons/week-2/day-08.md": [{"file": "distribution.html", "title": "분포 모양과 이상치가 요약통계를 움직이는 모습", "height": 1100}],
+  "lessons/week-2/day-09.md": [{"file": "pvalue-effect.html", "title": "효과크기·신뢰구간·p-value 다시 뽑기 실험", "height": 1340}],
+  "lessons/week-2/day-10.md": [{"file": "fdr.html", "title": "p-value와 FDR 시뮬레이터 (유전자 1,000개)", "height": 1180}],
+  "lessons/week-2/day-14.md": [{"file": "pca.html", "title": "PCA 점 구름: PC1 방향과 스케일링", "height": 1120}],
+  "lessons/week-3/day-17.md": [{"file": "normalization.html", "title": "RNA 투입량과 housekeeping 정규화", "height": 1150}],
+  "lessons/week-4/day-23.md": [{"file": "sampling-aliasing.html", "title": "표본화 속도와 aliasing", "height": 1010}],
+  "lessons/advanced/C-neural-signals/day-C1.md": [{"file": "sampling-aliasing.html", "title": "표본화 속도와 aliasing", "height": 1010}],
+  "lessons/advanced/C-neural-signals/day-C2.md": [{"file": "filter-spectrum.html", "title": "필터: 시간 파형·power spectrum·위상 지연", "height": 1320}],
+  "lessons/advanced/C-neural-signals/day-C3.md": [{"file": "filter-spectrum.html", "title": "필터: 시간 파형·power spectrum·위상 지연", "height": 1320}],
+  "lessons/week-5/day-33.md": [{"file": "leakage.html", "title": "참가자 누수: 행 단위 vs 참가자 단위 분할", "height": 1320}],
+  "lessons/week-5/day-34.md": [{"file": "roc.html", "title": "기준값, confusion matrix, ROC와 유병률", "height": 1330}],
+  "lessons/advanced/D-fmri/day-D4.md": [{"file": "hrf-glm.html", "title": "HRF convolution과 GLM 적합", "height": 1210}]
+}

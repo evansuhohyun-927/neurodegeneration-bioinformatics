@@ -1,0 +1,186 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>필터와 power spectrum</title><style>:root{--bg:#ffffff;--fg:#1f2328;--muted:#57606a;--grid:#d0d7de;--panel:#f6f8fa;--accent:#0b5cad;
+--c1:#1f63c6;--c2:#c2410c;--c3:#047857;--c4:#b91c1c;--c5:#6d28d9;--fill1:rgba(31,99,198,.18);--fill2:rgba(194,65,12,.18);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;padding:12px 16px 16px;max-width:960px;margin:0 auto;overflow-x:hidden}
+h1{font-size:1.1rem;margin:0 0 4px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.controls label{display:flex;flex-direction:column;font-size:.88rem;gap:2px}
+.controls label.inline{flex-direction:row;align-items:center;gap:6px}
+.controls output{font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.88rem;color:var(--fg);background:var(--bg);border:1px solid var(--grid);border-radius:6px;padding:4px 10px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plot{width:100%;margin:6px 0}
+.plot canvas{display:block;width:100%;touch-action:pan-y}
+.cap{font-size:.82rem;color:var(--muted);margin:0 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin:8px 0}
+.stat{background:var(--panel);border:1px solid var(--grid);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--grid);padding:4px 6px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--panel)}
+.tablewrap{overflow-x:auto}
+.note{font-size:.88rem;background:var(--panel);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0}
+.observe{margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+.observe h2{font-size:.95rem;margin:0 0 4px}
+.observe ol{margin:0;padding-left:1.3em;font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;margin:2px 0}
+.legend span{white-space:nowrap}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
+</style></head><body>
+<h1>필터는 시간과 주파수에서 무엇을 바꾸나</h1>
+<p class="lead">여러 주파수가 섞인 4초짜리 신호(fs = 256 Hz)에 FIR 필터를 걸어 봅니다. 차단 주파수와 커널 길이를 바꾸며 시간 영역 파형과 power spectrum이 함께 어떻게 변하는지, 한 방향 필터의 지연과 filtfilt의 차이를 비교하세요.</p>
+<div class="controls">
+  <label class="inline"><input type="checkbox" id="drift" checked> 느린 drift (0.3 Hz)</label>
+  <label class="inline"><input type="checkbox" id="fast" checked> 40 Hz 성분</label>
+  <label class="inline"><input type="checkbox" id="line" checked> 60 Hz 전원 잡음</label>
+  <label>무작위 잡음 세기: <output for="noise"></output><input type="range" id="noise" min="0" max="1" step="0.05" value="0.3"></label>
+  <label>필터 종류<select id="type"><option value="band">대역 통과 (band-pass)</option><option value="low">저역 통과 (low-pass)</option><option value="high">고역 통과 (high-pass)</option></select></label>
+  <label id="lowlab">아래 차단 주파수: <output for="f1"></output><input type="range" id="f1" min="0.5" max="60" step="0.5" value="8"></label>
+  <label id="highlab">위 차단 주파수: <output for="f2"></output><input type="range" id="f2" min="1" max="120" step="0.5" value="12"></label>
+  <label>FIR 커널 길이 (numtaps): <output for="taps"></output><input type="range" id="taps" min="21" max="301" step="10" value="251"></label>
+  <label>거는 방식<select id="mode"><option value="one">한 방향 (lfilter)</option><option value="ff">앞뒤로 (filtfilt)</option></select></label>
+  <div class="btns"><button id="again">잡음 다시 뽑기</button></div>
+</div>
+<div class="stats" id="stats"></div>
+<p class="cap">시간 영역 (0–4초). 2초에 봉우리가 있는 10 Hz 폭발(burst)이 "보고 싶은 사건"입니다.</p>
+<div class="legend"><span style="color:var(--muted)">─ 원 신호</span><span style="color:var(--c3)">┅ 깨끗한 10 Hz 폭발 (정답)</span><span style="color:var(--c1)">━ 필터 결과</span></div>
+<div class="plot"><canvas id="cv1" role="img" aria-label="필터 전후 시간 파형"></canvas></div>
+<p class="cap">power spectrum (dB, Hann 창 periodogram)과 필터의 통과 비율. 음영 = 통과 대역.</p>
+<div class="legend"><span style="color:var(--muted)">─ 원 신호</span><span style="color:var(--c1)">━ 필터 결과</span><span style="color:var(--c4)">┅ 통과 비율 (오른쪽 축, 0–1)</span></div>
+<div class="plot"><canvas id="cv2" role="img" aria-label="필터 전후 power spectrum"></canvas></div>
+<div class="observe"><h2>관찰할 것</h2><ol>
+<li>8–12 Hz 대역 통과, 251개, 한 방향이면 결과가 (251−1)/2 = 125표본 ≈ 488 ms 늦게 나옵니다. filtfilt로 바꾸면 지연이 0이 되지만 통과 비율이 제곱되어 경계 밖이 더 세게 깎입니다(심화 C2).</li>
+<li>커널 길이를 21로 줄이면 지연은 짧아지지만 스펙트럼의 경계가 무뎌져 40 Hz·60 Hz가 덜 걸러집니다. "긴 커널 = 날카로운 경계 + 큰 지연"입니다.</li>
+<li>시간 그래프에서는 잡음에 묻힌 리듬도 스펙트럼에서는 봉우리로 보입니다(Day 23). 차단 주파수를 잘못 잡으면 보고 싶은 10 Hz까지 지워지니, 필터 종류·길이·대역을 꼭 기록하세요.</li>
+</ol></div>
+<script data-calc>// ---- 공통 계산 함수 (DOM 없음: Node에서 그대로 검산 가능) ----
+// seed 가능한 PRNG (mulberry32) + Box-Muller 정규 난수
+function mulberry32(seed){let a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+function makeRng(seed){const u=mulberry32(seed);let spare=null;
+  return{uniform:u,normal(m=0,s=1){if(spare!==null){const z=spare;spare=null;return m+s*z;}
+    let a;do{a=u();}while(a<=1e-12);const b=u(),r=Math.sqrt(-2*Math.log(a));spare=r*Math.sin(2*Math.PI*b);return m+s*r*Math.cos(2*Math.PI*b);},
+    shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(u()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}};}
+function newSeed(){return Math.floor(Math.random()*2**31);}
+function mean(a){let s=0;for(const x of a)s+=x;return s/a.length;}
+function variance(a){const m=mean(a);let s=0;for(const x of a)s+=(x-m)**2;return s/(a.length-1);} // ddof=1
+function sd(a){return Math.sqrt(variance(a));}
+// numpy.percentile 기본(linear) 방식과 같은 분위수
+function quantile(a,q){const s=Float64Array.from(a).sort();const h=(s.length-1)*q,lo=Math.floor(h),hi=Math.min(lo+1,s.length-1);return s[lo]+(h-lo)*(s[hi]-s[lo]);}
+
+// ---- 실수 신호의 DFT: numpy.fft.rfft 와 같은 값 (re, im) ----
+// 길이가 2의 거듭제곱이면 radix-2 FFT, 아니면 직접 DFT(O(N²), 길이 수천 이하에서만 사용)
+function rfft(x){const N=x.length,K=Math.floor(N/2)+1;
+  if((N&(N-1))===0){const re=Float64Array.from(x),im=new Float64Array(N);
+    for(let i=1,j=0;i<N;i++){let b=N>>1;for(;j&b;b>>=1)j^=b;j^=b;if(i<j){[re[i],re[j]]=[re[j],re[i]];}}
+    for(let len=2;len<=N;len<<=1){const ang=-2*Math.PI/len;for(let i=0;i<N;i+=len)for(let k=0;k<len/2;k++){const c=Math.cos(ang*k),s=Math.sin(ang*k),a=i+k,b=a+len/2;
+      const tr=re[b]*c-im[b]*s,ti=re[b]*s+im[b]*c;re[b]=re[a]-tr;im[b]=im[a]-ti;re[a]+=tr;im[a]+=ti;}}
+    return{re:re.slice(0,K),im:im.slice(0,K)};}
+  const re=new Float64Array(K),im=new Float64Array(K);
+  for(let k=0;k<K;k++){let sr=0,si=0;const w=-2*Math.PI*k/N;for(let n=0;n<N;n++){sr+=x[n]*Math.cos(w*n);si+=x[n]*Math.sin(w*n);}re[k]=sr;im[k]=si;}
+  return{re,im};}
+function rfftfreq(N,fs){return Array.from({length:Math.floor(N/2)+1},(_,k)=>k*fs/N);}
+function power(x){const {re,im}=rfft(x);return Array.from(re,(r,k)=>r*r+im[k]*im[k]);}
+
+const FS=256,N=1024;
+function makeSignal(seed,{drift,fast,line,noise}){const r=makeRng(seed),x=new Float64Array(N),burst=new Float64Array(N);
+  for(let i=0;i<N;i++){const t=i/FS;burst[i]=Math.exp(-((t-2)**2)/(2*0.15**2))*Math.sin(2*Math.PI*10*t);
+    x[i]=burst[i]+(drift?1.0*Math.sin(2*Math.PI*0.3*t+0.5):0)+(fast?0.5*Math.sin(2*Math.PI*40*t):0)+(line?0.4*Math.sin(2*Math.PI*60*t+1):0)+r.normal(0,noise);}
+  return{x,burst};}
+function sinc(v){return v===0?1:Math.sin(Math.PI*v)/(Math.PI*v);}
+// scipy.signal.firwin (hamming 창, scale=True)과 같은 계산
+function firwin(numtaps,cutoff,passZero,fs){const nyq=fs/2,c=cutoff.map(v=>v/nyq),passNyq=((c.length&1)===1)!==passZero;
+  if(passNyq&&numtaps%2===0)throw new Error('짝수 numtaps로는 Nyquist를 통과시킬 수 없음');
+  const edges=[...(passZero?[0]:[]),...c,...(passNyq?[1]:[])],bands=[];for(let i=0;i<edges.length;i+=2)bands.push([edges[i],edges[i+1]]);
+  const al=(numtaps-1)/2,h=new Float64Array(numtaps);
+  for(let n=0;n<numtaps;n++){const m=n-al;let v=0;for(const [l,rr] of bands)v+=rr*sinc(rr*m)-l*sinc(l*m);h[n]=v*(0.54-0.46*Math.cos(2*Math.PI*n/(numtaps-1)));}
+  const [l,rr]=bands[0],sf=l===0?0:rr===1?1:(l+rr)/2;let s=0;for(let n=0;n<numtaps;n++)s+=h[n]*Math.cos(Math.PI*(n-al)*sf);for(let n=0;n<numtaps;n++)h[n]/=s;return h;}
+// lfilter(b, 1, x, zi): FIR, 전치 직접형 II 상태 사용
+function lfilterFIR(b,x,zi){const M=b.length,z=zi?Float64Array.from(zi):new Float64Array(M-1),y=new Float64Array(x.length);
+  for(let n=0;n<x.length;n++){const xn=x[n];y[n]=b[0]*xn+(M>1?z[0]:0);for(let k=0;k<M-2;k++)z[k]=b[k+1]*xn+z[k+1];if(M>1)z[M-2]=b[M-1]*xn;}return y;}
+// scipy.signal.filtfilt(b, 1, x) 기본값(padtype='odd', padlen=3*numtaps)과 같은 계산
+function filtfiltFIR(b,x){const M=b.length,edge=3*M,n=x.length;if(n<=edge)throw new Error('신호가 너무 짧음');
+  const ext=new Float64Array(n+2*edge);for(let i=0;i<edge;i++)ext[i]=2*x[0]-x[edge-i];ext.set(x,edge);for(let i=0;i<edge;i++)ext[edge+n+i]=2*x[n-1]-x[n-2-i];
+  const zi=new Float64Array(M-1);for(let k=M-2,acc=0;k>=0;k--){acc+=b[k+1];zi[k]=acc;}
+  let y=lfilterFIR(b,ext,zi.map(v=>v*ext[0]));y.reverse();y=lfilterFIR(b,y,zi.map(v=>v*y[0]));y.reverse();return y.slice(edge,edge+n);}
+function freqGain(b,f,fs){let re=0,im=0;for(let n=0;n<b.length;n++){const w=-2*Math.PI*f*n/fs;re+=b[n]*Math.cos(w);im+=b[n]*Math.sin(w);}return Math.hypot(re,im);}
+function hannPeriodogramDb(x){const n=x.length,w=Array.from(x,(v,i)=>v*(0.5-0.5*Math.cos(2*Math.PI*i/n)));return power(w).map(p=>10*Math.log10(p+1e-12));}
+// 교차상관이 가장 큰 지연(표본 수): y가 ref보다 몇 표본 늦는가
+function lagOf(y,ref,maxLag){let best=0,bv=-Infinity;for(let L=-maxLag;L<=maxLag;L++){let s=0;for(let i=Math.max(0,L);i<Math.min(y.length,ref.length+L);i++)s+=y[i]*ref[i-L];if(s>bv){bv=s;best=L;}}return best;}
+</script>
+<script>// ---- 공통 화면 도우미 ----
+(function(){const q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')document.documentElement.dataset.theme=q;})();
+function C(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function $(id){return document.getElementById(id);}
+function val(id){const e=$(id);return e.type==='checkbox'?e.checked:(e.type==='range'||e.type==='number')?+e.value:e.value;}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function fmtP(p){return p<1e-4?'< 0.0001':p.toFixed(4);}
+function setupCanvas(id,h){const cv=$(id),w=Math.max(240,cv.parentElement.clientWidth),r=window.devicePixelRatio||1;
+  cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,w,h);
+  ctx.font='12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';return{ctx,w,h,cv};}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)/(d1-d0)*(r1-r0);}
+function ticks(lo,hi,n=5){const raw=(hi-lo)/n,p=10**Math.floor(Math.log10(raw)),m=raw/p,st=(m<1.5?1:m<3.5?2:m<7.5?5:10)*p,out=[];
+  for(let v=Math.ceil(lo/st-1e-9)*st;v<=hi+1e-9*st;v+=st)out.push(Math.abs(v)<st*1e-9?0:v);return out;}
+function txt(ctx,s,x,y,o={}){ctx.save();ctx.fillStyle=o.color||C('fg');ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.size||o.bold)ctx.font=(o.bold?'600 ':'')+(o.size||12)+'px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(o.rot){ctx.translate(x,y);ctx.rotate(o.rot);ctx.fillText(s,0,0);}else ctx.fillText(s,x,y);ctx.restore();}
+// 축 그리기: box={l,r,t,b} 픽셀, xr/yr=[min,max]. 반환: sx, sy 변환 함수
+function axes(ctx,box,xr,yr,o={}){const sx=lin(xr[0],xr[1],box.l,box.r),sy=lin(yr[0],yr[1],box.b,box.t);
+  ctx.save();ctx.strokeStyle=C('grid');ctx.lineWidth=1;ctx.fillStyle=C('muted');ctx.font='11px -apple-system,sans-serif';
+  if(!o.noX){ctx.textAlign='center';ctx.textBaseline='top';for(const v of (o.xt||ticks(xr[0],xr[1],o.nx||5))){const x=sx(v);ctx.beginPath();ctx.moveTo(x,box.t);ctx.lineTo(x,box.b);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fx||(v=>+v.toPrecision(6)))(v),x,box.b+3);}}
+  if(!o.noY){ctx.textAlign='right';ctx.textBaseline='middle';for(const v of (o.yt||ticks(yr[0],yr[1],o.ny||4))){const y=sy(v);ctx.beginPath();ctx.moveTo(box.l,y);ctx.lineTo(box.r,y);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fy||(v=>+v.toPrecision(6)))(v),box.l-4,y);}}
+  ctx.strokeStyle=C('muted');ctx.strokeRect(box.l,box.t,box.r-box.l,box.b-box.t);ctx.restore();
+  if(o.xlab)txt(ctx,o.xlab,(box.l+box.r)/2,box.b+30,{align:'center',color:C('muted'),size:12});
+  if(o.ylab)txt(ctx,o.ylab,12,(box.t+box.b)/2,{align:'center',base:'middle',color:C('muted'),size:12,rot:-Math.PI/2});
+  return{sx,sy};}
+// 모양 표식: 색만으로 구분하지 않도록 circle / tri / square / cross / diamond
+function mark(ctx,shape,x,y,r,color,filled=true){ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.6;ctx.beginPath();
+  if(shape==='circle')ctx.arc(x,y,r,0,2*Math.PI);
+  else if(shape==='tri'){ctx.moveTo(x,y-r*1.2);ctx.lineTo(x+r*1.1,y+r*0.8);ctx.lineTo(x-r*1.1,y+r*0.8);ctx.closePath();}
+  else if(shape==='square')ctx.rect(x-r*.9,y-r*.9,r*1.8,r*1.8);
+  else if(shape==='diamond'){ctx.moveTo(x,y-r*1.3);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*1.3);ctx.lineTo(x-r,y);ctx.closePath();}
+  else if(shape==='cross'){ctx.moveTo(x-r,y-r);ctx.lineTo(x+r,y+r);ctx.moveTo(x+r,y-r);ctx.lineTo(x-r,y+r);ctx.lineWidth=2.2;ctx.stroke();ctx.restore();return;}
+  if(filled){ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1;}ctx.stroke();ctx.restore();}
+function line(ctx,pts,color,w=1.5,dash){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;if(dash)ctx.setLineDash(dash);ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
+// 슬라이더 값 표시 + 변경 시 콜백
+function bind(ids,fn,show={}){for(const id of ids){const e=$(id),o=document.querySelector(`output[for="${id}"]`);
+  const upd=()=>{if(o)o.textContent=show[id]?show[id](val(id)):e.value;};upd();e.addEventListener('input',()=>{upd();fn(id);});e.addEventListener('change',()=>{upd();fn(id);});}}
+// 다시 그리기: 창 크기·테마 변화 때. iframe 부모에 실제 높이를 알려 준다({type:'viz-height'}).
+function redrawOn(fn){let q=0;const run=()=>{q=0;fn();if(parent!==window)parent.postMessage({type:'viz-height',height:document.documentElement.scrollHeight},'*');};
+  const later=()=>{if(!q)q=requestAnimationFrame(run);};addEventListener('resize',later);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',later);run();return later;}
+
+let seed=newSeed();
+function draw(){const type=val('type');let f1=val('f1'),f2=val('f2');$('lowlab').style.display=type==='low'?'none':'';$('highlab').style.display=type==='high'?'none':'';
+  if(type==='band'&&f2<=f1+0.5){f2=f1+1;$('f2').value=f2;document.querySelector('output[for="f2"]').textContent=f2+' Hz';}
+  const taps=val('taps'),ff=val('mode')==='ff',S=makeSignal(seed,{drift:val('drift'),fast:val('fast'),line:val('line'),noise:val('noise')});
+  const cut=type==='low'?[f2]:type==='high'?[f1]:[f1,f2],b=firwin(taps,cut,type==='low',FS),y=ff?filtfiltFIR(b,S.x):lfilterFIR(b,S.x);
+  const g=f=>{const v=freqGain(b,f,FS);return ff?v*v:v;},g10=g(10),lag=g10>0.3?lagOf(y,S.burst,300):NaN;
+  $('stats').innerHTML=[['통과 대역',type==='low'?`0 – ${f2} Hz`:type==='high'?`${f1} Hz 이상`:`${f1} – ${f2} Hz`],['이론 지연',ff?'0 ms (앞뒤 상쇄)':`${(taps-1)/2}표본 = ${fmt(1000*(taps-1)/2/FS,0)} ms`],
+    ['측정 지연 (교차상관)',Number.isFinite(lag)?`${lag}표본 = ${fmt(1000*lag/FS,0)} ms`:'10 Hz가 걸러져 측정 불가'],['통과 비율 10 Hz',fmt(g10,3)],['40 Hz',fmt(g(40),3)],['60 Hz',fmt(g(60),3)]]
+    .map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+  {const {ctx,w,h}=setupCanvas('cv1',230),box={l:34,r:w-10,t:8,b:h-36},m=Math.max(2,...S.x.map(Math.abs))*1.05,{sx,sy}=axes(ctx,box,[0,4],[-m,m],{xlab:'시간 (초)',ny:4});
+   const step=Math.max(1,Math.floor(N/(box.r-box.l)/1.5)),P=a=>{const p=[];for(let i=0;i<N;i+=step)p.push([sx(i/FS),sy(a[i])]);return p;};
+   line(ctx,P(S.x),C('muted'),1);line(ctx,P(S.burst),C('c3'),2,[5,4]);line(ctx,P(y),C('c1'),2);line(ctx,[[sx(2),box.t],[sx(2),box.b]],C('c3'),1,[2,3]);
+   if(!ff&&Number.isFinite(lag)){const x2=sx(2+lag/FS);line(ctx,[[x2,box.t],[x2,box.b]],C('c1'),1,[2,3]);txt(ctx,`+${fmt(1000*lag/FS,0)} ms`,x2+3,box.t+12,{color:C('c1'),bold:1,size:11});}}
+  {const {ctx,w,h}=setupCanvas('cv2',230),box={l:40,r:w-34,t:8,b:h-36},px=hannPeriodogramDb(S.x),py=hannPeriodogramDb(y),fr=rfftfreq(N,FS),top=Math.max(...px)+5,bot=top-90;
+   const {sx,sy}=axes(ctx,box,[0,FS/2],[bot,top],{xlab:'주파수 (Hz)',ylab:'dB',ny:4,fy:v=>v.toFixed(0)});
+   const lo=type==='low'?0:f1,hi=type==='high'?FS/2:f2;ctx.fillStyle=C('fill2');ctx.fillRect(sx(lo),box.t,sx(hi)-sx(lo),box.b-box.t);
+   const cl=v=>Math.max(bot,v);line(ctx,px.map((v,i)=>[sx(fr[i]),sy(cl(v))]),C('muted'),1);line(ctx,py.map((v,i)=>[sx(fr[i]),sy(cl(v))]),C('c1'),1.6);
+   const sg=lin(0,1.05,box.b,box.t),gp=[];for(let f=0;f<=FS/2;f+=0.5)gp.push([sx(f),sg(g(f))]);line(ctx,gp,C('c4'),2,[6,3]);
+   ctx.fillStyle=C('c4');ctx.font='11px sans-serif';ctx.textAlign='left';ctx.textBaseline='middle';for(const v of [0,0.5,1])ctx.fillText(v,box.r+4,sg(v));}}
+bind(['drift','fast','line','noise','type','f1','f2','taps','mode'],()=>later(),{f1:v=>v+' Hz',f2:v=>v+' Hz'});
+$('again').onclick=()=>{seed=newSeed();later();};
+const later=redrawOn(draw);
+</script></body></html>

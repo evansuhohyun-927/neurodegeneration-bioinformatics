@@ -22,6 +22,7 @@
 실험 프로토콜에는 이런 문장이 흔합니다. "RNA 농도가 50 ng/µL 이상이면 다음 단계로, 아니면 다시 추출." 상황에 따라 할 일이 달라지는 것이죠. 코드에서 이 역할을 하는 것이 조건문(conditional)입니다.
 
 ```python
+expression = 12.5   # 예: 어떤 유전자의 발현값
 if expression > 10:
     print("발현이 높다")
 else:
@@ -37,6 +38,7 @@ else:
 96-well 플레이트의 well마다 같은 시약을 넣어야 한다면, 한 칸씩 96번 반복하는 대신 멀티채널 피펫을 씁니다. 같은 동작을 여러 대상에 되풀이하는 것, 이것이 반복문(loop)입니다.
 
 ```python
+genes = ["Gfap", "Aif1", "Tnf"]   # 예: 유전자 이름 리스트
 for gene in genes:
     print(gene)
 ```

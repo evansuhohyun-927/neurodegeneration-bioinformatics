@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250" role="img" aria-labelledby="analysis-pipeline-t analysis-pipeline-d">
+<title id="analysis-pipeline-t">OSD-536 분석 흐름</title>
+<desc id="analysis-pipeline-d">3주차 분석은 다섯 단계로 이어진다. Day 16 원시 count 행렬, Day 17 QC(Negative 대조로 검출 기준, Positive 대조는 점검용), Day 17 housekeeping 기하평균 정규화와 log2 변환, Day 18 유전자마다 Welch t-test와 BH FDR 보정으로 만든 차등발현 표, Day 20 검정한 패널 유전자를 배경으로 한 pathway ORA 해석.</desc>
+<defs>
+<marker id="analysis-pipeline-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<text class="d-text d-strong" x="360" y="28" font-size="15" text-anchor="middle">3주차 분자 분석의 흐름</text>
+<rect class="d-node" x="12" y="50" width="118" height="150" rx="8"/>
+<text class="d-sub" x="71" y="74" font-size="12" text-anchor="middle">Day 16</text>
+<text class="d-text d-strong" x="71" y="100" font-size="14" text-anchor="middle">원시 count</text>
+<text class="d-sub" x="71" y="126" font-size="12" text-anchor="middle">RCC 파일 12개</text>
+<text class="d-sub" x="71" y="146" font-size="12" text-anchor="middle">→ 샘플 × 프로브</text>
+<text class="d-sub" x="71" y="166" font-size="12" text-anchor="middle">행렬</text>
+<rect class="d-a" x="156" y="50" width="118" height="150" rx="8"/>
+<text class="d-sub" x="215" y="74" font-size="12" text-anchor="middle">Day 17</text>
+<text class="d-text d-strong" x="215" y="100" font-size="14" text-anchor="middle">QC</text>
+<text class="d-sub" x="215" y="126" font-size="12" text-anchor="middle">검출 기준:</text>
+<text class="d-sub" x="215" y="146" font-size="12" text-anchor="middle">Neg 평균 + 2SD</text>
+<text class="d-sub" x="215" y="166" font-size="12" text-anchor="middle">Positive는 점검용</text>
+<rect class="d-a" x="300" y="50" width="118" height="150" rx="8"/>
+<text class="d-sub" x="359" y="74" font-size="12" text-anchor="middle">Day 17</text>
+<text class="d-text d-strong" x="359" y="100" font-size="14" text-anchor="middle">정규화 + log2</text>
+<text class="d-sub" x="359" y="126" font-size="12" text-anchor="middle">housekeeping</text>
+<text class="d-sub" x="359" y="146" font-size="12" text-anchor="middle">기하평균으로 나눔</text>
+<text class="d-sub" x="359" y="166" font-size="12" text-anchor="middle">log2(값 + 1)</text>
+<rect class="d-b" x="444" y="50" width="118" height="150" rx="8"/>
+<text class="d-sub" x="503" y="74" font-size="12" text-anchor="middle">Day 18</text>
+<text class="d-text d-strong" x="503" y="100" font-size="14" text-anchor="middle">차등발현 표</text>
+<text class="d-sub" x="503" y="126" font-size="12" text-anchor="middle">Welch t-test</text>
+<text class="d-sub" x="503" y="146" font-size="12" text-anchor="middle">log2FC (FLT − GC)</text>
+<text class="d-sub" x="503" y="166" font-size="12" text-anchor="middle">BH FDR 보정</text>
+<rect class="d-c" x="588" y="50" width="118" height="150" rx="8"/>
+<text class="d-sub" x="647" y="74" font-size="12" text-anchor="middle">Day 20</text>
+<text class="d-text d-strong" x="647" y="100" font-size="14" text-anchor="middle">pathway 해석</text>
+<text class="d-sub" x="647" y="126" font-size="12" text-anchor="middle">ORA</text>
+<text class="d-sub" x="647" y="146" font-size="12" text-anchor="middle">배경 = 검정한</text>
+<text class="d-sub" x="647" y="166" font-size="12" text-anchor="middle">패널 유전자</text>
+<line class="d-line" x1="130" y1="125" x2="154" y2="125" marker-end="url(#analysis-pipeline-arrow)"/>
+<line class="d-line" x1="274" y1="125" x2="298" y2="125" marker-end="url(#analysis-pipeline-arrow)"/>
+<line class="d-line" x1="418" y1="125" x2="442" y2="125" marker-end="url(#analysis-pipeline-arrow)"/>
+<line class="d-line" x1="562" y1="125" x2="586" y2="125" marker-end="url(#analysis-pipeline-arrow)"/>
+<text class="d-sub" x="360" y="232" font-size="12" text-anchor="middle">교육용 탐색 분석 · 원 논문(nSolver, Positive 대조 정규화)과 방법이 다르다</text>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="ncounter-structure-t ncounter-structure-d">
+<title id="ncounter-structure-t">nCounter 데이터 구조</title>
+<desc id="ncounter-structure-d">count 행렬은 행이 샘플 12개, 열이 프로브 784개다. 열은 Endogenous 측정 대상 757개, Housekeeping 13개, Positive 대조 6개, Negative 대조 8개로 나뉜다. 행렬의 sample ID는 샘플 표의 Sample Name과 ID 열로 이어 군 정보(Space Flight 또는 Ground Control)를 붙인다. 행 순서로 붙이면 안 된다.</desc>
+<defs>
+<marker id="ncounter-structure-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<text class="d-text d-strong" x="16" y="26" font-size="15">count 행렬: 행 = 샘플, 열 = 프로브</text>
+<rect class="d-node" x="16" y="40" width="96" height="52" rx="8"/>
+<text class="d-sub" x="64" y="71" font-size="12" text-anchor="middle">sample ID</text>
+<rect class="d-a" x="116" y="40" width="210" height="52" rx="8"/>
+<text class="d-text d-strong" x="221" y="62" font-size="14" text-anchor="middle">Endogenous</text>
+<text class="d-sub" x="221" y="81" font-size="12" text-anchor="middle">측정 대상 유전자 757개</text>
+<rect class="d-b" x="330" y="40" width="118" height="52" rx="8"/>
+<text class="d-text d-strong" x="389" y="62" font-size="13" text-anchor="middle">Housekeeping</text>
+<text class="d-sub" x="389" y="81" font-size="12" text-anchor="middle">기준 유전자 13개</text>
+<rect class="d-c" x="452" y="40" width="118" height="52" rx="8"/>
+<text class="d-text d-strong" x="511" y="62" font-size="13" text-anchor="middle">Positive 대조</text>
+<text class="d-sub" x="511" y="81" font-size="12" text-anchor="middle">정해진 양 6개</text>
+<rect class="d-d" x="574" y="40" width="130" height="52" rx="8"/>
+<text class="d-text d-strong" x="639" y="62" font-size="13" text-anchor="middle">Negative 대조</text>
+<text class="d-sub" x="639" y="81" font-size="12" text-anchor="middle">배경 잡음 8개</text>
+<rect class="d-node" x="16" y="96" width="96" height="28" rx="8"/>
+<text class="d-text" x="64" y="115" font-size="13" text-anchor="middle">ID_01</text>
+<rect class="d-node" x="116" y="96" width="210" height="28" rx="8"/>
+<rect class="d-node" x="330" y="96" width="118" height="28" rx="8"/>
+<rect class="d-node" x="452" y="96" width="118" height="28" rx="8"/>
+<rect class="d-node" x="574" y="96" width="130" height="28" rx="8"/>
+<text class="d-sub" x="221" y="114" font-size="12" text-anchor="middle">정수 count</text>
+<rect class="d-node" x="16" y="128" width="96" height="28" rx="8"/>
+<text class="d-text" x="64" y="147" font-size="13" text-anchor="middle">ID_02</text>
+<rect class="d-node" x="116" y="128" width="210" height="28" rx="8"/>
+<rect class="d-node" x="330" y="128" width="118" height="28" rx="8"/>
+<rect class="d-node" x="452" y="128" width="118" height="28" rx="8"/>
+<rect class="d-node" x="574" y="128" width="130" height="28" rx="8"/>
+<text class="d-sub" x="221" y="146" font-size="12" text-anchor="middle">정수 count</text>
+<text class="d-text" x="64" y="174" font-size="14" text-anchor="middle">⋮</text>
+<text class="d-text" x="221" y="174" font-size="14" text-anchor="middle">⋮</text>
+<rect class="d-node" x="16" y="182" width="96" height="28" rx="8"/>
+<text class="d-text" x="64" y="201" font-size="13" text-anchor="middle">ID_12</text>
+<rect class="d-node" x="116" y="182" width="210" height="28" rx="8"/>
+<rect class="d-node" x="330" y="182" width="118" height="28" rx="8"/>
+<rect class="d-node" x="452" y="182" width="118" height="28" rx="8"/>
+<rect class="d-node" x="574" y="182" width="130" height="28" rx="8"/>
+<text class="d-sub" x="221" y="200" font-size="12" text-anchor="middle">정수 count</text>
+<text class="d-sub" x="410" y="230" font-size="12" text-anchor="middle">12행 × 784열 (757 + 13 + 6 + 8) · 대조·기준 열은 정규화와 배경 추정용</text>
+<line class="d-line" x1="64" y1="212" x2="64" y2="282" marker-end="url(#ncounter-structure-arrow)"/>
+<text class="d-text d-strong" x="76" y="258" font-size="13">sample ID로 잇기</text>
+<rect class="d-node" x="16" y="284" width="96" height="28" rx="8"/>
+<text class="d-sub" x="64" y="303" font-size="12" text-anchor="middle">Sample Name</text>
+<rect class="d-node" x="116" y="284" width="210" height="28" rx="8"/>
+<text class="d-sub" x="221" y="303" font-size="12" text-anchor="middle">Factor Value[Spaceflight]</text>
+<rect class="d-node" x="16" y="316" width="96" height="28" rx="8"/>
+<text class="d-text" x="64" y="335" font-size="13" text-anchor="middle">ID_01</text>
+<rect class="d-node" x="116" y="316" width="210" height="28" rx="8"/>
+<text class="d-text" x="221" y="335" font-size="13" text-anchor="middle">Space Flight (FLT)</text>
+<rect class="d-node" x="16" y="348" width="96" height="28" rx="8"/>
+<text class="d-text" x="64" y="367" font-size="13" text-anchor="middle">ID_12</text>
+<rect class="d-node" x="116" y="348" width="210" height="28" rx="8"/>
+<text class="d-text" x="221" y="367" font-size="13" text-anchor="middle">Ground Control (GC)</text>
+<text class="d-sub" x="16" y="398" font-size="12">샘플 표 s_OSD-536.txt · 군당 6개 · ID는 예시 표기</text>
+<rect class="d-node" x="370" y="284" width="334" height="92" rx="8"/>
+<text class="d-text d-good" x="390" y="318" font-size="14">✓ ID 열로 잇는다 (merge)</text>
+<text class="d-text d-bad" x="390" y="346" font-size="14">✕ 행 순서만 믿고 붙이지 않는다</text>
+<text class="d-sub" x="390" y="366" font-size="12">순서가 다르면 오류 없이 군이 뒤섞인다</text>
+</svg>

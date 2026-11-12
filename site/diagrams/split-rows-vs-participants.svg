@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330" role="img" aria-labelledby="split-rows-vs-participants-t split-rows-vs-participants-d">
+<title id="split-rows-vs-participants-t">행 단위 분할과 참가자 단위 분할</title>
+<desc id="split-rows-vs-participants-d">참가자 P1, P2, P3가 각각 측정 4개를 가진다. 왼쪽 KFold처럼 행을 무작위로 나누면 같은 사람의 측정이 학습과 평가에 모두 들어가 참가자 누수가 생긴다. 오른쪽 GroupKFold처럼 참가자 단위로 나누면 평가에는 처음 보는 사람 P3만 남는다.</desc>
+<text class="d-text d-strong d-bad" x="184" y="30" font-size="15" text-anchor="middle">✕ 행 단위 무작위 분할</text>
+<text class="d-sub" x="184" y="48" font-size="12" text-anchor="middle">KFold · 같은 사람이 양쪽에</text>
+<rect class="d-node" x="24" y="62" width="320" height="112" rx="8"/>
+<text class="d-text d-strong" x="36" y="82" font-size="13">학습 (train)</text>
+<rect class="d-a" x="36" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="57" y="112" font-size="13" text-anchor="middle">P1</text>
+<rect class="d-a" x="86" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="107" y="112" font-size="13" text-anchor="middle">P1</text>
+<rect class="d-a" x="136" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="157" y="112" font-size="13" text-anchor="middle">P1</text>
+<rect class="d-b" x="186" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="207" y="112" font-size="13" text-anchor="middle">P2</text>
+<rect class="d-b" x="236" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="257" y="112" font-size="13" text-anchor="middle">P2</text>
+<rect class="d-b" x="286" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="307" y="112" font-size="13" text-anchor="middle">P2</text>
+<rect class="d-c" x="36" y="132" width="42" height="30" rx="8"/>
+<text class="d-text" x="57" y="152" font-size="13" text-anchor="middle">P3</text>
+<rect class="d-c" x="86" y="132" width="42" height="30" rx="8"/>
+<text class="d-text" x="107" y="152" font-size="13" text-anchor="middle">P3</text>
+<rect class="d-c" x="136" y="132" width="42" height="30" rx="8"/>
+<text class="d-text" x="157" y="152" font-size="13" text-anchor="middle">P3</text>
+<rect class="d-node d-bad" x="24" y="188" width="320" height="96" rx="8"/>
+<text class="d-text d-strong" x="36" y="208" font-size="13">평가 (test)</text>
+<rect class="d-a" x="36" y="218" width="42" height="30" rx="8"/>
+<text class="d-text" x="57" y="238" font-size="13" text-anchor="middle">P1</text>
+<rect class="d-b" x="86" y="218" width="42" height="30" rx="8"/>
+<text class="d-text" x="107" y="238" font-size="13" text-anchor="middle">P2</text>
+<rect class="d-c" x="136" y="218" width="42" height="30" rx="8"/>
+<text class="d-text" x="157" y="238" font-size="13" text-anchor="middle">P3</text>
+<text class="d-sub d-bad" x="36" y="272" font-size="12">세 사람 모두 학습에도 있음 → 누수</text>
+<text class="d-text d-strong d-good" x="536" y="30" font-size="15" text-anchor="middle">✓ 참가자 단위 분할</text>
+<text class="d-sub" x="536" y="48" font-size="12" text-anchor="middle">GroupKFold · 한 사람은 한쪽에만</text>
+<rect class="d-node" x="376" y="62" width="320" height="112" rx="8"/>
+<text class="d-text d-strong" x="388" y="82" font-size="13">학습 (train)</text>
+<rect class="d-a" x="388" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="409" y="112" font-size="13" text-anchor="middle">P1</text>
+<rect class="d-a" x="438" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="459" y="112" font-size="13" text-anchor="middle">P1</text>
+<rect class="d-a" x="488" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="509" y="112" font-size="13" text-anchor="middle">P1</text>
+<rect class="d-a" x="538" y="92" width="42" height="30" rx="8"/>
+<text class="d-text" x="559" y="112" font-size="13" text-anchor="middle">P1</text>
+<rect class="d-b" x="388" y="132" width="42" height="30" rx="8"/>
+<text class="d-text" x="409" y="152" font-size="13" text-anchor="middle">P2</text>
+<rect class="d-b" x="438" y="132" width="42" height="30" rx="8"/>
+<text class="d-text" x="459" y="152" font-size="13" text-anchor="middle">P2</text>
+<rect class="d-b" x="488" y="132" width="42" height="30" rx="8"/>
+<text class="d-text" x="509" y="152" font-size="13" text-anchor="middle">P2</text>
+<rect class="d-b" x="538" y="132" width="42" height="30" rx="8"/>
+<text class="d-text" x="559" y="152" font-size="13" text-anchor="middle">P2</text>
+<rect class="d-node d-good" x="376" y="188" width="320" height="96" rx="8"/>
+<text class="d-text d-strong" x="388" y="208" font-size="13">평가 (test)</text>
+<rect class="d-c" x="388" y="218" width="42" height="30" rx="8"/>
+<text class="d-text" x="409" y="238" font-size="13" text-anchor="middle">P3</text>
+<rect class="d-c" x="438" y="218" width="42" height="30" rx="8"/>
+<text class="d-text" x="459" y="238" font-size="13" text-anchor="middle">P3</text>
+<rect class="d-c" x="488" y="218" width="42" height="30" rx="8"/>
+<text class="d-text" x="509" y="238" font-size="13" text-anchor="middle">P3</text>
+<rect class="d-c" x="538" y="218" width="42" height="30" rx="8"/>
+<text class="d-text" x="559" y="238" font-size="13" text-anchor="middle">P3</text>
+<text class="d-sub d-good" x="388" y="272" font-size="12">P3는 처음 보는 사람 → 정직한 점수</text>
+<text class="d-text" x="360" y="314" font-size="14" text-anchor="middle">묻는 것: 처음 보는 사람에게도 통하는가?</text>
+</svg>

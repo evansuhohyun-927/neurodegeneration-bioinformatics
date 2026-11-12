@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 404" role="img" aria-labelledby="advanced-guide-t advanced-guide-d">
+<title id="advanced-guide-t">심화 파트 고르기</title>
+<desc id="advanced-guide-d">필요한 것에 따라 심화 파트를 고른다. Bioconductor 패키지를 쓰려면 A(R과 Bioconductor), 실험실의 MATLAB 코드를 읽고 고치려면 B(MATLAB/Octave), EEG·LFP·spike 같은 신경신호는 C, 뇌 영상 fMRI는 D, 병원 기록으로 임상 질문에 답하려면 E(EHR), 생성 모델·신약 ML·단백질 구조·LLM 검증은 G. 정규과정 뒤에 선택하며 순서는 자유다.</desc>
+<defs>
+<marker id="advanced-guide-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<text class="d-text d-strong" x="32" y="28" font-size="14">이런 것이 필요하면</text>
+<text class="d-text d-strong" x="590" y="28" font-size="14" text-anchor="middle">이 파트로</text>
+<rect class="d-node" x="16" y="44" width="420" height="44" rx="8"/>
+<text class="d-text" x="32" y="71" font-size="14">Bioconductor 패키지를 쓰고 싶다</text>
+<line class="d-line" x1="436" y1="66" x2="474" y2="66" marker-end="url(#advanced-guide-arrow)"/>
+<rect class="d-a" x="476" y="44" width="228" height="44" rx="8"/>
+<text class="d-text d-strong" x="590" y="71" font-size="14" text-anchor="middle">A · R과 Bioconductor</text>
+<rect class="d-node" x="16" y="98" width="420" height="44" rx="8"/>
+<text class="d-text" x="32" y="125" font-size="14">실험실의 MATLAB 코드를 읽고 고친다</text>
+<line class="d-line" x1="436" y1="120" x2="474" y2="120" marker-end="url(#advanced-guide-arrow)"/>
+<rect class="d-a" x="476" y="98" width="228" height="44" rx="8"/>
+<text class="d-text d-strong" x="590" y="125" font-size="14" text-anchor="middle">B · MATLAB/Octave</text>
+<rect class="d-node" x="16" y="152" width="420" height="44" rx="8"/>
+<text class="d-text" x="32" y="179" font-size="14">EEG·LFP·spike 신호 (4주차 다음 단계)</text>
+<line class="d-line" x1="436" y1="174" x2="474" y2="174" marker-end="url(#advanced-guide-arrow)"/>
+<rect class="d-b" x="476" y="152" width="228" height="44" rx="8"/>
+<text class="d-text d-strong" x="590" y="179" font-size="14" text-anchor="middle">C · 신경신호·시간-주파수</text>
+<rect class="d-node" x="16" y="206" width="420" height="44" rx="8"/>
+<text class="d-text" x="32" y="233" font-size="14">뇌 영상 연구를 읽고 분석한다</text>
+<line class="d-line" x1="436" y1="228" x2="474" y2="228" marker-end="url(#advanced-guide-arrow)"/>
+<rect class="d-b" x="476" y="206" width="228" height="44" rx="8"/>
+<text class="d-text d-strong" x="590" y="233" font-size="14" text-anchor="middle">D · fMRI</text>
+<rect class="d-node" x="16" y="260" width="420" height="44" rx="8"/>
+<text class="d-text" x="32" y="287" font-size="14">병원 기록으로 임상 질문에 답한다</text>
+<line class="d-line" x1="436" y1="282" x2="474" y2="282" marker-end="url(#advanced-guide-arrow)"/>
+<rect class="d-c" x="476" y="260" width="228" height="44" rx="8"/>
+<text class="d-text d-strong" x="590" y="287" font-size="14" text-anchor="middle">E · EHR 2차 분석</text>
+<rect class="d-node" x="16" y="314" width="420" height="44" rx="8"/>
+<text class="d-text" x="32" y="341" font-size="14">생성 모델·신약 ML·단백질·LLM (5주차 다음)</text>
+<line class="d-line" x1="436" y1="336" x2="474" y2="336" marker-end="url(#advanced-guide-arrow)"/>
+<rect class="d-d" x="476" y="314" width="228" height="44" rx="8"/>
+<text class="d-text d-strong" x="590" y="341" font-size="14" text-anchor="middle">G · AI·생성형 AI</text>
+<text class="d-sub" x="360" y="388" font-size="12" text-anchor="middle">정규과정을 마친 뒤 선택 · 순서 자유 · 파트마다 7레슨</text>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 380" role="img" aria-labelledby="mouse-human-scope-t mouse-human-scope-d">
+<title id="mouse-human-scope-t">두 데이터의 비교 가능 범위</title>
+<desc id="mouse-human-scope-d">왼쪽은 마우스 OSD-536(뇌 조직 RNA, 발현량, 비행 대 지상 실험), 오른쪽은 사람 PhysioNet PD 데이터(손목·발밑 센서, 가속도와 시간 간격, PD 대 대조군 관찰 연구)다. 같은 개체라는 짝이 없으므로 한 표에 합치거나 상관계수·p값을 함께 계산하는 통계적 결합은 할 수 없다. 허용되는 것은 출판된 문헌을 다리로 한 가설 제안뿐이다.</desc>
+<defs>
+<marker id="mouse-human-scope-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="d-a" x="16" y="30" width="220" height="160" rx="8"/>
+<text class="d-text d-strong" x="126" y="58" font-size="15" text-anchor="middle">마우스 · OSD-536</text>
+<text class="d-text" x="126" y="86" font-size="14" text-anchor="middle">뇌 조직 RNA</text>
+<text class="d-text" x="126" y="108" font-size="14" text-anchor="middle">발현량 (count)</text>
+<text class="d-text" x="126" y="130" font-size="14" text-anchor="middle">실험 연구</text>
+<text class="d-sub" x="126" y="152" font-size="12" text-anchor="middle">비행 vs 지상</text>
+<text class="d-sub" x="126" y="172" font-size="12" text-anchor="middle">outcome: fold change</text>
+<rect class="d-b" x="484" y="30" width="220" height="160" rx="8"/>
+<text class="d-text d-strong" x="594" y="58" font-size="15" text-anchor="middle">사람 · PhysioNet PD</text>
+<text class="d-text" x="594" y="86" font-size="14" text-anchor="middle">손목·발밑 센서</text>
+<text class="d-text" x="594" y="108" font-size="14" text-anchor="middle">가속도·시간 간격</text>
+<text class="d-text" x="594" y="130" font-size="14" text-anchor="middle">관찰 연구</text>
+<text class="d-sub" x="594" y="152" font-size="12" text-anchor="middle">PD vs 대조군</text>
+<text class="d-sub" x="594" y="172" font-size="12" text-anchor="middle">outcome: 운동 feature</text>
+<text class="d-text d-strong d-bad" x="360" y="82" font-size="14" text-anchor="middle">통계적 결합 ✕</text>
+<line class="d-line d-dash d-bad" x1="240" y1="104" x2="480" y2="104"/>
+<circle class="d-node d-bad" cx="360" cy="104" r="13"/>
+<text class="d-text d-bad" x="360" y="109" font-size="14" text-anchor="middle">✕</text>
+<text class="d-sub" x="360" y="138" font-size="12" text-anchor="middle">한 표의 같은 행에 적기</text>
+<text class="d-sub" x="360" y="156" font-size="12" text-anchor="middle">상관계수·p값 합치기</text>
+<text class="d-sub" x="360" y="174" font-size="12" text-anchor="middle">이유: 같은 개체가 아님</text>
+<path class="d-line" d="M126,190 C126,230 200,250 238,262" marker-end="url(#mouse-human-scope-arrow)"/>
+<path class="d-line" d="M594,190 C594,230 520,250 482,262" marker-end="url(#mouse-human-scope-arrow)"/>
+<rect class="d-c" x="160" y="264" width="400" height="96" rx="8"/>
+<text class="d-text d-strong d-good" x="360" y="292" font-size="15" text-anchor="middle">✓ 문헌 기반 가설만</text>
+<text class="d-text" x="360" y="318" font-size="14" text-anchor="middle">공통 기전(염증·산화스트레스)을 문헌으로 잇기</text>
+<text class="d-sub" x="360" y="342" font-size="12" text-anchor="middle">결론은 "~이다"가 아니라 "~라는 가설을 제안한다"</text>
+</svg>

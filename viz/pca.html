@@ -1,0 +1,171 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PCA 점 구름</title><style>:root{--bg:#ffffff;--fg:#1f2328;--muted:#57606a;--grid:#d0d7de;--panel:#f6f8fa;--accent:#0b5cad;
+--c1:#1f63c6;--c2:#c2410c;--c3:#047857;--c4:#b91c1c;--c5:#6d28d9;--fill1:rgba(31,99,198,.18);--fill2:rgba(194,65,12,.18);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;padding:12px 16px 16px;max-width:960px;margin:0 auto;overflow-x:hidden}
+h1{font-size:1.1rem;margin:0 0 4px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.controls label{display:flex;flex-direction:column;font-size:.88rem;gap:2px}
+.controls label.inline{flex-direction:row;align-items:center;gap:6px}
+.controls output{font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.88rem;color:var(--fg);background:var(--bg);border:1px solid var(--grid);border-radius:6px;padding:4px 10px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plot{width:100%;margin:6px 0}
+.plot canvas{display:block;width:100%;touch-action:pan-y}
+.cap{font-size:.82rem;color:var(--muted);margin:0 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin:8px 0}
+.stat{background:var(--panel);border:1px solid var(--grid);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--grid);padding:4px 6px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--panel)}
+.tablewrap{overflow-x:auto}
+.note{font-size:.88rem;background:var(--panel);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0}
+.observe{margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+.observe h2{font-size:.95rem;margin:0 0 4px}
+.observe ol{margin:0;padding-left:1.3em;font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;margin:2px 0}
+.legend span{white-space:nowrap}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
+</style></head><body>
+<h1>PCA는 어느 방향을 PC1으로 고를까</h1>
+<p class="lead">유전자 3개(A, B, C)로 이루어진 3차원 점 구름입니다. 왼쪽 그림을 끌거나 회전 슬라이더로 돌려 보며, PCA가 고른 PC1·PC2 방향과 설명 분산 비율이 데이터와 스케일링(표준화)에 따라 어떻게 바뀌는지 보세요.</p>
+<div class="controls">
+  <label>A와 B의 상관: <output for="corr"></output><input type="range" id="corr" min="0" max="0.95" step="0.05" value="0.6"></label>
+  <label>FLT군의 이동 (A·B 방향): <output for="shift"></output><input type="range" id="shift" min="0" max="3" step="0.1" value="1.5"></label>
+  <label>유전자 C의 단위 배율: <output for="cscale"></output><input type="range" id="cscale" min="1" max="10" step="0.5" value="1"></label>
+  <label class="inline"><input type="checkbox" id="scale" checked> 유전자별 표준화(z-score) 후 PCA</label>
+  <label class="inline"><input type="checkbox" id="outlier"> 품질 나쁜 샘플 1개 넣기</label>
+  <label>좌우 회전: <output for="yaw"></output><input type="range" id="yaw" min="-180" max="180" step="1" value="35"></label>
+  <label>위아래 회전: <output for="pitch"></output><input type="range" id="pitch" min="-90" max="90" step="1" value="20"></label>
+  <div class="btns"><button id="again">다시 뽑기</button></div>
+</div>
+<div class="legend"><span style="color:var(--c1)">● GC</span><span style="color:var(--c2)">▲ FLT</span><span style="color:var(--c4)">✕ 품질 나쁜 샘플</span><span style="color:var(--c4)">━ PC1</span><span style="color:var(--c5)">┅ PC2</span></div>
+<div class="two">
+  <div><p class="cap">3차원 점 구름 (PCA에 들어가는 값: 중심을 0으로 맞춤<span id="scaledcap">, 표준화함</span>)</p><div class="plot"><canvas id="cv3d" role="img" aria-label="3차원 점 구름과 PC 방향" style="cursor:grab"></canvas></div></div>
+  <div><p class="cap">PC1 × PC2 점수 (PCA 결과 2차원 그림)</p><div class="plot"><canvas id="cv2d" role="img" aria-label="PC1과 PC2 점수 산점도"></canvas></div></div>
+</div>
+<div class="stats" id="stats"></div>
+<div class="tablewrap"><table id="tbl"></table></div>
+<div class="observe"><h2>관찰할 것</h2><ol>
+<li>PCA는 군 정보를 모릅니다. FLT 이동을 0으로 하면 PC1은 여전히 "가장 넓게 퍼진 방향"(A–B 상관 방향)을 고르지만 군은 갈리지 않습니다.</li>
+<li>표준화를 끄고 C의 단위 배율을 키우면, 숫자만 큰 C가 PC1을 독차지하고 PC1 비율이 크게 올라갑니다. 생물학이 아니라 단위가 PC1을 정한 것입니다(Day 14: PCA 전에 유전자별 표준화).</li>
+<li>품질 나쁜 샘플을 넣으면 PC1이 "그 샘플 대 나머지"로 바뀌고 군 차이는 PC2로 밀려납니다(Day 14 예시 3). PC1 비율이 올라갔다고 좋은 일이 아닙니다.</li>
+</ol></div>
+<script data-calc>// ---- 공통 계산 함수 (DOM 없음: Node에서 그대로 검산 가능) ----
+// seed 가능한 PRNG (mulberry32) + Box-Muller 정규 난수
+function mulberry32(seed){let a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+function makeRng(seed){const u=mulberry32(seed);let spare=null;
+  return{uniform:u,normal(m=0,s=1){if(spare!==null){const z=spare;spare=null;return m+s*z;}
+    let a;do{a=u();}while(a<=1e-12);const b=u(),r=Math.sqrt(-2*Math.log(a));spare=r*Math.sin(2*Math.PI*b);return m+s*r*Math.cos(2*Math.PI*b);},
+    shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(u()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}};}
+function newSeed(){return Math.floor(Math.random()*2**31);}
+function mean(a){let s=0;for(const x of a)s+=x;return s/a.length;}
+function variance(a){const m=mean(a);let s=0;for(const x of a)s+=(x-m)**2;return s/(a.length-1);} // ddof=1
+function sd(a){return Math.sqrt(variance(a));}
+// numpy.percentile 기본(linear) 방식과 같은 분위수
+function quantile(a,q){const s=Float64Array.from(a).sort();const h=(s.length-1)*q,lo=Math.floor(h),hi=Math.min(lo+1,s.length-1);return s[lo]+(h-lo)*(s[hi]-s[lo]);}
+
+function makeCloud(seed,{n=40,corr,shift,cscale,outlier}){const r=makeRng(seed),X=[],group=[];
+  for(let i=0;i<n;i++){const flt=i>=n/2,z1=r.normal(),z2=r.normal(),z3=r.normal();
+    let a=z1,b=corr*z1+Math.sqrt(1-corr*corr)*z2,c=z3*0.8;if(flt){a+=shift*0.7;b+=shift*0.7;}
+    X.push([a,b,c*cscale]);group.push(flt?'FLT':'GC');}
+  if(outlier){X[n-1]=[X[n-1][0]+5,X[n-1][1]-5,X[n-1][2]+2*cscale];group[n-1]='BAD';}
+  return{X,group};}
+// 대칭 행렬의 고유분해 (Jacobi 회전)
+function eigSym(A){const n=A.length,a=A.map(r=>r.slice()),V=A.map((_,i)=>A.map((_,j)=>+(i===j)));
+  for(let sweep=0;sweep<100;sweep++){let off=0;for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)off+=a[i][j]**2;if(off<1e-22)break;
+    for(let p=0;p<n;p++)for(let q=p+1;q<n;q++){if(Math.abs(a[p][q])<1e-300)continue;const th=(a[q][q]-a[p][p])/(2*a[p][q]),t=Math.sign(th||1)/(Math.abs(th)+Math.sqrt(th*th+1)),c=1/Math.sqrt(t*t+1),s=t*c;
+      for(let k=0;k<n;k++){const akp=a[k][p],akq=a[k][q];a[k][p]=c*akp-s*akq;a[k][q]=s*akp+c*akq;}
+      for(let k=0;k<n;k++){const apk=a[p][k],aqk=a[q][k];a[p][k]=c*apk-s*aqk;a[q][k]=s*apk+c*aqk;}
+      for(let k=0;k<n;k++){const vkp=V[k][p],vkq=V[k][q];V[k][p]=c*vkp-s*vkq;V[k][q]=s*vkp+c*vkq;}}}
+  const ord=[...Array(n).keys()].sort((i,j)=>a[j][j]-a[i][i]);return{values:ord.map(i=>a[i][i]),vectors:ord.map(i=>V.map(r=>r[i]))};}
+// PCA: 중심화(+선택적 표준화) → 공분산 → 고유분해. 성분 부호는 절댓값이 가장 큰 계수가 양수가 되게 고정.
+function pca(X,scale){const n=X.length,p=X[0].length,mu=[],s=[];
+  for(let j=0;j<p;j++){const col=X.map(r=>r[j]);mu.push(mean(col));s.push(scale?sd(col):1);}
+  const Z=X.map(r=>r.map((v,j)=>(v-mu[j])/s[j])),cov=[...Array(p)].map((_,i)=>[...Array(p)].map((_,j)=>Z.reduce((acc,r)=>acc+r[i]*r[j],0)/(n-1)));
+  const {values,vectors}=eigSym(cov);for(const v of vectors){const k=v.reduce((bi,x,i)=>Math.abs(x)>Math.abs(v[bi])?i:bi,0);if(v[k]<0)v.forEach((x,i)=>v[i]=-x);}
+  const tot=values.reduce((a,b)=>a+b,0);return{Z,values,vectors,ratio:values.map(v=>v/tot),scores:Z.map(r=>vectors.map(v=>v.reduce((acc,x,i)=>acc+x*r[i],0)))};}
+</script>
+<script>// ---- 공통 화면 도우미 ----
+(function(){const q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')document.documentElement.dataset.theme=q;})();
+function C(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function $(id){return document.getElementById(id);}
+function val(id){const e=$(id);return e.type==='checkbox'?e.checked:(e.type==='range'||e.type==='number')?+e.value:e.value;}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function fmtP(p){return p<1e-4?'< 0.0001':p.toFixed(4);}
+function setupCanvas(id,h){const cv=$(id),w=Math.max(240,cv.parentElement.clientWidth),r=window.devicePixelRatio||1;
+  cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,w,h);
+  ctx.font='12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';return{ctx,w,h,cv};}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)/(d1-d0)*(r1-r0);}
+function ticks(lo,hi,n=5){const raw=(hi-lo)/n,p=10**Math.floor(Math.log10(raw)),m=raw/p,st=(m<1.5?1:m<3.5?2:m<7.5?5:10)*p,out=[];
+  for(let v=Math.ceil(lo/st-1e-9)*st;v<=hi+1e-9*st;v+=st)out.push(Math.abs(v)<st*1e-9?0:v);return out;}
+function txt(ctx,s,x,y,o={}){ctx.save();ctx.fillStyle=o.color||C('fg');ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.size||o.bold)ctx.font=(o.bold?'600 ':'')+(o.size||12)+'px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(o.rot){ctx.translate(x,y);ctx.rotate(o.rot);ctx.fillText(s,0,0);}else ctx.fillText(s,x,y);ctx.restore();}
+// 축 그리기: box={l,r,t,b} 픽셀, xr/yr=[min,max]. 반환: sx, sy 변환 함수
+function axes(ctx,box,xr,yr,o={}){const sx=lin(xr[0],xr[1],box.l,box.r),sy=lin(yr[0],yr[1],box.b,box.t);
+  ctx.save();ctx.strokeStyle=C('grid');ctx.lineWidth=1;ctx.fillStyle=C('muted');ctx.font='11px -apple-system,sans-serif';
+  if(!o.noX){ctx.textAlign='center';ctx.textBaseline='top';for(const v of (o.xt||ticks(xr[0],xr[1],o.nx||5))){const x=sx(v);ctx.beginPath();ctx.moveTo(x,box.t);ctx.lineTo(x,box.b);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fx||(v=>+v.toPrecision(6)))(v),x,box.b+3);}}
+  if(!o.noY){ctx.textAlign='right';ctx.textBaseline='middle';for(const v of (o.yt||ticks(yr[0],yr[1],o.ny||4))){const y=sy(v);ctx.beginPath();ctx.moveTo(box.l,y);ctx.lineTo(box.r,y);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fy||(v=>+v.toPrecision(6)))(v),box.l-4,y);}}
+  ctx.strokeStyle=C('muted');ctx.strokeRect(box.l,box.t,box.r-box.l,box.b-box.t);ctx.restore();
+  if(o.xlab)txt(ctx,o.xlab,(box.l+box.r)/2,box.b+30,{align:'center',color:C('muted'),size:12});
+  if(o.ylab)txt(ctx,o.ylab,12,(box.t+box.b)/2,{align:'center',base:'middle',color:C('muted'),size:12,rot:-Math.PI/2});
+  return{sx,sy};}
+// 모양 표식: 색만으로 구분하지 않도록 circle / tri / square / cross / diamond
+function mark(ctx,shape,x,y,r,color,filled=true){ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.6;ctx.beginPath();
+  if(shape==='circle')ctx.arc(x,y,r,0,2*Math.PI);
+  else if(shape==='tri'){ctx.moveTo(x,y-r*1.2);ctx.lineTo(x+r*1.1,y+r*0.8);ctx.lineTo(x-r*1.1,y+r*0.8);ctx.closePath();}
+  else if(shape==='square')ctx.rect(x-r*.9,y-r*.9,r*1.8,r*1.8);
+  else if(shape==='diamond'){ctx.moveTo(x,y-r*1.3);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*1.3);ctx.lineTo(x-r,y);ctx.closePath();}
+  else if(shape==='cross'){ctx.moveTo(x-r,y-r);ctx.lineTo(x+r,y+r);ctx.moveTo(x+r,y-r);ctx.lineTo(x-r,y+r);ctx.lineWidth=2.2;ctx.stroke();ctx.restore();return;}
+  if(filled){ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1;}ctx.stroke();ctx.restore();}
+function line(ctx,pts,color,w=1.5,dash){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;if(dash)ctx.setLineDash(dash);ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
+// 슬라이더 값 표시 + 변경 시 콜백
+function bind(ids,fn,show={}){for(const id of ids){const e=$(id),o=document.querySelector(`output[for="${id}"]`);
+  const upd=()=>{if(o)o.textContent=show[id]?show[id](val(id)):e.value;};upd();e.addEventListener('input',()=>{upd();fn(id);});e.addEventListener('change',()=>{upd();fn(id);});}}
+// 다시 그리기: 창 크기·테마 변화 때. iframe 부모에 실제 높이를 알려 준다({type:'viz-height'}).
+function redrawOn(fn){let q=0;const run=()=>{q=0;fn();if(parent!==window)parent.postMessage({type:'viz-height',height:document.documentElement.scrollHeight},'*');};
+  const later=()=>{if(!q)q=requestAnimationFrame(run);};addEventListener('resize',later);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',later);run();return later;}
+
+let seed=newSeed(),D,R;
+function run(){D=makeCloud(seed,{corr:val('corr'),shift:val('shift'),cscale:val('cscale'),outlier:val('outlier')});R=pca(D.X,val('scale'));}
+const SH={GC:['circle','c1'],FLT:['tri','c2'],BAD:['cross','c4']};
+function draw(){$('scaledcap').style.display=val('scale')?'':'none';
+  const yaw=val('yaw')*Math.PI/180,pit=val('pitch')*Math.PI/180;
+  const proj=([x,y,z])=>{const x1=x*Math.cos(yaw)+z*Math.sin(yaw),z1=-x*Math.sin(yaw)+z*Math.cos(yaw);return[x1,y*Math.cos(pit)-z1*Math.sin(pit),y*Math.sin(pit)+z1*Math.cos(pit)];};
+  // 화면 좌표: 유전자 A=오른쪽(x), C=위(y), B=깊이(z)
+  const toW=v=>[v[0],v[2],v[1]];
+  {const {ctx,w,h}=setupCanvas('cv3d',300);const ext=Math.max(...R.Z.flat().map(Math.abs),1)*1.1,s=Math.min(w,h)/2/ext*0.9,cx=w/2,cy=h/2;
+   const P=v=>{const q=proj(toW(v));return[cx+q[0]*s,cy-q[1]*s,q[2]];};
+   const L=ext*0.9;for(const [v,lab] of [[[L,0,0],'A'],[[0,L,0],'B'],[[0,0,L],'C']]){const a=P(v.map(x=>-x)),b=P(v);line(ctx,[a.slice(0,2),b.slice(0,2)],C('muted'),1,[2,3]);txt(ctx,'유전자 '+lab,b[0]+3,b[1]-3,{color:C('muted'),size:11});}
+   const pts=R.Z.map((v,i)=>[...P(v),i]).sort((a,b)=>a[2]-b[2]);for(const [x,y,,i] of pts){const [sh,c]=SH[D.group[i]];mark(ctx,sh,x,y,D.group[i]==='BAD'?5:3.5,C(c));}
+   R.vectors.slice(0,2).forEach((v,k)=>{const len=2*Math.sqrt(R.values[k]),a=P(v.map(x=>-x*len)),b=P(v.map(x=>x*len));line(ctx,[a.slice(0,2),b.slice(0,2)],C(k?'c5':'c4'),k?2.5:3.5,k?[6,4]:null);
+     txt(ctx,'PC'+(k+1),b[0]+4,b[1]+(k?12:-4),{color:C(k?'c5':'c4'),bold:1});});}
+  {const {ctx,w,h}=setupCanvas('cv2d',300),box={l:44,r:w-10,t:10,b:h-40};const m1=Math.max(...R.scores.map(r=>Math.abs(r[0])))*1.1,m2=Math.max(...R.scores.map(r=>Math.abs(r[1])))*1.1,m=Math.max(m1,m2);
+   const {sx,sy}=axes(ctx,box,[-m,m],[-m,m],{xlab:`PC1 (${fmt(100*R.ratio[0],0)}%)`,ylab:`PC2 (${fmt(100*R.ratio[1],0)}%)`});
+   R.scores.forEach((r,i)=>{const [sh,c]=SH[D.group[i]];mark(ctx,sh,sx(r[0]),sy(r[1]),D.group[i]==='BAD'?5:3.5,C(c));});}
+  const gm=g=>{const s=R.scores.filter((_,i)=>D.group[i]===g);return s.length?mean(s.map(r=>r[0])):NaN;};
+  $('stats').innerHTML=[['PC1 설명 분산',fmt(100*R.ratio[0],1)+'%'],['PC2 설명 분산',fmt(100*R.ratio[1],1)+'%'],['PC3 설명 분산',fmt(100*R.ratio[2],1)+'%'],
+    ['PC1 평균 (GC / FLT)',fmt(gm('GC'),1)+' / '+fmt(gm('FLT'),1)]].map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+  $('tbl').innerHTML='<tr><th>PC 방향의 구성 (loading)</th><th>유전자 A</th><th>유전자 B</th><th>유전자 C</th></tr>'+R.vectors.slice(0,2).map((v,k)=>`<tr><td>PC${k+1}</td>${v.map(x=>`<td>${fmt(x,2)}</td>`).join('')}</tr>`).join('');}
+bind(['corr','shift','cscale','scale','outlier'],()=>{run();later();});bind(['yaw','pitch'],()=>later(),{yaw:v=>v+'°',pitch:v=>v+'°'});
+$('again').onclick=()=>{seed=newSeed();run();later();};
+{const cv=$('cv3d');let drag=null;cv.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY,val('yaw'),val('pitch')];cv.setPointerCapture(e.pointerId);});
+ cv.addEventListener('pointermove',e=>{if(!drag)return;const y=((drag[2]+(e.clientX-drag[0])*0.6+540)%360)-180,p=Math.max(-90,Math.min(90,drag[3]+(e.clientY-drag[1])*0.6));
+   $('yaw').value=Math.round(y);$('pitch').value=Math.round(p);$('yaw').dispatchEvent(new Event('input'));$('pitch').dispatchEvent(new Event('input'));});
+ cv.addEventListener('pointerup',()=>drag=null);cv.addEventListener('pointercancel',()=>drag=null);}
+run();const later=redrawOn(draw);
+</script></body></html>

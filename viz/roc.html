@@ -1,0 +1,158 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>임계값과 ROC</title><style>:root{--bg:#ffffff;--fg:#1f2328;--muted:#57606a;--grid:#d0d7de;--panel:#f6f8fa;--accent:#0b5cad;
+--c1:#1f63c6;--c2:#c2410c;--c3:#047857;--c4:#b91c1c;--c5:#6d28d9;--fill1:rgba(31,99,198,.18);--fill2:rgba(194,65,12,.18);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;padding:12px 16px 16px;max-width:960px;margin:0 auto;overflow-x:hidden}
+h1{font-size:1.1rem;margin:0 0 4px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.controls label{display:flex;flex-direction:column;font-size:.88rem;gap:2px}
+.controls label.inline{flex-direction:row;align-items:center;gap:6px}
+.controls output{font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.88rem;color:var(--fg);background:var(--bg);border:1px solid var(--grid);border-radius:6px;padding:4px 10px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plot{width:100%;margin:6px 0}
+.plot canvas{display:block;width:100%;touch-action:pan-y}
+.cap{font-size:.82rem;color:var(--muted);margin:0 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin:8px 0}
+.stat{background:var(--panel);border:1px solid var(--grid);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--grid);padding:4px 6px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--panel)}
+.tablewrap{overflow-x:auto}
+.note{font-size:.88rem;background:var(--panel);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0}
+.observe{margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+.observe h2{font-size:.95rem;margin:0 0 4px}
+.observe ol{margin:0;padding-left:1.3em;font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;margin:2px 0}
+.legend span{white-space:nowrap}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
+</style></head><body>
+<h1>기준값(threshold)을 움직이면 무엇이 바뀌나</h1>
+<p class="lead">모델이 측정마다 낸 "PD일 확률" 점수입니다. 기준값을 움직여 confusion matrix와 민감도·특이도·precision이 어떻게 바뀌는지, ROC 곡선 위 어디에 있는지 보세요. PD 비율(유병률)을 바꾸면 ROC는 거의 그대로인데 precision은 크게 달라집니다.</p>
+<div class="controls">
+  <label>두 군의 분리 정도: <output for="sep"></output><input type="range" id="sep" min="0" max="4" step="0.1" value="2"></label>
+  <label>전체 측정 수: <output for="ntot"></output><input type="range" id="ntot" min="100" max="2000" step="50" value="400"></label>
+  <label>PD 비율 (유병률): <output for="prev"></output><input type="range" id="prev" min="0.05" max="0.95" step="0.01" value="0.5"></label>
+  <label>기준값 (이 이상이면 PD로 판정): <output for="thr"></output><input type="range" id="thr" min="0.01" max="0.99" step="0.01" value="0.5"></label>
+  <div class="btns"><button id="again">다시 뽑기</button></div>
+</div>
+<p class="cap">점수 분포 (구간 폭 0.05). 세로선 = 기준값, 오른쪽이 "PD로 판정".</p>
+<div class="legend"><span style="color:var(--c2)">■ PD (채운 막대)</span><span style="color:var(--c1)">▭ HC (빈 막대)</span></div>
+<div class="plot"><canvas id="cv1" role="img" aria-label="두 군의 점수 분포와 기준값"></canvas></div>
+<div class="two">
+  <div class="tablewrap"><table id="cm"></table></div>
+  <div class="stats" id="stats" style="margin:0"></div>
+</div>
+<div class="two">
+  <div><p class="cap">ROC 곡선. ● = 지금 기준값. 대각선 = 동전 던지기.</p><div class="plot"><canvas id="cv2" role="img" aria-label="ROC 곡선"></canvas></div></div>
+  <div><p class="cap">Precision–Recall 곡선. ● = 지금 기준값. 점선 = PD 비율(아무것도 모르는 모델의 기준선).</p><div class="plot"><canvas id="cv3" role="img" aria-label="Precision-Recall 곡선"></canvas></div></div>
+</div>
+<div class="observe"><h2>관찰할 것</h2><ol>
+<li>기준값을 0.5에서 0.3으로 내리면 더 많은 측정을 PD로 판정해 recall(민감도)은 오르고 precision은 떨어집니다(Day 34). 점은 ROC 곡선 위를 오른쪽 위로 움직입니다.</li>
+<li>PD 비율을 50% → 10%로 낮춰 보세요. ROC-AUC와 민감도·특이도는 거의 그대로인데 precision과 PR-AUC는 크게 떨어집니다. 이 데이터셋의 precision을 "양성 판정자가 실제 환자일 확률"로 옮겨 쓰면 안 되는 이유입니다.</li>
+<li>PD 비율을 90%로 두고 기준값을 0.01로 내리면(모두 PD로 판정) accuracy가 약 90%지만 특이도는 0입니다. accuracy 하나로는 부족합니다.</li>
+</ol></div>
+<script data-calc>// ---- 공통 계산 함수 (DOM 없음: Node에서 그대로 검산 가능) ----
+// seed 가능한 PRNG (mulberry32) + Box-Muller 정규 난수
+function mulberry32(seed){let a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+function makeRng(seed){const u=mulberry32(seed);let spare=null;
+  return{uniform:u,normal(m=0,s=1){if(spare!==null){const z=spare;spare=null;return m+s*z;}
+    let a;do{a=u();}while(a<=1e-12);const b=u(),r=Math.sqrt(-2*Math.log(a));spare=r*Math.sin(2*Math.PI*b);return m+s*r*Math.cos(2*Math.PI*b);},
+    shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(u()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}};}
+function newSeed(){return Math.floor(Math.random()*2**31);}
+function mean(a){let s=0;for(const x of a)s+=x;return s/a.length;}
+function variance(a){const m=mean(a);let s=0;for(const x of a)s+=(x-m)**2;return s/(a.length-1);} // ddof=1
+function sd(a){return Math.sqrt(variance(a));}
+// numpy.percentile 기본(linear) 방식과 같은 분위수
+function quantile(a,q){const s=Float64Array.from(a).sort();const h=(s.length-1)*q,lo=Math.floor(h),hi=Math.min(lo+1,s.length-1);return s[lo]+(h-lo)*(s[hi]-s[lo]);}
+
+const sigmoid=v=>1/(1+Math.exp(-v));
+// 군별로 다른 난수 줄기를 써서, 유병률을 바꿔도 앞쪽 표본은 그대로 유지된다
+function makeScores(seed,{sep,nTotal,prev}){const nPD=Math.round(nTotal*prev),nHC=nTotal-nPD,rp=makeRng(seed),rh=makeRng(seed+7919),s=[],y=[];
+  for(let i=0;i<nPD;i++){s.push(sigmoid(rp.normal(sep/2,1)));y.push(1);}for(let i=0;i<nHC;i++){s.push(sigmoid(rh.normal(-sep/2,1)));y.push(0);}return{s,y};}
+function confusion(s,y,thr){let tp=0,fp=0,tn=0,fn=0;s.forEach((v,i)=>{const p=v>=thr;if(y[i])p?tp++:fn++;else p?fp++:tn++;});return{tp,fp,tn,fn};}
+function metrics({tp,fp,tn,fn}){const prec=tp+fp?tp/(tp+fp):NaN,rec=tp/(tp+fn),spec=tn/(tn+fp);return{acc:(tp+tn)/(tp+fp+tn+fn),rec,spec,prec,f1:2*prec*rec/(prec+rec)};}
+// ROC 점(내림차순 기준값마다)과 AUC(순위 공식, 동점은 평균 순위)
+function rocCurve(s,y){const idx=[...s.keys()].sort((a,b)=>s[b]-s[a]),P=y.reduce((a,b)=>a+b,0),Nn=y.length-P,pts=[[0,0]];let tp=0,fp=0;
+  idx.forEach((i,k)=>{y[i]?tp++:fp++;if(k===idx.length-1||s[idx[k+1]]!==s[i])pts.push([fp/Nn,tp/P]);});return pts;}
+function aucRank(s,y){const idx=[...s.keys()].sort((a,b)=>s[a]-s[b]),rank=new Array(s.length);
+  for(let i=0;i<idx.length;){let j=i;while(j+1<idx.length&&s[idx[j+1]]===s[idx[i]])j++;for(let k=i;k<=j;k++)rank[idx[k]]=(i+j)/2+1;i=j+1;}
+  const P=y.reduce((a,b)=>a+b,0),Nn=y.length-P;let sr=0;y.forEach((v,i)=>{if(v)sr+=rank[i];});return(sr-P*(P+1)/2)/(P*Nn);}
+// scikit-learn average_precision_score와 같은 계산
+function prCurve(s,y){const idx=[...s.keys()].sort((a,b)=>s[b]-s[a]),P=y.reduce((a,b)=>a+b,0),pts=[];let tp=0,fp=0,ap=0,prevR=0;
+  idx.forEach((i,k)=>{y[i]?tp++:fp++;if(k===idx.length-1||s[idx[k+1]]!==s[i]){const r=tp/P,p=tp/(tp+fp);ap+=(r-prevR)*p;prevR=r;pts.push([r,p]);}});return{pts,ap};}
+</script>
+<script>// ---- 공통 화면 도우미 ----
+(function(){const q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')document.documentElement.dataset.theme=q;})();
+function C(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function $(id){return document.getElementById(id);}
+function val(id){const e=$(id);return e.type==='checkbox'?e.checked:(e.type==='range'||e.type==='number')?+e.value:e.value;}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function fmtP(p){return p<1e-4?'< 0.0001':p.toFixed(4);}
+function setupCanvas(id,h){const cv=$(id),w=Math.max(240,cv.parentElement.clientWidth),r=window.devicePixelRatio||1;
+  cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,w,h);
+  ctx.font='12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';return{ctx,w,h,cv};}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)/(d1-d0)*(r1-r0);}
+function ticks(lo,hi,n=5){const raw=(hi-lo)/n,p=10**Math.floor(Math.log10(raw)),m=raw/p,st=(m<1.5?1:m<3.5?2:m<7.5?5:10)*p,out=[];
+  for(let v=Math.ceil(lo/st-1e-9)*st;v<=hi+1e-9*st;v+=st)out.push(Math.abs(v)<st*1e-9?0:v);return out;}
+function txt(ctx,s,x,y,o={}){ctx.save();ctx.fillStyle=o.color||C('fg');ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.size||o.bold)ctx.font=(o.bold?'600 ':'')+(o.size||12)+'px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(o.rot){ctx.translate(x,y);ctx.rotate(o.rot);ctx.fillText(s,0,0);}else ctx.fillText(s,x,y);ctx.restore();}
+// 축 그리기: box={l,r,t,b} 픽셀, xr/yr=[min,max]. 반환: sx, sy 변환 함수
+function axes(ctx,box,xr,yr,o={}){const sx=lin(xr[0],xr[1],box.l,box.r),sy=lin(yr[0],yr[1],box.b,box.t);
+  ctx.save();ctx.strokeStyle=C('grid');ctx.lineWidth=1;ctx.fillStyle=C('muted');ctx.font='11px -apple-system,sans-serif';
+  if(!o.noX){ctx.textAlign='center';ctx.textBaseline='top';for(const v of (o.xt||ticks(xr[0],xr[1],o.nx||5))){const x=sx(v);ctx.beginPath();ctx.moveTo(x,box.t);ctx.lineTo(x,box.b);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fx||(v=>+v.toPrecision(6)))(v),x,box.b+3);}}
+  if(!o.noY){ctx.textAlign='right';ctx.textBaseline='middle';for(const v of (o.yt||ticks(yr[0],yr[1],o.ny||4))){const y=sy(v);ctx.beginPath();ctx.moveTo(box.l,y);ctx.lineTo(box.r,y);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fy||(v=>+v.toPrecision(6)))(v),box.l-4,y);}}
+  ctx.strokeStyle=C('muted');ctx.strokeRect(box.l,box.t,box.r-box.l,box.b-box.t);ctx.restore();
+  if(o.xlab)txt(ctx,o.xlab,(box.l+box.r)/2,box.b+30,{align:'center',color:C('muted'),size:12});
+  if(o.ylab)txt(ctx,o.ylab,12,(box.t+box.b)/2,{align:'center',base:'middle',color:C('muted'),size:12,rot:-Math.PI/2});
+  return{sx,sy};}
+// 모양 표식: 색만으로 구분하지 않도록 circle / tri / square / cross / diamond
+function mark(ctx,shape,x,y,r,color,filled=true){ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.6;ctx.beginPath();
+  if(shape==='circle')ctx.arc(x,y,r,0,2*Math.PI);
+  else if(shape==='tri'){ctx.moveTo(x,y-r*1.2);ctx.lineTo(x+r*1.1,y+r*0.8);ctx.lineTo(x-r*1.1,y+r*0.8);ctx.closePath();}
+  else if(shape==='square')ctx.rect(x-r*.9,y-r*.9,r*1.8,r*1.8);
+  else if(shape==='diamond'){ctx.moveTo(x,y-r*1.3);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*1.3);ctx.lineTo(x-r,y);ctx.closePath();}
+  else if(shape==='cross'){ctx.moveTo(x-r,y-r);ctx.lineTo(x+r,y+r);ctx.moveTo(x+r,y-r);ctx.lineTo(x-r,y+r);ctx.lineWidth=2.2;ctx.stroke();ctx.restore();return;}
+  if(filled){ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1;}ctx.stroke();ctx.restore();}
+function line(ctx,pts,color,w=1.5,dash){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;if(dash)ctx.setLineDash(dash);ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
+// 슬라이더 값 표시 + 변경 시 콜백
+function bind(ids,fn,show={}){for(const id of ids){const e=$(id),o=document.querySelector(`output[for="${id}"]`);
+  const upd=()=>{if(o)o.textContent=show[id]?show[id](val(id)):e.value;};upd();e.addEventListener('input',()=>{upd();fn(id);});e.addEventListener('change',()=>{upd();fn(id);});}}
+// 다시 그리기: 창 크기·테마 변화 때. iframe 부모에 실제 높이를 알려 준다({type:'viz-height'}).
+function redrawOn(fn){let q=0;const run=()=>{q=0;fn();if(parent!==window)parent.postMessage({type:'viz-height',height:document.documentElement.scrollHeight},'*');};
+  const later=()=>{if(!q)q=requestAnimationFrame(run);};addEventListener('resize',later);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',later);run();return later;}
+
+let seed=newSeed(),S;
+function run(){S=makeScores(seed,{sep:val('sep'),nTotal:val('ntot'),prev:val('prev')});}
+function draw(){const thr=val('thr'),cm=confusion(S.s,S.y,thr),M=metrics(cm),roc=rocCurve(S.s,S.y),auc=aucRank(S.s,S.y),pr=prCurve(S.s,S.y),prev=S.y.reduce((a,b)=>a+b,0)/S.y.length;
+  $('cm').innerHTML=`<tr><th></th><th>PD로 판정</th><th>HC로 판정</th></tr><tr><th>실제 PD</th><td>TP <b>${cm.tp}</b></td><td>FN <b>${cm.fn}</b></td></tr><tr><th>실제 HC</th><td>FP <b>${cm.fp}</b></td><td>TN <b>${cm.tn}</b></td></tr>`;
+  $('stats').innerHTML=[['Accuracy',M.acc],['Recall = 민감도',M.rec],['특이도',M.spec],['Precision = PPV',M.prec],['F1',M.f1],['ROC-AUC',auc],['PR-AUC (AP)',pr.ap],['실제 PD 비율',prev]]
+    .map(([k,v])=>`<div class="stat"><span>${k}</span><b>${fmt(v,3)}</b></div>`).join('');
+  {const {ctx,w,h}=setupCanvas('cv1',170),box={l:36,r:w-10,t:8,b:h-34},nb=20,cp=new Array(nb).fill(0),ch=new Array(nb).fill(0);
+   S.s.forEach((v,i)=>(S.y[i]?cp:ch)[Math.min(nb-1,Math.floor(v*nb))]++);const ym=Math.max(...cp,...ch,1)*1.1,{sx,sy}=axes(ctx,box,[0,1],[0,ym],{xlab:'PD일 확률 점수',ny:3,fy:v=>Number.isInteger(v)?v:''});
+   for(let b=0;b<nb;b++){const x0=sx(b/nb)+1,x1=sx((b+1)/nb)-1;ctx.globalAlpha=.75;ctx.fillStyle=C('c2');ctx.fillRect(x0,sy(cp[b]),x1-x0,sy(0)-sy(cp[b]));ctx.globalAlpha=1;
+     ctx.strokeStyle=C('c1');ctx.lineWidth=2;ctx.strokeRect(x0+1,sy(ch[b]),x1-x0-2,sy(0)-sy(ch[b]));}
+   line(ctx,[[sx(thr),box.t],[sx(thr),box.b]],C('fg'),2.5);txt(ctx,'← HC로 판정',sx(thr)-4,box.t+12,{align:'right',size:11});txt(ctx,'PD로 판정 →',sx(thr)+4,box.t+12,{size:11});}
+  const curve=(id,pts,cur,xl,yl,base)=>{const {ctx,w}=setupCanvas(id,260),h=260,box={l:44,r:w-10,t:8,b:h-40},{sx,sy}=axes(ctx,box,[0,1],[0,1],{xlab:xl,ylab:yl,nx:4,ny:4});
+    if(base!=null)line(ctx,[[sx(0),sy(base)],[sx(1),sy(base)]],C('muted'),1.5,[5,4]);else line(ctx,[[sx(0),sy(0)],[sx(1),sy(1)]],C('muted'),1.5,[5,4]);
+    line(ctx,pts.map(([a,b])=>[sx(a),sy(b)]),C('accent'),2.2);if(cur.every(Number.isFinite)){mark(ctx,'circle',sx(cur[0]),sy(cur[1]),6,C('c4'));}};
+  curve('cv2',roc,[1-M.spec,M.rec],'1 − 특이도 (거짓 양성 비율)','민감도',null);
+  curve('cv3',pr.pts,[M.rec,M.prec],'Recall (민감도)','Precision',prev);}
+bind(['sep','ntot','prev'],()=>{run();later();},{prev:v=>Math.round(v*100)+'%'});bind(['thr'],()=>later());
+$('again').onclick=()=>{seed=newSeed();run();later();};
+run();const later=redrawOn(draw);
+</script></body></html>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330" role="img" aria-labelledby="course-map-t course-map-d">
+<title id="course-map-t">코스 지도</title>
+<desc id="course-map-d">0주차 코딩 기초에서 1–2주차 기초로 이어지고, 3주차 OSDR OSD-536 분자 트랙과 4–5주차 PhysioNet 파킨슨병 트랙으로 갈라져 따로 진행된 뒤, 6주차 통합·재현성·발표에서 만난다. 보충 단원은 0주차 뒤 언제든, 심화 파트는 과정을 마친 뒤 선택한다.</desc>
+<defs>
+<marker id="course-map-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="d-node" x="16" y="74" width="130" height="76" rx="8"/>
+<text class="d-text d-strong" x="81" y="100" font-size="15" text-anchor="middle">0주차</text>
+<text class="d-text" x="81" y="120" font-size="14" text-anchor="middle">코딩 기초</text>
+<text class="d-sub" x="81" y="139" font-size="12" text-anchor="middle">Python·pandas·Git</text>
+<rect class="d-node" x="176" y="74" width="140" height="76" rx="8"/>
+<text class="d-text d-strong" x="246" y="100" font-size="15" text-anchor="middle">1–2주차</text>
+<text class="d-text" x="246" y="120" font-size="14" text-anchor="middle">기초 다지기</text>
+<text class="d-sub" x="246" y="139" font-size="12" text-anchor="middle">질환·통계·메타데이터</text>
+<rect class="d-a" x="348" y="20" width="180" height="76" rx="8"/>
+<text class="d-text d-strong" x="438" y="45" font-size="15" text-anchor="middle">3주차 분자 트랙</text>
+<text class="d-text" x="438" y="65" font-size="14" text-anchor="middle">OSDR OSD-536</text>
+<text class="d-sub" x="438" y="84" font-size="12" text-anchor="middle">마우스 뇌 · nCounter</text>
+<text class="d-sub" x="438" y="117" font-size="12" text-anchor="middle">두 트랙은 따로 분석</text>
+<rect class="d-b" x="348" y="128" width="180" height="76" rx="8"/>
+<text class="d-text d-strong" x="438" y="153" font-size="15" text-anchor="middle">4–5주차 PD 트랙</text>
+<text class="d-text" x="438" y="173" font-size="14" text-anchor="middle">PhysioNet</text>
+<text class="d-sub" x="438" y="192" font-size="12" text-anchor="middle">사람 · 보행·웨어러블</text>
+<rect class="d-c" x="560" y="74" width="144" height="76" rx="8"/>
+<text class="d-text d-strong" x="632" y="100" font-size="15" text-anchor="middle">6주차 통합</text>
+<text class="d-text" x="632" y="120" font-size="14" text-anchor="middle">비교 범위·재현성</text>
+<text class="d-sub" x="632" y="139" font-size="12" text-anchor="middle">보고서·발표</text>
+<line class="d-line" x1="146" y1="112" x2="174" y2="112" marker-end="url(#course-map-arrow)"/>
+<path class="d-line" d="M316,112 C332,112 330,58 346,58" marker-end="url(#course-map-arrow)"/>
+<path class="d-line" d="M316,112 C332,112 330,166 346,166" marker-end="url(#course-map-arrow)"/>
+<path class="d-line" d="M528,58 C546,58 542,100 558,100" marker-end="url(#course-map-arrow)"/>
+<path class="d-line" d="M528,166 C546,166 542,124 558,124" marker-end="url(#course-map-arrow)"/>
+<line class="d-line d-dash" x1="81" y1="150" x2="81" y2="246" marker-end="url(#course-map-arrow)"/>
+<line class="d-line d-dash" x1="632" y1="150" x2="632" y2="246" marker-end="url(#course-map-arrow)"/>
+<rect class="d-node d-dash" x="16" y="248" width="300" height="64" rx="8"/>
+<text class="d-text d-strong" x="166" y="274" font-size="15" text-anchor="middle">보충 S1–S7 (선택)</text>
+<text class="d-sub" x="166" y="295" font-size="12" text-anchor="middle">고전 생명정보학 · 0주차 뒤 언제든</text>
+<rect class="d-d d-dash" x="404" y="248" width="300" height="64" rx="8"/>
+<text class="d-text d-strong" x="554" y="274" font-size="15" text-anchor="middle">심화 A–G (선택)</text>
+<text class="d-sub" x="554" y="295" font-size="12" text-anchor="middle">정규과정을 마친 뒤 · 순서 자유</text>
+</svg>

@@ -1,0 +1,26 @@
+{
+  "README.md": [
+    {"file": "advanced-guide.svg", "title": "심화 파트 고르기", "caption": "왼쪽에서 지금 필요한 것을 찾고, 화살표가 가리키는 오른쪽 파트를 고르면 됩니다.", "section": "## 심화 파트"}
+  ],
+  "lessons/week-1/day-01.md": [
+    {"file": "course-map.svg", "title": "코스 지도", "caption": "왼쪽에서 오른쪽으로 읽으면 되고, 분자 트랙과 PD 트랙은 따로 진행되다가 6주차에 글로만 만나며 점선 상자는 선택 단원입니다.", "section": "## 개념 설명"}
+  ],
+  "lessons/week-3/day-16.md": [
+    {"file": "ncounter-structure.svg", "title": "nCounter 데이터 구조", "caption": "위의 행렬은 한 행이 샘플, 한 열이 프로브이고, 아래 샘플 표와는 행 순서가 아니라 sample ID로만 잇습니다.", "section": "## 개념 설명"}
+  ],
+  "lessons/week-3/day-17.md": [
+    {"file": "analysis-pipeline.svg", "title": "3주차 분석 흐름", "caption": "상자 위의 Day 번호를 따라 왼쪽에서 오른쪽으로 읽으면, 오늘 하는 QC와 정규화가 전체 흐름의 어디에 있는지 보입니다.", "section": "## 개념 설명"}
+  ],
+  "lessons/week-4/day-24.md": [
+    {"file": "participant-hierarchy.svg", "title": "참가자 → 기록 → window", "caption": "한 사람에게 기록 파일이 여러 개, 기록마다 window가 여러 개 매달리지만 독립 단위는 맨 왼쪽의 참가자 한 명입니다.", "section": "## 개념 설명"}
+  ],
+  "lessons/week-5/day-33.md": [
+    {"file": "split-rows-vs-participants.svg", "title": "행 단위 분할 대 참가자 단위 분할", "caption": "P1–P3 라벨을 따라가 보면 왼쪽은 같은 사람이 학습과 평가 양쪽에 들어가고, 오른쪽은 평가에 처음 보는 사람만 남습니다.", "section": "## 개념 설명"}
+  ],
+  "lessons/week-6/day-36.md": [
+    {"file": "mouse-human-scope.svg", "title": "두 데이터의 비교 가능 범위", "caption": "가운데 ✕ 선은 숫자로 합칠 수 없다는 뜻이고, 두 데이터는 아래 상자처럼 문헌을 거친 가설로만 이어집니다.", "section": "## 개념 설명"}
+  ],
+  "lessons/week-6/day-38.md": [
+    {"file": "reproducibility.svg", "title": "재현성의 네 가지 재료", "caption": "각 카드의 맨 위는 실험실에서 대응하는 기록이고, 네 가지를 모두 남기면 아래 상자처럼 같은 숫자와 그림을 다시 얻을 수 있습니다.", "section": "## 개념 설명"}
+  ]
+}

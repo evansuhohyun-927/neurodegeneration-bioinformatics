@@ -1,0 +1,198 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HRF와 GLM</title><style>:root{--bg:#ffffff;--fg:#1f2328;--muted:#57606a;--grid:#d0d7de;--panel:#f6f8fa;--accent:#0b5cad;
+--c1:#1f63c6;--c2:#c2410c;--c3:#047857;--c4:#b91c1c;--c5:#6d28d9;--fill1:rgba(31,99,198,.18);--fill2:rgba(194,65,12,.18);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;padding:12px 16px 16px;max-width:960px;margin:0 auto;overflow-x:hidden}
+h1{font-size:1.1rem;margin:0 0 4px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.controls label{display:flex;flex-direction:column;font-size:.88rem;gap:2px}
+.controls label.inline{flex-direction:row;align-items:center;gap:6px}
+.controls output{font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.88rem;color:var(--fg);background:var(--bg);border:1px solid var(--grid);border-radius:6px;padding:4px 10px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plot{width:100%;margin:6px 0}
+.plot canvas{display:block;width:100%;touch-action:pan-y}
+.cap{font-size:.82rem;color:var(--muted);margin:0 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin:8px 0}
+.stat{background:var(--panel);border:1px solid var(--grid);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--grid);padding:4px 6px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--panel)}
+.tablewrap{overflow-x:auto}
+.note{font-size:.88rem;background:var(--panel);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0}
+.observe{margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+.observe h2{font-size:.95rem;margin:0 0 4px}
+.observe ol{margin:0;padding-left:1.3em;font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;margin:2px 0}
+.legend span{white-space:nowrap}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
+</style></head><body>
+<h1>자극 시각표 → 예측 BOLD → GLM 적합</h1>
+<p class="lead">블록 설계의 길이를 바꾸거나, 이벤트 설계에서 시간 축을 눌러 자극을 넣고 빼 보세요. 자극을 HRF와 convolution한 예측 BOLD가 바로 바뀌고, 잡음 섞인 가상 voxel 신호에 GLM을 맞춘 β와 t가 계산됩니다(TR 2초, 120개 시점 = 240초).</p>
+<div class="controls">
+  <label>설계 방식<select id="mode"><option value="block">블록 설계</option><option value="event">이벤트 설계 (1초 자극)</option></select></label>
+  <label class="blk">켜짐 길이: <output for="on"></output><input type="range" id="on" min="2" max="60" step="1" value="20"></label>
+  <label class="blk">꺼짐 길이: <output for="off"></output><input type="range" id="off" min="2" max="60" step="1" value="20"></label>
+  <div class="btns evt"><button id="rand">무작위 간격 이벤트 20개</button><button id="regular">20초 간격 이벤트</button><button id="clear">모두 지우기</button></div>
+  <label>진짜 과제 효과 β: <output for="beta"></output><input type="range" id="beta" min="0" max="4" step="0.1" value="2"></label>
+  <label>잡음 SD: <output for="sd"></output><input type="range" id="sd" min="0.2" max="3" step="0.1" value="1"></label>
+  <label>잡음 자기상관 (AR(1) φ): <output for="phi"></output><input type="range" id="phi" min="0" max="0.9" step="0.05" value="0.5"></label>
+  <label>느린 drift 크기: <output for="drift"></output><input type="range" id="drift" min="0" max="4" step="0.1" value="1.5"></label>
+  <div class="btns"><button id="again">잡음 다시 뽑기</button></div>
+</div>
+<div class="stats" id="stats"></div>
+<div class="two">
+  <div><p class="cap">HRF (이중 감마, 0.1초 격자). 짧은 자극 하나에 대한 BOLD 반응 모양.</p><div class="plot"><canvas id="cvh" role="img" aria-label="HRF 곡선"></canvas></div></div>
+  <div><p class="cap" id="stimcap">자극 시각표(막대)와 예측 BOLD(곡선 = 과제 회귀변수).</p><div class="plot"><canvas id="cvs" role="img" aria-label="자극 시각표와 예측 BOLD" style="cursor:pointer"></canvas></div></div>
+</div>
+<p class="cap">가상 voxel 신호와 GLM 적합. 설계 행렬 열 = 절편, 과제, drift용 코사인 3개.</p>
+<div class="legend"><span style="color:var(--muted)">● 측정 신호</span><span style="color:var(--c1)">━ GLM 적합 전체</span><span style="color:var(--c2)">┅ 절편 + β̂ × 과제 회귀변수</span></div>
+<div class="plot"><canvas id="cvy" role="img" aria-label="voxel 신호와 GLM 적합"></canvas></div>
+<div class="observe"><h2>관찰할 것</h2><ol>
+<li>자극은 0초에 시작해도 예측 BOLD는 몇 초 늦게 오르고, 끝난 뒤 기준선 아래로 얕게 꺼집니다(HRF의 지연과 undershoot, 심화 D4 예시 1).</li>
+<li>같은 240초라도 블록 설계는 효율(1 / c(XᵀX)⁻¹cᵀ)과 t가 높아 검출에 유리합니다. 이벤트를 늘 같은 간격으로 촘촘히 넣으면 반응이 겹쳐 효율이 떨어지니 간격을 흔듭니다(jitter).</li>
+<li>켜짐·꺼짐을 60초씩으로 늘리면 과제 주기가 drift와 비슷해져 효율이 떨어집니다. 또 φ를 키우면 OLS의 표준오차는 이웃 시점이 닮았다는 사실을 무시해 t가 부풀 수 있습니다(prewhitening이 필요한 이유).</li>
+</ol></div>
+<script data-calc>// ---- 공통 계산 함수 (DOM 없음: Node에서 그대로 검산 가능) ----
+// seed 가능한 PRNG (mulberry32) + Box-Muller 정규 난수
+function mulberry32(seed){let a=seed>>>0;return function(){a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+function makeRng(seed){const u=mulberry32(seed);let spare=null;
+  return{uniform:u,normal(m=0,s=1){if(spare!==null){const z=spare;spare=null;return m+s*z;}
+    let a;do{a=u();}while(a<=1e-12);const b=u(),r=Math.sqrt(-2*Math.log(a));spare=r*Math.sin(2*Math.PI*b);return m+s*r*Math.cos(2*Math.PI*b);},
+    shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(u()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}};}
+function newSeed(){return Math.floor(Math.random()*2**31);}
+function mean(a){let s=0;for(const x of a)s+=x;return s/a.length;}
+function variance(a){const m=mean(a);let s=0;for(const x of a)s+=(x-m)**2;return s/(a.length-1);} // ddof=1
+function sd(a){return Math.sqrt(variance(a));}
+// numpy.percentile 기본(linear) 방식과 같은 분위수
+function quantile(a,q){const s=Float64Array.from(a).sort();const h=(s.length-1)*q,lo=Math.floor(h),hi=Math.min(lo+1,s.length-1);return s[lo]+(h-lo)*(s[hi]-s[lo]);}
+
+// ---- t 분포 (정규화 불완전 베타 함수로 계산) ----
+function lgamma(x){const g=7,c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+  if(x<0.5)return Math.log(Math.PI/Math.abs(Math.sin(Math.PI*x)))-lgamma(1-x);
+  x-=1;let a=c[0];const t=x+g+0.5;for(let i=1;i<9;i++)a+=c[i]/(x+i);return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a);}
+function betacf(a,b,x){const FPMIN=1e-300;let qab=a+b,qap=a+1,qam=a-1,c=1,d=1-qab*x/qap;if(Math.abs(d)<FPMIN)d=FPMIN;d=1/d;let h=d;
+  for(let m=1;m<=300;m++){const m2=2*m;let aa=m*(b-m)*x/((qam+m2)*(a+m2));d=1+aa*d;if(Math.abs(d)<FPMIN)d=FPMIN;c=1+aa/c;if(Math.abs(c)<FPMIN)c=FPMIN;d=1/d;h*=d*c;
+    aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));d=1+aa*d;if(Math.abs(d)<FPMIN)d=FPMIN;c=1+aa/c;if(Math.abs(c)<FPMIN)c=FPMIN;d=1/d;const del=d*c;h*=del;if(Math.abs(del-1)<1e-15)break;}
+  return h;}
+function ibeta(x,a,b){if(x<=0)return 0;if(x>=1)return 1;const bt=Math.exp(lgamma(a+b)-lgamma(a)-lgamma(b)+a*Math.log(x)+b*Math.log(1-x));
+  return x<(a+1)/(a+b+2)?bt*betacf(a,b,x)/a:1-bt*betacf(b,a,1-x)/b;}
+// 양측 p-value: P(|T| >= |t|)
+function tTwoSided(t,df){return ibeta(df/(df+t*t),df/2,0.5);}
+function tcdf(t,df){const p=0.5*tTwoSided(t,df);return t>0?1-p:p;}
+function tppf(p,df){let lo=-1e3,hi=1e3;for(let i=0;i<200;i++){const m=(lo+hi)/2;if(tcdf(m,df)<p)lo=m;else hi=m;}return (lo+hi)/2;}
+// Welch t-검정 (scipy.stats.ttest_ind(b, a, equal_var=False)와 같은 방향: b − a)
+function welch(a,b,conf=0.95){const va=variance(a)/a.length,vb=variance(b)/b.length,se=Math.sqrt(va+vb);const diff=mean(b)-mean(a);
+  const df=(va+vb)**2/(va*va/(a.length-1)+vb*vb/(b.length-1));const t=diff/se,q=tppf(1-(1-conf)/2,df);
+  return{t,df,p:tTwoSided(t,df),diff,lo:diff-q*se,hi:diff+q*se};}
+// Student t-검정 (등분산 가정, scipy 기본값)
+function student(a,b){const na=a.length,nb=b.length,df=na+nb-2;const sp2=((na-1)*variance(a)+(nb-1)*variance(b))/df;
+  const t=(mean(b)-mean(a))/Math.sqrt(sp2*(1/na+1/nb));return{t,df,p:tTwoSided(t,df)};}
+
+const TR=2,NT=120,DT=0.1;
+function gammaPdf(t,a){return t>0?Math.exp((a-1)*Math.log(t)-t-lgamma(a)):0;}
+// D4 예시 2와 같은 HRF: gamma.pdf(t,6) − gamma.pdf(t,16)/6, 0–32초, 0.1초 격자
+function hrf(){const h=[];for(let i=0;i<320;i++){const t=i*DT;h.push(gammaPdf(t,6)-gammaPdf(t,16)/6);}return h;}
+// 고해상도에서 convolution → TR 간격으로 뽑기 → 최댓값 1로 맞춤 (D4 make_regressor와 같은 순서)
+function makeRegressor(blocks,H){const n=Math.round(NT*TR/DT),stim=new Float64Array(n);
+  for(const [o,d] of blocks)for(let i=0;i<n;i++){const t=i*DT;if(t>=o&&t<o+d)stim[i]=1;}
+  const conv=new Float64Array(n);for(let i=0;i<n;i++){if(!stim[i])continue;for(let k=0;k<H.length&&i+k<n;k++)conv[i+k]+=stim[i]*H[k];}
+  const step=Math.round(TR/DT),r=[];for(let i=0;i<n;i+=step)r.push(conv[i]*DT);const m=Math.max(...r);return m>0?r.map(v=>v/m):r;}
+function dctBasis(n,K=3){return[...Array(K)].map((_,k)=>Array.from({length:n},(_,t)=>Math.cos(Math.PI*(k+1)*(t+0.5)/n)));}
+function invert(A){const n=A.length,M=A.map((r,i)=>[...r,...A.map((_,j)=>+(i===j))]);
+  for(let c=0;c<n;c++){let p=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[p][c]))p=r;if(Math.abs(M[p][c])<1e-12)return null;[M[c],M[p]]=[M[p],M[c]];
+    const d=M[c][c];for(let j=0;j<2*n;j++)M[c][j]/=d;for(let r=0;r<n;r++)if(r!==c){const f=M[r][c];if(f)for(let j=0;j<2*n;j++)M[r][j]-=f*M[c][j];}}
+  return M.map(r=>r.slice(n));}
+// OLS: X는 행=시점, 열=회귀변수. statsmodels OLS와 같은 β, SE, t
+function ols(X,y){const n=X.length,p=X[0].length,XtX=[...Array(p)].map((_,i)=>[...Array(p)].map((_,j)=>X.reduce((s,r)=>s+r[i]*r[j],0)));
+  const inv=invert(XtX);if(!inv)return null;const Xty=[...Array(p)].map((_,i)=>X.reduce((s,r,t)=>s+r[i]*y[t],0)),beta=inv.map(r=>r.reduce((s,v,j)=>s+v*Xty[j],0));
+  const fit=X.map(r=>r.reduce((s,v,j)=>s+v*beta[j],0)),rss=y.reduce((s,v,t)=>s+(v-fit[t])**2,0),df=n-p,s2=rss/df,se=inv.map((r,i)=>Math.sqrt(r[i]*s2));
+  return{beta,se,t:beta.map((b,i)=>b/se[i]),df,fit,inv};}
+function efficiency(inv,c){let s=0;for(let i=0;i<c.length;i++)for(let j=0;j<c.length;j++)s+=c[i]*inv[i][j]*c[j];return 1/s;}
+function ar1(r,n,phi,sd){const e=[r.normal(0,sd)];for(let i=1;i<n;i++)e.push(phi*e[i-1]+r.normal(0,sd));return e;}
+function designMatrix(task){const D=dctBasis(NT);return task.map((v,t)=>[1,v,D[0][t],D[1][t],D[2][t]]);}
+</script>
+<script>// ---- 공통 화면 도우미 ----
+(function(){const q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')document.documentElement.dataset.theme=q;})();
+function C(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function $(id){return document.getElementById(id);}
+function val(id){const e=$(id);return e.type==='checkbox'?e.checked:(e.type==='range'||e.type==='number')?+e.value:e.value;}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function fmtP(p){return p<1e-4?'< 0.0001':p.toFixed(4);}
+function setupCanvas(id,h){const cv=$(id),w=Math.max(240,cv.parentElement.clientWidth),r=window.devicePixelRatio||1;
+  cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,w,h);
+  ctx.font='12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';return{ctx,w,h,cv};}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)/(d1-d0)*(r1-r0);}
+function ticks(lo,hi,n=5){const raw=(hi-lo)/n,p=10**Math.floor(Math.log10(raw)),m=raw/p,st=(m<1.5?1:m<3.5?2:m<7.5?5:10)*p,out=[];
+  for(let v=Math.ceil(lo/st-1e-9)*st;v<=hi+1e-9*st;v+=st)out.push(Math.abs(v)<st*1e-9?0:v);return out;}
+function txt(ctx,s,x,y,o={}){ctx.save();ctx.fillStyle=o.color||C('fg');ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.size||o.bold)ctx.font=(o.bold?'600 ':'')+(o.size||12)+'px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(o.rot){ctx.translate(x,y);ctx.rotate(o.rot);ctx.fillText(s,0,0);}else ctx.fillText(s,x,y);ctx.restore();}
+// 축 그리기: box={l,r,t,b} 픽셀, xr/yr=[min,max]. 반환: sx, sy 변환 함수
+function axes(ctx,box,xr,yr,o={}){const sx=lin(xr[0],xr[1],box.l,box.r),sy=lin(yr[0],yr[1],box.b,box.t);
+  ctx.save();ctx.strokeStyle=C('grid');ctx.lineWidth=1;ctx.fillStyle=C('muted');ctx.font='11px -apple-system,sans-serif';
+  if(!o.noX){ctx.textAlign='center';ctx.textBaseline='top';for(const v of (o.xt||ticks(xr[0],xr[1],o.nx||5))){const x=sx(v);ctx.beginPath();ctx.moveTo(x,box.t);ctx.lineTo(x,box.b);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fx||(v=>+v.toPrecision(6)))(v),x,box.b+3);}}
+  if(!o.noY){ctx.textAlign='right';ctx.textBaseline='middle';for(const v of (o.yt||ticks(yr[0],yr[1],o.ny||4))){const y=sy(v);ctx.beginPath();ctx.moveTo(box.l,y);ctx.lineTo(box.r,y);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fy||(v=>+v.toPrecision(6)))(v),box.l-4,y);}}
+  ctx.strokeStyle=C('muted');ctx.strokeRect(box.l,box.t,box.r-box.l,box.b-box.t);ctx.restore();
+  if(o.xlab)txt(ctx,o.xlab,(box.l+box.r)/2,box.b+30,{align:'center',color:C('muted'),size:12});
+  if(o.ylab)txt(ctx,o.ylab,12,(box.t+box.b)/2,{align:'center',base:'middle',color:C('muted'),size:12,rot:-Math.PI/2});
+  return{sx,sy};}
+// 모양 표식: 색만으로 구분하지 않도록 circle / tri / square / cross / diamond
+function mark(ctx,shape,x,y,r,color,filled=true){ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.6;ctx.beginPath();
+  if(shape==='circle')ctx.arc(x,y,r,0,2*Math.PI);
+  else if(shape==='tri'){ctx.moveTo(x,y-r*1.2);ctx.lineTo(x+r*1.1,y+r*0.8);ctx.lineTo(x-r*1.1,y+r*0.8);ctx.closePath();}
+  else if(shape==='square')ctx.rect(x-r*.9,y-r*.9,r*1.8,r*1.8);
+  else if(shape==='diamond'){ctx.moveTo(x,y-r*1.3);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*1.3);ctx.lineTo(x-r,y);ctx.closePath();}
+  else if(shape==='cross'){ctx.moveTo(x-r,y-r);ctx.lineTo(x+r,y+r);ctx.moveTo(x+r,y-r);ctx.lineTo(x-r,y+r);ctx.lineWidth=2.2;ctx.stroke();ctx.restore();return;}
+  if(filled){ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1;}ctx.stroke();ctx.restore();}
+function line(ctx,pts,color,w=1.5,dash){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;if(dash)ctx.setLineDash(dash);ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
+// 슬라이더 값 표시 + 변경 시 콜백
+function bind(ids,fn,show={}){for(const id of ids){const e=$(id),o=document.querySelector(`output[for="${id}"]`);
+  const upd=()=>{if(o)o.textContent=show[id]?show[id](val(id)):e.value;};upd();e.addEventListener('input',()=>{upd();fn(id);});e.addEventListener('change',()=>{upd();fn(id);});}}
+// 다시 그리기: 창 크기·테마 변화 때. iframe 부모에 실제 높이를 알려 준다({type:'viz-height'}).
+function redrawOn(fn){let q=0;const run=()=>{q=0;fn();if(parent!==window)parent.postMessage({type:'viz-height',height:document.documentElement.scrollHeight},'*');};
+  const later=()=>{if(!q)q=requestAnimationFrame(run);};addEventListener('resize',later);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',later);run();return later;}
+
+const H=hrf();let seed=newSeed(),events=[];
+function regularEvents(){events=[];for(let o=4;o<NT*TR-20;o+=20)events.push(o);}
+function randomEvents(){const r=makeRng(newSeed());events=[];let o=4;while(events.length<20&&o<NT*TR-20){events.push(Math.round(o*10)/10);o+=4+r.uniform()*14;}}
+function blocks(){if(val('mode')==='event')return events.map(o=>[o,1]);const on=val('on'),off=val('off'),b=[];for(let o=0;o<NT*TR;o+=on+off)b.push([o,on]);return b;}
+let lastFit=null;
+function draw(){const ev=val('mode')==='event';document.querySelectorAll('.blk').forEach(e=>e.style.display=ev?'none':'');document.querySelectorAll('.evt').forEach(e=>e.style.display=ev?'':'none');
+  $('stimcap').textContent=ev?'자극 시각표와 예측 BOLD. 그림을 눌러 그 시각에 이벤트를 넣거나(빈 곳) 뺍니다(막대 근처).':'자극 시각표(막대)와 예측 BOLD(곡선 = 과제 회귀변수).';
+  const B=blocks(),task=makeRegressor(B,H),X=designMatrix(task),r=makeRng(seed),D=dctBasis(NT),noise=ar1(r,NT,val('phi'),val('sd'));
+  const y=task.map((v,t)=>100+val('beta')*v+val('drift')*D[0][t]+noise[t]),F=B.length?ols(X,y):null;lastFit=F;
+  const c=[0,1,0,0,0];
+  $('stats').innerHTML=(F?[['진짜 β / 추정 β̂',`${fmt(val('beta'),1)} / ${fmt(F.beta[1])}`],['표준오차 SE(β̂)',fmt(F.se[1],3)],['t = β̂ ÷ SE',fmt(F.t[1])],[`p (OLS, 자유도 ${F.df})`,fmtP(tTwoSided(F.t[1],F.df))],
+    ['설계 효율 1/c(XᵀX)⁻¹cᵀ',fmt(efficiency(F.inv,c),1)],[ev?'이벤트 수':'블록 수',B.length]]:[['상태','자극이 없어 과제 회귀변수를 만들 수 없습니다']])
+    .map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+  {const {ctx,w,h}=setupCanvas('cvh',170),box={l:36,r:w-10,t:8,b:h-34},hm=Math.max(...H),{sx,sy}=axes(ctx,box,[0,32],[-0.25,1.1],{xlab:'자극 뒤 시간 (초)',ny:3,fy:v=>v.toFixed(1)});
+   line(ctx,[[sx(0),sy(0)],[sx(32),sy(0)]],C('muted'),1);line(ctx,H.map((v,i)=>[sx(i*DT),sy(v/hm)]),C('c1'),2.2);
+   const ip=H.indexOf(hm);mark(ctx,'circle',sx(ip*DT),sy(1),4,C('c4'));txt(ctx,`봉우리 ${fmt(ip*DT,1)}초`,sx(ip*DT)+6,sy(1)+4,{color:C('c4'),size:11,bold:1});
+   const iu=H.indexOf(Math.min(...H));txt(ctx,`undershoot ${fmt(iu*DT,1)}초`,sx(iu*DT),sy(H[iu]/hm)+14,{align:'center',size:11,color:C('muted')});}
+  {const {ctx,w,h}=setupCanvas('cvs',170),box={l:36,r:w-10,t:8,b:h-34},{sx,sy}=axes(ctx,box,[0,NT*TR],[-0.3,1.15],{xlab:'시간 (초)',ny:3,fy:v=>v.toFixed(1)});
+   ctx.fillStyle=C('fill2');ctx.strokeStyle=C('c2');for(const [o,d] of B){ctx.fillRect(sx(o),sy(1),Math.max(2,sx(o+d)-sx(o)),sy(0)-sy(1));}
+   line(ctx,task.map((v,i)=>[sx(i*TR),sy(v)]),C('c1'),2.2);}
+  {const {ctx,w,h}=setupCanvas('cvy',220),box={l:44,r:w-10,t:8,b:h-34},lo=Math.min(...y)-0.5,hi=Math.max(...y)+0.5,{sx,sy}=axes(ctx,box,[0,NT*TR],[lo,hi],{xlab:'시간 (초)',ny:4,fy:v=>v.toFixed(0)});
+   y.forEach((v,i)=>mark(ctx,'circle',sx(i*TR),sy(v),2,C('muted'),false));
+   if(F){line(ctx,F.fit.map((v,i)=>[sx(i*TR),sy(v)]),C('c1'),2);line(ctx,task.map((v,i)=>[sx(i*TR),sy(F.beta[0]+F.beta[1]*v)]),C('c2'),2,[6,4]);}}}
+bind(['mode','on','off','beta','sd','phi','drift'],()=>later(),{on:v=>v+'초',off:v=>v+'초'});
+$('rand').onclick=()=>{randomEvents();later();};$('regular').onclick=()=>{regularEvents();later();};$('clear').onclick=()=>{events=[];later();};
+$('again').onclick=()=>{seed=newSeed();later();};
+$('cvs').addEventListener('click',e=>{if(val('mode')!=='event')return;const rc=e.currentTarget.getBoundingClientRect(),l=36,r=rc.width-10,t=(e.clientX-rc.left-l)/(r-l)*NT*TR;
+  if(t<0||t>NT*TR)return;const near=events.findIndex(o=>Math.abs(o-t)<3);if(near>=0)events.splice(near,1);else events.push(Math.round(t*10)/10);events.sort((a,b)=>a-b);later();});
+regularEvents();const later=redrawOn(draw);
+</script></body></html>
