@@ -2,7 +2,7 @@
 
 > **주차:** 3주차 · **예상 시간:** 75–90분 · **산출물:** pathway 표 (`processed/pathway_table.csv`) + dotplot (`figures/osdr_real_pathway_dotplot.png`)
 
-> **이 분석의 성격:** 교육용 탐색 근사입니다. 원 논문의 분석을 재현한 것이 아니며, 정규화와 검정 방법이 논문과 다를 수 있습니다. 결과는 가설 생성용으로만 읽고, 논문 Methods와의 차이를 보고서의 한계에 적습니다.
+> **이 분석의 성격:** 교육용 탐색 근사입니다. 원 논문의 분석을 재현한 것이 아니며, 정규화와 검정 방법이 논문과 다를 수 있습니다. 결과는 가설 생성용으로만 읽고, 논문 Methods와의 차이를 보고서의 한계에 적습니다. 특히 pathway 단계는 원 논문(nSolver Advanced Analysis의 pathway score, 경로 유전자 발현의 제1주성분을 군 간 비교)과 방법 자체가 다릅니다. 이 수업은 후보 목록의 ORA를 씁니다. 비교표는 [Day 18](day-18.md)에 있습니다.
 
 ## 오늘의 목표
 - over-representation analysis(ORA)가 무엇을 세고 무엇과 비교하는지 설명할 수 있다.
