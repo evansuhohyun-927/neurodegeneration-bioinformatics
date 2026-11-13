@@ -10,7 +10,7 @@
 | 0주차 — 코딩 기초 | 7일 | 코딩이 처음이면 필수 | 터미널, Python, pandas, Git |
 | 1–6주차 — 본 과정 | 42일 | 필수 | NASA OSDR OSD-536(마우스 뇌 nCounter 패널) + PhysioNet PD 운동 데이터 |
 | 보충 단원 | 7일 | 선택 | 서열 데이터베이스, 정렬, 치환 행렬, BLAST, 계통수 |
-| 심화 파트 A–G | 파트당 7일 | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI |
+| 심화 파트 A–H | 파트당 7일 | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI, 임상 예측·조기진단 ML |
 
 필수 과정은 7주(49일)이고, 한 주에 약 9–11시간(레슨 7개)이 듭니다. 복습과 보고서 작성 주간(3·5·6주차)은 더 걸릴 수 있습니다.
 
@@ -152,6 +152,7 @@
 | [D — fMRI 데이터 분석](lessons/advanced/D-fmri/day-D1.md) | Python | 뇌 영상 연구를 읽고 분석할 때. | [가이드](crash-course/fmri.md) |
 | [E — EHR(전자건강기록) 2차 분석](lessons/advanced/E-ehr/day-E1.md) | Python | 병원 기록으로 임상 질문에 답할 때. 교란과 편향이 핵심. | [가이드](crash-course/ehr.md) |
 | [G — AI·생성형 AI in 바이오메디컬](lessons/advanced/G-ai-biomed/day-G1.md) | Python | 5주차 모델링의 다음 단계. 생성 모델, 신약 ML, 단백질 구조, LLM 검증. | [가이드](crash-course/ai-biomed.md) |
+| [H — 임상 예측·조기진단 ML](lessons/advanced/H-clinical-prediction/day-H1.md) | Python | 진단·예후·조기진단 모델을 어떻게 평가·보고하는가. 보정, 임계값, 결정 곡선, 생존 예측, 외부 검증. | [가이드](crash-course/clinical-prediction.md) |
 
 ### 심화 A — R과 Bioconductor
 
@@ -212,6 +213,16 @@
 - [ ] [Day G5 — 단백질: 구조 예측과 단백질 언어 모델](lessons/advanced/G-ai-biomed/day-G5.md)
 - [ ] [Day G6 — LLM 활용: 임상 텍스트, 문헌 요약, 코드 보조, 그리고 검증](lessons/advanced/G-ai-biomed/day-G6.md)
 - [ ] [Day G7 — 평가·편향·설명·규제, 그리고 정직한 미니 프로젝트](lessons/advanced/G-ai-biomed/day-G7.md)
+
+### 심화 H — 임상 예측·조기진단 ML
+
+- [ ] [Day H1 — 진단, 예후, 조기진단: 문제를 먼저 정의하기](lessons/advanced/H-clinical-prediction/day-H1.md)
+- [ ] [Day H2 — 표본 수와 분할: 몇 명이면 충분하고, 어떻게 나누는가](lessons/advanced/H-clinical-prediction/day-H2.md)
+- [ ] [Day H3 — 판별력, 보정, 임계값: 숫자 셋을 함께 읽기](lessons/advanced/H-clinical-prediction/day-H3.md)
+- [ ] [Day H4 — 임상적 유용성: 결정 곡선과 순 이득](lessons/advanced/H-clinical-prediction/day-H4.md)
+- [ ] [Day H5 — 종단·생존 예측: 언제 발병하는가](lessons/advanced/H-clinical-prediction/day-H5.md)
+- [ ] [Day H6 — 외부 검증과 데이터셋 이동: 다른 기관에 가면 무엇이 무너지나](lessons/advanced/H-clinical-prediction/day-H6.md)
+- [ ] [Day H7 — 보고와 규제, 그리고 정직한 조기 선별 baseline 미니 프로젝트](lessons/advanced/H-clinical-prediction/day-H7.md)
 
 ## 저작권과 출처
 

@@ -116,6 +116,7 @@ const GROUPS = [
   { dir: 'lessons/advanced/D-fmri', name: '심화 D', title: 'fMRI', desc: '뇌 영상 분석과 읽기' },
   { dir: 'lessons/advanced/E-ehr', name: '심화 E', title: 'EHR 2차 분석', desc: '병원 기록, 교란과 편향' },
   { dir: 'lessons/advanced/G-ai-biomed', name: '심화 G', title: 'AI·생성형 AI', desc: '생성 모델, 단백질, LLM 검증' },
+  { dir: 'lessons/advanced/H-clinical-prediction', name: '심화 H', title: '임상 예측·조기진단 ML', desc: '보정, 임계값, decision curve, 외부 검증' },
   { dir: 'crash-course', name: 'Crash Course', title: '급할 때 보는 가이드', desc: '분야별 30–45분 압축 가이드' },
 ];
 const titleOf = (src) => (fs.readFileSync(path.join(REPO, src), 'utf8').match(/^# (.+)$/m) || [, src])[1].trim();

@@ -32,6 +32,7 @@ export default defineConfig({
         group('심화 D — fMRI', 'lessons/advanced/d-fmri'),
         group('심화 E — EHR 2차 분석', 'lessons/advanced/e-ehr'),
         group('심화 G — AI·생성형 AI', 'lessons/advanced/g-ai-biomed'),
+        group('심화 H — 임상 예측·조기진단 ML', 'lessons/advanced/h-clinical-prediction'),
         group('Crash Course', 'crash-course'),
         {
           label: '참고',

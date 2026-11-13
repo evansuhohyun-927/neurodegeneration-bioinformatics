@@ -17,7 +17,7 @@ REPO_URL = "https://github.com/evansuhohyun-927/neurodegeneration-bioinformatics
 SOURCES = (
     [f"lessons/week-{i}/*.md" for i in range(7)]
     + ["lessons/supplement/*.md"]
-    + [f"lessons/advanced/{p}-*/*.md" for p in "ACDEG"]  # B(MATLAB)는 Colab에서 실행 불가라 제외
+    + [f"lessons/advanced/{p}-*/*.md" for p in "ACDEGH"]  # B(MATLAB)는 Colab에서 실행 불가라 제외
     + ["crash-course/*.md"]
 )
 SKIP_SECTIONS = ("퀴즈", "체크리스트")
