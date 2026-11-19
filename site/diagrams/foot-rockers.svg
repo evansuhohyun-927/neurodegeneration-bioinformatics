@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 500" role="img" aria-labelledby="foot-rockers-t foot-rockers-d">
+<title id="foot-rockers-t">네 rocker의 회전축과 Whittle의 세 rocker</title>
+<desc id="foot-rockers-d">발 옆모습을 다각형(뒷발), 짧은 막대(발가락), 긴 막대(정강이)로 단순화해 stance 동안 회전축이 옮겨 가는 네 장면을 나란히 그렸다. 빨간 원이 그 장면의 회전축이고 둥근 화살표는 몸이 그 축 위로 앞으로 넘어가는 방향이다. ① heel rocker(LR, 0–12 %GC): 뒤꿈치의 둥근 아랫면이 축이고, 정강이 앞 근육이 원심성으로 발이 떨어지는 것을 늦추며 정강이를 앞으로 끈다. ② ankle rocker(MSt, 12–31 %): 발바닥이 바닥에 고정되고 발목 관절이 축이 되어 정강이가 앞으로 넘어간다. 가자미근이 원심성으로 그 속도를 늦춘다. 점선은 MSt 시작의 수직 정강이다. ③ forefoot rocker(TSt, 31–50 %): 뒤꿈치가 들리고 중족골두가 축이 된다. 몸이 지지면 앞으로 떨어지는 이 구간을 Perry는 주기 중 가장 강한 전진력으로 본다. 종아리 근육은 미는 것이 아니라 발목을 버티며 제동한다. ④ toe rocker(PSw, 50–62 %): 엄지발가락과 전족부 앞끝이 축이다. 팽팽하던 근건이 풀리며 되튀어 다리를 swing으로 보낸다. 아래 띠는 Whittle 6판의 세 rocker다: heel/initial rocker는 IC에서 OT까지, ankle/mid-stance rocker는 OT부터(본문은 terminal stance까지 이어진다고도 쓴다), forefoot/terminal rocker는 HR에서 TO까지라 Perry의 forefoot rocker와 toe rocker를 함께 담는다. 근거: Perry &amp; Burnfield 2판 3장 Foot Rockers, 4장; Whittle 6판 2장 pp.26–30. 발 모양과 각도는 개념을 보이기 위한 단순화이며 실제 비율이 아니다.</desc>
+<defs><marker id="foot-rockers-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="d-text d-strong" x="360.0" y="26.0" font-size="15" text-anchor="middle">rocker = 몸이 넘어가는 회전축이 stance 동안 옮겨 가는 순서</text>
+<text class="d-sub" x="360.0" y="44.0" font-size="12" text-anchor="middle">Perry의 네 rocker (위) · Whittle의 세 rocker (아래 띠) · 빨간 원 = 그 순간의 회전축</text>
+<rect class="d-node" x="14.0" y="56" width="172.0" height="290" rx="8"/>
+<text class="d-text d-strong" x="100.0" y="76.0" font-size="13.5" text-anchor="middle">① heel rocker</text>
+<text class="d-sub" x="100.0" y="93.0" font-size="11.5" text-anchor="middle">LR · 0–12%GC</text>
+<line class="d-line" x1="22.0" y1="236.0" x2="178.0" y2="236.0"/>
+<line class="d-line" x1="28.0" y1="236.0" x2="22.0" y2="243.0"/>
+<line class="d-line" x1="45.0" y1="236.0" x2="39.0" y2="243.0"/>
+<line class="d-line" x1="62.0" y1="236.0" x2="56.0" y2="243.0"/>
+<line class="d-line" x1="79.0" y1="236.0" x2="73.0" y2="243.0"/>
+<line class="d-line" x1="96.0" y1="236.0" x2="90.0" y2="243.0"/>
+<line class="d-line" x1="113.0" y1="236.0" x2="107.0" y2="243.0"/>
+<line class="d-line" x1="130.0" y1="236.0" x2="124.0" y2="243.0"/>
+<line class="d-line" x1="147.0" y1="236.0" x2="141.0" y2="243.0"/>
+<line class="d-line" x1="164.0" y1="236.0" x2="158.0" y2="243.0"/>
+<rect class="d-d" x="69.0" y="95.9" width="10" height="108.0" rx="5" transform="rotate(-14.0 74.0 203.9)"/>
+<circle class="d-node" cx="47.9" cy="99.1" r="5"/>
+<polygon class="d-b" points="58.2,232.4 56.9,220.5 65.4,201.5 79.0,197.8 123.6,217.7 124.9,224.6 66.0,236.0"/>
+<circle class="d-b" cx="64.7" cy="229.1" r="7"/>
+<rect class="d-b" x="124.9" y="217.6" width="20.0" height="7" rx="3" transform="rotate(-11.0 124.9 224.6)"/>
+<circle class="d-node" cx="74.0" cy="203.9" r="4"/>
+<circle class="d-line d-bad" cx="66.0" cy="236.0" r="9"/>
+<circle class="d-node d-bad" cx="66.0" cy="236.0" r="2.5"/>
+<path class="d-line" d="M38.8,223.3 A30.0,30.0 0 0 1 92.0,221.0" marker-end="url(#foot-rockers-arrow)"/>
+<text class="d-text d-strong" x="100.0" y="266.0" font-size="12" text-anchor="middle">축: 뒤꿈치 둥근 아랫면</text>
+<text class="d-sub" x="100.0" y="286.0" font-size="11.5" text-anchor="middle">정강이 앞 근육이 늘어나며</text>
+<text class="d-sub" x="100.0" y="302.0" font-size="11.5" text-anchor="middle">발이 툭 떨어지는 것을 늦춘다</text>
+<text class="d-text" x="100.0" y="326.0" font-size="11.5" text-anchor="middle">뒤꿈치 → 발바닥 전체</text>
+<rect class="d-node" x="190.0" y="56" width="172.0" height="290" rx="8"/>
+<text class="d-text d-strong" x="276.0" y="76.0" font-size="13.5" text-anchor="middle">② ankle rocker</text>
+<text class="d-sub" x="276.0" y="93.0" font-size="11.5" text-anchor="middle">MSt · 12–31%GC</text>
+<line class="d-line" x1="198.0" y1="236.0" x2="354.0" y2="236.0"/>
+<line class="d-line" x1="204.0" y1="236.0" x2="198.0" y2="243.0"/>
+<line class="d-line" x1="221.0" y1="236.0" x2="215.0" y2="243.0"/>
+<line class="d-line" x1="238.0" y1="236.0" x2="232.0" y2="243.0"/>
+<line class="d-line" x1="255.0" y1="236.0" x2="249.0" y2="243.0"/>
+<line class="d-line" x1="272.0" y1="236.0" x2="266.0" y2="243.0"/>
+<line class="d-line" x1="289.0" y1="236.0" x2="283.0" y2="243.0"/>
+<line class="d-line" x1="306.0" y1="236.0" x2="300.0" y2="243.0"/>
+<line class="d-line" x1="323.0" y1="236.0" x2="317.0" y2="243.0"/>
+<line class="d-line" x1="340.0" y1="236.0" x2="334.0" y2="243.0"/>
+<line class="d-line d-dash" x1="256.0" y1="206.0" x2="256.0" y2="98.0"/>
+<rect class="d-d" x="251.0" y="98.0" width="10" height="108.0" rx="5" transform="rotate(5.0 256.0 206.0)"/>
+<circle class="d-node" cx="265.4" cy="98.4" r="5"/>
+<polygon class="d-b" points="235.0,231.0 236.0,219.0 248.0,202.0 262.0,201.0 302.0,229.0 302.0,236.0 242.0,236.0"/>
+<circle class="d-b" cx="242.0" cy="229.0" r="7"/>
+<rect class="d-b" x="302.0" y="229.0" width="20.0" height="7" rx="3" transform="rotate(0.0 302.0 236.0)"/>
+<circle class="d-node" cx="256.0" cy="206.0" r="4"/>
+<circle class="d-line d-bad" cx="256.0" cy="206.0" r="9"/>
+<circle class="d-node d-bad" cx="256.0" cy="206.0" r="2.5"/>
+<path class="d-line" d="M228.8,193.3 A30.0,30.0 0 0 1 282.0,191.0" marker-end="url(#foot-rockers-arrow)"/>
+<text class="d-text d-strong" x="276.0" y="266.0" font-size="12" text-anchor="middle">축: 발목 관절</text>
+<text class="d-sub" x="276.0" y="286.0" font-size="11.5" text-anchor="middle">가자미근이 늘어나며</text>
+<text class="d-sub" x="276.0" y="302.0" font-size="11.5" text-anchor="middle">정강이가 넘어가는 속도를 늦춘다</text>
+<text class="d-text" x="276.0" y="326.0" font-size="11.5" text-anchor="middle">발바닥 전체가 닿음</text>
+<rect class="d-node" x="366.0" y="56" width="172.0" height="290" rx="8"/>
+<text class="d-text d-strong" x="452.0" y="76.0" font-size="13.5" text-anchor="middle">③ forefoot rocker</text>
+<text class="d-sub" x="452.0" y="93.0" font-size="11.5" text-anchor="middle">TSt · 31–50%GC</text>
+<line class="d-line" x1="374.0" y1="236.0" x2="530.0" y2="236.0"/>
+<line class="d-line" x1="380.0" y1="236.0" x2="374.0" y2="243.0"/>
+<line class="d-line" x1="397.0" y1="236.0" x2="391.0" y2="243.0"/>
+<line class="d-line" x1="414.0" y1="236.0" x2="408.0" y2="243.0"/>
+<line class="d-line" x1="431.0" y1="236.0" x2="425.0" y2="243.0"/>
+<line class="d-line" x1="448.0" y1="236.0" x2="442.0" y2="243.0"/>
+<line class="d-line" x1="465.0" y1="236.0" x2="459.0" y2="243.0"/>
+<line class="d-line" x1="482.0" y1="236.0" x2="476.0" y2="243.0"/>
+<line class="d-line" x1="499.0" y1="236.0" x2="493.0" y2="243.0"/>
+<line class="d-line" x1="516.0" y1="236.0" x2="510.0" y2="243.0"/>
+<rect class="d-d" x="435.6" y="87.8" width="10" height="108.0" rx="5" transform="rotate(24.0 440.6 195.8)"/>
+<circle class="d-node" cx="484.6" cy="97.1" r="5"/>
+<polygon class="d-b" points="414.2,214.9 418.1,203.5 433.8,189.9 447.7,192.4 479.7,229.2 478.0,236.0 419.8,221.5"/>
+<circle class="d-b" cx="421.5" cy="214.7" r="7"/>
+<rect class="d-b" x="478.0" y="229.0" width="20.0" height="7" rx="3" transform="rotate(0.0 478.0 236.0)"/>
+<circle class="d-node" cx="440.6" cy="195.8" r="4"/>
+<circle class="d-line d-bad" cx="478.0" cy="236.0" r="9"/>
+<circle class="d-node d-bad" cx="478.0" cy="236.0" r="2.5"/>
+<path class="d-line" d="M450.8,223.3 A30.0,30.0 0 0 1 504.0,221.0" marker-end="url(#foot-rockers-arrow)"/>
+<text class="d-text d-strong" x="452.0" y="266.0" font-size="12" text-anchor="middle">축: 중족골두</text>
+<text class="d-sub" x="452.0" y="286.0" font-size="11.5" text-anchor="middle">종아리 근육이 발목을 버텨</text>
+<text class="d-sub" x="452.0" y="302.0" font-size="11.5" text-anchor="middle">앞으로 떨어지는 몸을 제동한다</text>
+<text class="d-text" x="452.0" y="326.0" font-size="11.5" text-anchor="middle">뒤꿈치가 들림</text>
+<rect class="d-node" x="542.0" y="56" width="172.0" height="290" rx="8"/>
+<text class="d-text d-strong" x="628.0" y="76.0" font-size="13.5" text-anchor="middle">④ toe rocker</text>
+<text class="d-sub" x="628.0" y="93.0" font-size="11.5" text-anchor="middle">PSw · 50–62%GC</text>
+<line class="d-line" x1="550.0" y1="236.0" x2="706.0" y2="236.0"/>
+<line class="d-line" x1="556.0" y1="236.0" x2="550.0" y2="243.0"/>
+<line class="d-line" x1="573.0" y1="236.0" x2="567.0" y2="243.0"/>
+<line class="d-line" x1="590.0" y1="236.0" x2="584.0" y2="243.0"/>
+<line class="d-line" x1="607.0" y1="236.0" x2="601.0" y2="243.0"/>
+<line class="d-line" x1="624.0" y1="236.0" x2="618.0" y2="243.0"/>
+<line class="d-line" x1="641.0" y1="236.0" x2="635.0" y2="243.0"/>
+<line class="d-line" x1="658.0" y1="236.0" x2="652.0" y2="243.0"/>
+<line class="d-line" x1="675.0" y1="236.0" x2="669.0" y2="243.0"/>
+<line class="d-line" x1="692.0" y1="236.0" x2="686.0" y2="243.0"/>
+<rect class="d-d" x="622.0" y="69.7" width="10" height="108.0" rx="5" transform="rotate(37.0 627.0 177.7)"/>
+<circle class="d-node" cx="692.0" cy="91.5" r="5"/>
+<polygon class="d-b" points="594.4,179.4 603.9,172.0 624.5,169.2 634.8,178.7 641.6,227.1 636.4,231.8 595.5,188.0"/>
+<circle class="d-b" cx="600.6" cy="183.2" r="7"/>
+<rect class="d-b" x="636.4" y="224.8" width="20.0" height="7" rx="3" transform="rotate(12.0 636.4 231.8)"/>
+<circle class="d-node" cx="627.0" cy="177.7" r="4"/>
+<circle class="d-line d-bad" cx="656.0" cy="236.0" r="9"/>
+<circle class="d-node d-bad" cx="656.0" cy="236.0" r="2.5"/>
+<path class="d-line" d="M628.8,223.3 A30.0,30.0 0 0 1 682.0,221.0" marker-end="url(#foot-rockers-arrow)"/>
+<text class="d-text d-strong" x="628.0" y="266.0" font-size="12" text-anchor="middle">축: 엄지발가락·앞끝</text>
+<text class="d-sub" x="628.0" y="286.0" font-size="11.5" text-anchor="middle">늘어났던 힘줄이 되튀며</text>
+<text class="d-sub" x="628.0" y="302.0" font-size="11.5" text-anchor="middle">다리를 swing으로 보낸다</text>
+<text class="d-text" x="628.0" y="326.0" font-size="11.5" text-anchor="middle">발가락만 닿음</text>
+<text class="d-text d-strong" x="14.0" y="364.0" font-size="13" text-anchor="start">Whittle 6판의 세 rocker</text>
+<rect class="d-a" x="14.0" y="374" width="172.0" height="46" rx="8"/>
+<text class="d-text d-strong" x="100.0" y="393.0" font-size="12" text-anchor="middle">heel / initial rocker</text>
+<text class="d-text" x="100.0" y="410.0" font-size="10.5" text-anchor="middle">IC → OT</text>
+<rect class="d-b" x="190.0" y="374" width="172.0" height="46" rx="8"/>
+<text class="d-text d-strong" x="276.0" y="393.0" font-size="12" text-anchor="middle">ankle / mid-stance rocker</text>
+<text class="d-text" x="276.0" y="410.0" font-size="10.5" text-anchor="middle">OT → HR (TSt까지 이어진다고도 씀)</text>
+<rect class="d-c" x="366.0" y="374" width="348.0" height="46" rx="8"/>
+<text class="d-text d-strong" x="540.0" y="393.0" font-size="12" text-anchor="middle">forefoot / terminal rocker</text>
+<text class="d-text" x="540.0" y="410.0" font-size="10.5" text-anchor="middle">HR → TO · Perry의 ③과 ④를 한 묶음으로</text>
+<text class="d-text" x="14.0" y="448.0" font-size="12" text-anchor="start">읽는 법: rocker는 모터가 아니라 경첩이다. Perry는 몸을 앞으로 보내는 주된 힘을 체중의 전방 낙하로 보고,</text>
+<text class="d-text" x="14.0" y="466.0" font-size="12" text-anchor="start">rocker는 그 낙하를 앞쪽 회전으로 돌리는 축, stance 근육은 대부분 그 속도를 늦추는 브레이크로 본다.</text>
+<text class="d-sub" x="14.0" y="488.0" font-size="11" text-anchor="start">근거: [P] 3장 Foot Rockers·4장, [W] 2장 pp.26–30. 발 모양·각도는 개념을 보이기 위한 단순화이며 실제 비율이 아니다.</text>
+</svg>

@@ -1,0 +1,197 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>rocker 회전축 따라가기</title><style>:root{--bg:#ffffff;--fg:#1f2328;--muted:#57606a;--grid:#d0d7de;--panel:#f6f8fa;--accent:#0b5cad;
+--c1:#1f63c6;--c2:#c2410c;--c3:#047857;--c4:#b91c1c;--c5:#6d28d9;--fill1:rgba(31,99,198,.18);--fill2:rgba(194,65,12,.18);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;padding:12px 16px 16px;max-width:960px;margin:0 auto;overflow-x:hidden}
+h1{font-size:1.1rem;margin:0 0 4px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.controls label{display:flex;flex-direction:column;font-size:.88rem;gap:2px}
+.controls label.inline{flex-direction:row;align-items:center;gap:6px}
+.controls output{font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.88rem;color:var(--fg);background:var(--bg);border:1px solid var(--grid);border-radius:6px;padding:4px 10px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plot{width:100%;margin:6px 0}
+.plot canvas{display:block;width:100%;touch-action:pan-y}
+.cap{font-size:.82rem;color:var(--muted);margin:0 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin:8px 0}
+.stat{background:var(--panel);border:1px solid var(--grid);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--grid);padding:4px 6px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--panel)}
+.tablewrap{overflow-x:auto}
+.note{font-size:.88rem;background:var(--panel);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0}
+.observe{margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+.observe h2{font-size:.95rem;margin:0 0 4px}
+.observe ol{margin:0;padding-left:1.3em;font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;margin:2px 0}
+.legend span{white-space:nowrap}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
+</style></head><body>
+<h1>rocker 회전축 따라가기: stance 동안 몸은 어느 점을 축으로 넘어가는가</h1>
+<p class="lead">슬라이더로 stance 안의 시점(%GC)을 옮기면 단순화한 발·정강이 모형에서 회전축이 뒤꿈치 → 발목 → 중족골두 → 발가락으로 옮겨 갑니다. 그 순간의 phase, 기능 과제, rocker 이름(Perry 4개 / Whittle 3개)과 하는 일이 함께 바뀝니다.</p>
+<p class="note">⚠️ <b>개념 설명용 단순 모형입니다.</b> 발은 뒷발 한 덩어리 + 발가락 한 분절, 다리는 정강이 막대 하나로 줄였습니다. 발목 각도와 phase 경계는 Perry & Burnfield 2판(2·4장)의 정상 평균값을 이어 붙였고, 발 기울기는 같은 장의 중족지 관절 값(TSt 약 21°, 발끝 떨어지기 직전 약 55°)을 따릅니다. PSw에서 발가락 분절이 들리는 정도와 발 모양·길이는 그림을 위한 임의 값입니다. 실제 사람의 측정값이 아닙니다.</p>
+<div class="controls">
+  <label>stance 안의 시점: <output for="g"></output><input type="range" id="g" min="0" max="62" step="0.5" value="0"></label>
+  <div class="btns"><span class="cap">phase로 이동:</span><button data-g="1">IC</button><button data-g="7">LR</button><button data-g="21">MSt</button><button data-g="40">TSt</button><button data-g="56">PSw</button><button id="play" type="button">▶ 재생</button></div>
+</div>
+<div class="stats" id="stats"></div>
+<p class="note" id="desc"></p>
+<p class="cap">발 옆모습(오른쪽이 진행 방향). 빨간 고리 = 지금의 회전축, 빨간 화살표 = 몸이 그 축 위로 넘어가는 방향, 점선 = 지금까지 무릎 점이 지나온 길, ▲ = 지금까지 쓰인 회전축의 위치.</p>
+<div class="legend"><span style="color:var(--c1)">■ 뒷발·발가락</span><span style="color:var(--c5)">▬ 정강이</span><span style="color:var(--c4)">◎ 회전축</span><span style="color:var(--muted)">┅ 무릎 점의 길</span></div>
+<div class="plot"><canvas id="cv1" role="img" aria-label="발과 정강이 모형에서 회전축의 위치"></canvas></div>
+<p class="cap">stance 시간축(0–62 %GC). 위 띠 = Perry의 네 rocker, 가운데 띠 = Whittle의 세 rocker, 아래 = 발목 각도(배측굴곡 +, 족저굴곡 −). ● = 책에서 확인한 값, 선 = 그 사이를 직선으로 이은 것.</p>
+<div class="plot"><canvas id="cv2" role="img" aria-label="stance 시간축의 rocker 구간과 발목 각도"></canvas></div>
+<div class="observe"><h2>관찰할 것</h2><ol>
+<li>회전축은 한 번도 공중에 뜨지 않습니다. 앞 rocker의 축이 바닥에서 떨어지기 전에 다음 축이 이미 바닥에 있습니다(12 %에 발바닥 전체, 31 %에 뒤꿈치 들림, 50 % 이후 발가락). 그래서 몸은 "굴러가는 바퀴의 한 조각"처럼 끊김 없이 넘어갑니다.</li>
+<li>31–45 %GC를 천천히 움직여 보세요. 뒤꿈치가 들린 뒤에도 발목 각도는 배측굴곡 쪽으로 계속 커집니다(45 %에 약 10°). 종아리 근육이 가장 세게 일하는 이 구간에 발목이 펴지지 않고 오히려 접히고 있다는 것이 "밀지 않고 제동한다"는 Perry 해석의 근거입니다.</li>
+<li>50 %를 넘기면 발목이 몇 % 사이에 배측굴곡 10°에서 족저굴곡 15°로 크게 움직입니다. Perry는 이 움직임을 근육의 능동적 밀기보다 늘어났던 힘줄의 되튐으로 봅니다. 같은 구간을 Whittle은 "아직 결론이 나지 않았다", Winter는 족저굴곡근의 구심성 push-off로 읽습니다(Day I2 개념 설명, 이론 노트 T01).</li>
+<li>Whittle 띠를 보세요. Perry의 forefoot rocker와 toe rocker가 Whittle에서는 terminal rocker 하나입니다. 개수가 다른 것은 자르는 단위가 다를 뿐 모순이 아닙니다.</li>
+<li>"반대 다리" 카드를 보세요. 이 다리의 IC·LR(0–12 %)은 반대 다리의 PSw(50–62 %)와 겹칩니다. 영상에서 phase 경계를 고를 때 반대 발의 사건(떨어짐, 닿음)을 함께 보는 이유입니다.</li>
+</ol></div>
+<script data-calc>// ---- 공통 계산 함수 (DOM 없음: Node에서 그대로 검산 가능) ----
+// 근거 값: [P] Perry & Burnfield 2판. phase 경계 2장, 발목 각도 4장(Arcs of Motion), 중족지 관절 4장(MTP joint).
+const PHASES=[ // 이름, 시작, 끝(%GC), 과제, 기능 목표([P] 2장 Objectives를 우리말로)
+  ['IC',0,2,'weight acceptance','heel rocker로 stance 시작, 착지 충격 줄이기'],
+  ['LR',2,12,'weight acceptance','충격 흡수, 체중을 실은 다리의 안정, 전진 유지'],
+  ['MSt',12,31,'single limb support','멈춰 있는 발 위로 전진, 다리·몸통 안정'],
+  ['TSt',31,50,'single limb support','지지 발 너머로 몸 전진, 다리·몸통 안정'],
+  ['PSw',50,62,'swing limb advancement','swing 자세 만들기, 전진 가속'],
+  ['ISw',62,75,'swing limb advancement','발이 바닥에 걸리지 않게, 뒤에 있던 다리 앞으로'],
+  ['MSw',75,87,'swing limb advancement','다리 전진, 발이 바닥에 걸리지 않게'],
+  ['TSw',87,100,'swing limb advancement','다리 전진 마무리, 다음 stance 준비']];
+const ROCKERS=[ // Perry 4개: 이름, 시작, 끝, 축, 하는 일
+  ['heel rocker',0,12,'뒤꿈치(종골)의 둥근 아랫면','정강이 앞 근육(전경골근 등)이 늘어나며 발이 바닥으로 떨어지는 속도를 늦추고, 그 사이 정강이를 앞으로 끕니다. 무릎은 굽혀지며 vastii가 늘어나면서 제동합니다(12 %GC에 무릎 약 20°). 12 %에 발바닥 전체가 닿고 경골이 수직이 됩니다.'],
+  ['ankle rocker',12,31,'발목 관절','발바닥은 바닥에 고정되고 정강이가 운동량으로 발목 위를 넘어갑니다. 가자미근(비복근이 보조)이 늘어나며 그 속도를 늦춥니다. 이 시기의 종아리 근육 활동은 아직 낮습니다.'],
+  ['forefoot rocker',31,50,'중족골두','뒤꿈치가 들리고 몸이 지지면 앞으로 떨어집니다. Perry는 이 낙하를 주기 중 가장 강한 전진력으로 봅니다. 종아리 근육은 가장 세게 일하지만 발목을 버텨 낙하 속도를 늦출 뿐 미는 것이 아닙니다(Perry의 "roll-off"). 근섬유 길이는 거의 그대로이고 늘어나는 것은 힘줄입니다.'],
+  ['toe rocker',50,62,'엄지발가락과 전족부 앞끝','반대 발이 닿아 체중이 그쪽으로 넘어가면, 팽팽하던 종아리 근건이 풀리며 되튑니다. 이때 종아리 근육 EMG는 거의 꺼져 있습니다. 발목이 빠르게 족저굴곡하고 무릎이 약 40°까지 굽혀져 다리가 swing으로 나갑니다.']];
+const WHITTLE=[['heel / initial rocker',0,12,'IC → OT'],['ankle / mid-stance rocker',12,31,'OT → HR (본문은 TSt까지 이어진다고도 씀)'],['forefoot / terminal rocker',31,62,'HR → TO (Perry의 forefoot + toe rocker)']];
+// 발목 각도 기준점 [%GC, 도]: 배측굴곡 +. [P] 4장: LR 6 %에 PF 5°, LR 끝 중립(책 안에서 서술이 갈리는 값), MSt 끝 DF 5°, 45 %에 DF 10° 최대, PSw 끝 PF 15°.
+const ANKLE_KEYS=[[0,0],[6,-5],[12,0],[31,5],[45,10],[50,10],[62,-15]];
+// 중족지 관절 신전 기준점 [%GC, 도]: 발바닥이 닿은 동안 0으로 둠(모형의 단순화). TSt 21°, 발끝 떨어지기 직전 55°([P] 4장).
+const MTP_KEYS=[[31,0],[50,21],[62,55]];
+// IC 자세: 대퇴 20° 굴곡, 무릎 5° 굴곡 → 정강이가 수직에서 약 15° 뒤로 기움, 발목 중립 → 발이 바닥과 약 15°([P] 2·3·5장에서 유도).
+const IC_FOOT=15, TOE_LIFT=12; // TOE_LIFT: PSw 끝 발가락 분절 기울기, 그림용 임의 값
+// 모형 치수(그림 단위, 실제 비율 아님): 뒤꿈치 H, 발목 A, 중족골두 M, 발가락 끝 T. x = 앞, y = 위.
+const GEO={H:[0,0],A:[14,30],M:[60,0],T:[80,0],shank:108,heelR:7,
+  rear:[[-7,5],[-6,17],[6,34],[20,35],[60,7],[60,0],[0,0]]};
+function interp(keys,g){if(g<=keys[0][0])return keys[0][1];for(let i=1;i<keys.length;i++){const[x0,y0]=keys[i-1],[x1,y1]=keys[i];if(g<=x1)return y0+(y1-y0)*(g-x0)/(x1-x0);}return keys[keys.length-1][1];}
+function ankleAngle(g){return interp(ANKLE_KEYS,g);}
+function mtpExt(g){return g<31?0:interp(MTP_KEYS,g);}
+function toeLift(g){return g<=50?0:TOE_LIFT*(Math.min(g,62)-50)/12;}
+function rot(p,deg,c=[0,0]){const a=deg*Math.PI/180,x=p[0]-c[0],y=p[1]-c[1];return[c[0]+x*Math.cos(a)-y*Math.sin(a),c[1]+x*Math.sin(a)+y*Math.cos(a)];}
+function phaseAt(g){g=((g%100)+100)%100;for(const p of PHASES)if(g<p[2]||p[2]===100)return p;return PHASES[7];}
+function rockerAt(g){const i=g<12?0:g<31?1:g<50?2:3;return ROCKERS[i];}
+function whittleAt(g){return g<12?WHITTLE[0]:g<31?WHITTLE[1]:WHITTLE[2];}
+// 발의 자세: 뒷발 기울기(발끝이 들리면 +), 각 점의 위치, 회전축, 정강이 기울기(위 끝이 앞으로 가면 +)
+function pose(g){g=Math.max(0,Math.min(62,g));let foot,pivot,place;
+  if(g<12){const phi=IC_FOOT*(12-g)/12;foot=p=>rot(p,phi,GEO.H);pivot='H';place=()=>({phi,toe:[foot(GEO.M),foot(GEO.T)]});}
+  else if(g<31){foot=p=>p.slice();pivot='A';place=()=>({phi:0,toe:[GEO.M.slice(),GEO.T.slice()]});}
+  else if(g<50){const phi=-mtpExt(g);foot=p=>rot(p,phi,GEO.M);pivot='M';place=()=>({phi,toe:[GEO.M.slice(),GEO.T.slice()]});}
+  else{const psi=toeLift(g),e=mtpExt(g),m=rot(GEO.M,-psi,GEO.T),phi=-(psi+e);
+    foot=p=>{const v=rot([p[0]-GEO.M[0],p[1]-GEO.M[1]],phi);return[m[0]+v[0],m[1]+v[1]];};pivot='T';place=()=>({phi,toe:[m,GEO.T.slice()]});}
+  const {phi,toe}=place(),A=foot(GEO.A),ank=ankleAngle(g),th=ank-phi; // 발목각 = 정강이 기울기 + 발 기울기
+  const knee=[A[0]+GEO.shank*Math.sin(th*Math.PI/180),A[1]+GEO.shank*Math.cos(th*Math.PI/180)];
+  const pts={H:foot(GEO.H),A,M:toe[0],T:toe[1]};
+  return{g,phi,ank,shank:th,knee,pivot,pivotXY:pts[pivot],pts,rear:GEO.rear.map(foot),heelC:foot([0,GEO.heelR])};}
+</script>
+<script>// ---- 공통 화면 도우미 ----
+(function(){const q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')document.documentElement.dataset.theme=q;})();
+function C(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function $(id){return document.getElementById(id);}
+function val(id){const e=$(id);return e.type==='checkbox'?e.checked:(e.type==='range'||e.type==='number')?+e.value:e.value;}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function setupCanvas(id,h){const cv=$(id),w=Math.max(240,cv.parentElement.clientWidth),r=window.devicePixelRatio||1;
+  cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,w,h);
+  ctx.font='12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';return{ctx,w,h,cv};}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)/(d1-d0)*(r1-r0);}
+function ticks(lo,hi,n=5){const raw=(hi-lo)/n,p=10**Math.floor(Math.log10(raw)),m=raw/p,st=(m<1.5?1:m<3.5?2:m<7.5?5:10)*p,out=[];
+  for(let v=Math.ceil(lo/st-1e-9)*st;v<=hi+1e-9*st;v+=st)out.push(Math.abs(v)<st*1e-9?0:v);return out;}
+function txt(ctx,s,x,y,o={}){ctx.save();ctx.fillStyle=o.color||C('fg');ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.size||o.bold)ctx.font=(o.bold?'600 ':'')+(o.size||12)+'px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(o.rot){ctx.translate(x,y);ctx.rotate(o.rot);ctx.fillText(s,0,0);}else ctx.fillText(s,x,y);ctx.restore();}
+function axes(ctx,box,xr,yr,o={}){const sx=lin(xr[0],xr[1],box.l,box.r),sy=lin(yr[0],yr[1],box.b,box.t);
+  ctx.save();ctx.strokeStyle=C('grid');ctx.lineWidth=1;ctx.fillStyle=C('muted');ctx.font='11px -apple-system,sans-serif';
+  if(!o.noX){ctx.textAlign='center';ctx.textBaseline='top';for(const v of (o.xt||ticks(xr[0],xr[1],o.nx||5))){const x=sx(v);ctx.beginPath();ctx.moveTo(x,box.t);ctx.lineTo(x,box.b);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fx||(v=>+v.toPrecision(6)))(v),x,box.b+3);}}
+  if(!o.noY){ctx.textAlign='right';ctx.textBaseline='middle';for(const v of (o.yt||ticks(yr[0],yr[1],o.ny||4))){const y=sy(v);ctx.beginPath();ctx.moveTo(box.l,y);ctx.lineTo(box.r,y);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fy||(v=>+v.toPrecision(6)))(v),box.l-4,y);}}
+  ctx.strokeStyle=C('muted');ctx.strokeRect(box.l,box.t,box.r-box.l,box.b-box.t);ctx.restore();
+  if(o.xlab)txt(ctx,o.xlab,(box.l+box.r)/2,box.b+30,{align:'center',color:C('muted'),size:12});
+  if(o.ylab)txt(ctx,o.ylab,12,(box.t+box.b)/2,{align:'center',base:'middle',color:C('muted'),size:12,rot:-Math.PI/2});
+  return{sx,sy};}
+function mark(ctx,shape,x,y,r,color,filled=true){ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.6;ctx.beginPath();
+  if(shape==='circle')ctx.arc(x,y,r,0,2*Math.PI);
+  else if(shape==='tri'){ctx.moveTo(x,y-r*1.2);ctx.lineTo(x+r*1.1,y+r*0.8);ctx.lineTo(x-r*1.1,y+r*0.8);ctx.closePath();}
+  else if(shape==='square')ctx.rect(x-r*.9,y-r*.9,r*1.8,r*1.8);
+  else if(shape==='diamond'){ctx.moveTo(x,y-r*1.3);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*1.3);ctx.lineTo(x-r,y);ctx.closePath();}
+  else if(shape==='cross'){ctx.moveTo(x-r,y-r);ctx.lineTo(x+r,y+r);ctx.moveTo(x+r,y-r);ctx.lineTo(x-r,y+r);ctx.lineWidth=2.2;ctx.stroke();ctx.restore();return;}
+  if(filled){ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1;}ctx.stroke();ctx.restore();}
+function line(ctx,pts,color,w=1.5,dash){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;if(dash)ctx.setLineDash(dash);ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
+function bind(ids,fn,show={}){for(const id of ids){const e=$(id),o=document.querySelector(`output[for="${id}"]`);
+  const upd=()=>{if(o)o.textContent=show[id]?show[id](val(id)):e.value;};upd();e.addEventListener('input',()=>{upd();fn(id);});e.addEventListener('change',()=>{upd();fn(id);});}}
+function redrawOn(fn){let q=0;const run=()=>{q=0;fn();if(parent!==window)parent.postMessage({type:'viz-height',height:document.body.scrollHeight},'*');};
+  const later=()=>{if(!q)q=requestAnimationFrame(run);};addEventListener('resize',later);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',later);run();return later;}
+
+const AXIS_NAME={H:'뒤꿈치',A:'발목',M:'중족골두',T:'발가락'};
+function drawModel(P){const {ctx,w,h}=setupCanvas('cv1',300);
+  const X0=-75,X1=215,Y0=-18,Y1=150,s=Math.min((w-20)/(X1-X0),(h-20)/(Y1-Y0)),ox=(w-s*(X1-X0))/2-s*X0,oy=h-10+s*Y0;
+  const S=p=>[ox+s*p[0],oy-s*p[1]];
+  // 바닥
+  line(ctx,[S([X0,0]),S([X1,0])],C('muted'),1.5);
+  for(let x=X0+6;x<X1;x+=14)line(ctx,[S([x,0]),S([x-6,-7])],C('grid'),1);
+  // 지금까지의 무릎 길과 축 위치
+  const trail=[],used=new Set();for(let k=0;k<=P.g;k+=0.5){const q=pose(k);trail.push(S(q.knee));used.add(q.pivot);}
+  if(trail.length>1)line(ctx,trail,C('muted'),1.2,[4,4]);
+  const base=pose(0),flat=pose(12);const where={H:base.pts.H,A:[flat.pts.A[0],0],M:GEO.M,T:GEO.T};
+  for(const k of used){const [x,y]=S(where[k]);mark(ctx,'tri',x,y+12,4,C('c4'),k===P.pivot);txt(ctx,AXIS_NAME[k],x,y+(k==='A'||k==='T'?44:30),{align:'center',size:11,color:C('muted')});}
+  // 정강이
+  ctx.save();ctx.lineCap='round';line(ctx,[S(P.pts.A),S(P.knee)],C('c5'),Math.max(5,s*4));ctx.restore();
+  mark(ctx,'circle',...S(P.knee),Math.max(4,s*4),C('c5'));
+  // 발: 뒷발 다각형, 뒤꿈치 원, 발가락 분절
+  ctx.save();ctx.fillStyle=C('fill1');ctx.strokeStyle=C('c1');ctx.lineWidth=1.6;ctx.beginPath();P.rear.forEach((p,i)=>{const [x,y]=S(p);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.beginPath();ctx.arc(...S(P.heelC),s*GEO.heelR,0,2*Math.PI);ctx.fill();ctx.stroke();ctx.restore();
+  ctx.save();ctx.lineCap='round';line(ctx,[S(P.pts.M),S(P.pts.T)],C('c1'),Math.max(4,s*5));ctx.restore();
+  mark(ctx,'circle',...S(P.pts.A),Math.max(3,s*3),C('fg'));
+  // 회전축과 회전 방향
+  const [px,py]=S(P.pivotXY),R=Math.max(26,s*26);
+  ctx.save();ctx.strokeStyle=C('c4');ctx.lineWidth=2.4;ctx.beginPath();ctx.arc(px,py,Math.max(8,s*8),0,2*Math.PI);ctx.stroke();
+  ctx.beginPath();ctx.arc(px,py,R,Math.PI+0.45,2*Math.PI-0.5);ctx.stroke();
+  const ae=2*Math.PI-0.5,ex=px+R*Math.cos(ae),ey=py+R*Math.sin(ae);ctx.fillStyle=C('c4');ctx.beginPath();
+  ctx.translate(ex,ey);ctx.rotate(ae+Math.PI/2);ctx.moveTo(6,0);ctx.lineTo(-5,-5);ctx.lineTo(-5,5);ctx.closePath();ctx.fill();ctx.restore();
+  txt(ctx,'회전축: '+AXIS_NAME[P.pivot],px,py-R-8,{align:'center',bold:1,color:C('c4'),size:13});
+  txt(ctx,'진행 방향 →',w-12,18,{align:'right',color:C('muted'),size:12});
+  txt(ctx,`${fmt(P.g,1)} %GC`,12,18,{bold:1,size:13});}
+function drawTimeline(P){const {ctx,w,h}=setupCanvas('cv2',230),box={l:58,r:w-12,t:8,b:h-30},sx=lin(0,62,box.l,box.r);
+  const band=(y,hh,a,b,fill,stroke,label)=>{ctx.save();ctx.fillStyle=fill;ctx.strokeStyle=stroke;ctx.lineWidth=1.2;ctx.fillRect(sx(a),y,sx(b)-sx(a),hh);ctx.strokeRect(sx(a),y,sx(b)-sx(a),hh);ctx.restore();
+    const room=sx(b)-sx(a);txt(ctx,room>90?label:label.split(' ')[0],(sx(a)+sx(b))/2,y+hh/2+1,{align:'center',base:'middle',size:11});};
+  txt(ctx,'Perry',4,box.t+13,{size:11,color:C('muted')});txt(ctx,'Whittle',4,box.t+41,{size:11,color:C('muted')});
+  const fills=[C('fill1'),C('fill2'),C('fill1'),C('fill2')],strokes=[C('c1'),C('c2'),C('c1'),C('c2')];
+  ROCKERS.forEach((r,i)=>band(box.t,22,r[1],r[2],fills[i],strokes[i],r[0]));
+  WHITTLE.forEach((r,i)=>band(box.t+28,22,r[1],r[2],fills[i],strokes[i],r[0]));
+  const pb={l:box.l,r:box.r,t:box.t+60,b:box.b},{sx:px,sy:py}=axes(ctx,pb,[0,62],[-18,13],{xt:[0,2,12,31,50,62],yt:[-15,-5,0,5,10],xlab:'%GC (stance 0–62)',ylab:'발목 (°)'});
+  const pts=[];for(let g=0;g<=62;g+=0.5)pts.push([px(g),py(ankleAngle(g))]);line(ctx,pts,C('c3'),2);
+  ANKLE_KEYS.forEach(([g,a])=>mark(ctx,'circle',px(g),py(a),3.5,C('c3')));
+  line(ctx,[[px(P.g),box.t-2],[px(P.g),pb.b]],C('c4'),2);mark(ctx,'diamond',px(P.g),py(P.ank),5,C('c4'));}
+function draw(){const g=val('g'),P=pose(g),ph=phaseAt(g),ro=rockerAt(g),wh=whittleAt(g),op=phaseAt(g+50);
+  $('stats').innerHTML=[['phase (Perry)',`${ph[0]} · ${ph[1]}–${ph[2]}%`],['기능 과제',ph[3]],['Perry rocker',ro[0]],['Whittle rocker',wh[0]],['발목 각도(모형)',(P.ank>=0?'DF ':'PF ')+fmt(Math.abs(P.ank),1)+'°'],['반대 다리',`${op[0]} (${fmt((g+50)%100,1)} %GC)`],['stance 중 위치',fmt(g/62*100,0)+' %stance']]
+    .map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+  $('desc').innerHTML=`<b>${ro[0]}</b> · 축: ${ro[3]}<br>${ro[4]}<br><span style="color:var(--muted)">phase 목표(${ph[0]}): ${ph[4]}. Whittle 구간: ${wh[3]}.</span>`;
+  drawModel(P);drawTimeline(P);}
+bind(['g'],()=>later(),{g:v=>v+' %GC'});
+document.querySelectorAll('button[data-g]').forEach(b=>b.onclick=()=>{stop();$('g').value=b.dataset.g;$('g').dispatchEvent(new Event('input'));});
+let timer=0;function stop(){if(timer){cancelAnimationFrame(timer);timer=0;$('play').textContent='▶ 재생';}}
+$('play').onclick=()=>{if(timer){stop();return;}$('play').textContent='■ 멈춤';let last=performance.now(),cur=val('g');
+  const step=t=>{cur+=(t-last)/1000*8;last=t;if(cur>62)cur=0;$('g').value=cur;$('g').dispatchEvent(new Event('input'));timer=requestAnimationFrame(step);};timer=requestAnimationFrame(step);};
+const later=redrawOn(draw);
+</script></body></html>

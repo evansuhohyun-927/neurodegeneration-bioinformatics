@@ -22,5 +22,7 @@
   ],
   "lessons/week-6/day-38.md": [
     {"file": "reproducibility.svg", "title": "재현성의 네 가지 재료", "caption": "각 카드의 맨 위는 실험실에서 대응하는 기록이고, 네 가지를 모두 남기면 아래 상자처럼 같은 숫자와 그림을 다시 얻을 수 있습니다.", "section": "## 개념 설명"}
-  ]
+  ],
+  "lessons/advanced/I-gait/day-I1.md": [{"file": "gait-cycle-timeline.svg", "title": "보행 주기 시간표", "caption": "오른발 IC를 0 %로 놓은 한 시간축에서 위부터 과제·phase·오른발·왼발·접지 상태를 읽고, 두 발 막대가 겹치는 0–12 %와 50–62 %가 double stance이며 세로 점선이 Whittle 사건입니다.", "section": "## 개념 설명"}, {"file": "perry-whittle-map.svg", "title": "Perry 8 phase ↔ Whittle 사건", "caption": "왼쪽 Perry phase의 아래 경계를 따라 오른쪽으로 가면 그 경계를 표시하는 Whittle 사건이 나오고, 사건이 없는 점선 하나(IC/LR) 때문에 Perry는 8개, Whittle은 7개 구간이 됩니다.", "section": "## 개념 설명"}],
+  "lessons/advanced/I-gait/day-I2.md": [{"file": "functional-tasks-phases.svg", "title": "세 기능 과제와 8 phase 지도", "caption": "왼쪽 띠가 과제, 가운데 막대가 phase(%GC), 오른쪽 글이 phase마다의 기능 목표이며, 빨간 테두리의 PSw는 발이 바닥에 있어도 다리 전진 과제에 속합니다.", "section": "## 개념 설명"}, {"file": "foot-rockers.svg", "title": "네 rocker의 회전축", "caption": "빨간 고리가 그 순간 몸이 넘어가는 회전축이고, 아래 띠는 같은 구간을 Whittle의 세 rocker로 나눈 것입니다(③과 ④가 terminal rocker 하나).", "section": "## 개념 설명"}]
 }

@@ -1,0 +1,153 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>보행 주기 탐색기</title><style>:root{--bg:#ffffff;--fg:#1f2328;--muted:#57606a;--grid:#d0d7de;--panel:#f6f8fa;--accent:#0b5cad;
+--c1:#1f63c6;--c2:#c2410c;--c3:#047857;--c4:#b91c1c;--c5:#6d28d9;--fill1:rgba(31,99,198,.18);--fill2:rgba(194,65,12,.18);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;padding:12px 16px 16px;max-width:960px;margin:0 auto;overflow-x:hidden}
+h1{font-size:1.1rem;margin:0 0 4px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.controls label{display:flex;flex-direction:column;font-size:.88rem;gap:2px}
+.controls output{font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.88rem;color:var(--fg);background:var(--bg);border:1px solid var(--grid);border-radius:6px;padding:4px 10px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center;grid-column:1/-1}
+.plot{width:100%;margin:6px 0}
+.plot canvas{display:block;width:100%;touch-action:pan-y}
+.cap{font-size:.82rem;color:var(--muted);margin:0 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin:8px 0}
+.stat{background:var(--panel);border:1px solid var(--grid);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--grid);padding:4px 6px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--panel)}
+.tablewrap{overflow-x:auto}
+.note{font-size:.88rem;background:var(--panel);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0}
+.observe{margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+.observe h2{font-size:.95rem;margin:0 0 4px}
+.observe ol{margin:0;padding-left:1.3em;font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;margin:2px 0}
+.legend span{white-space:nowrap}
+tr.now td{background:var(--fill1);font-weight:600}
+td.fixed{color:var(--muted);font-style:italic}
+</style></head><body>
+<h1>보행 주기 탐색기: 지금 몇 %이고, 두 발은 어디에 있나</h1>
+<p class="lead">오른발 initial contact(IC)를 0 %로 놓고 %GC 슬라이더를 움직이면 지금의 Perry phase, Whittle 구간, 두 발의 stance/swing, double stance 여부가 바뀝니다. stance % 슬라이더는 "stance % = 50 % + double stance %"라는 정의 관계만으로 사건 위치를 옮깁니다.</p>
+<div class="controls">
+  <label>현재 시점 (오른발 %GC): <output for="p"></output><input type="range" id="p" min="0" max="99.5" step="0.5" value="5"></label>
+  <label>stance % (오른발 = 왼발): <output for="S"></output><input type="range" id="S" min="50" max="70" step="0.5" value="62"></label>
+  <label>stride time (한 주기, 초): <output for="T"></output><input type="range" id="T" min="0.80" max="1.40" step="0.01" value="1.06"></label>
+  <div class="btns"><button id="play" type="button">▶ 재생</button><span class="cap">기록 고르기:</span>
+    <button data-s="62" data-t="1.06">Perry 평소 속도 (82 m/min)</button>
+    <button data-s="60">일반 근삿값 60/40</button>
+    <button data-s="57" data-t="0.88">Whittle 6판 예시 (빠른 걸음)</button>
+    <button data-s="60.9" data-t="0.99">Winter 부록 A 피험자</button>
+    <button data-s="50">double stance 0 (걷기의 끝)</button></div>
+</div>
+<div class="stats" id="stats"></div>
+<p class="note" id="verdict"></p>
+<div class="legend"><span style="color:var(--c1)">■ stance (발이 바닥)</span><span style="color:var(--muted)">□ swing (발이 공중)</span><span style="color:var(--c5)">■ double stance (두 발 모두 바닥)</span><span style="color:var(--c4)">│ 현재 시점</span></div>
+<p class="cap">한 주기 시간표. 위에서부터 Perry phase, 오른발, 왼발(반 주기 늦음), 두 발 접지 상태. 아래 눈금은 Whittle 사건. 흐린 점선 사건(HR·FA·TV)은 stance %를 바꿔도 정상 평균 위치에 고정해 둔 것입니다.</p>
+<div class="plot"><canvas id="cv1" role="img" aria-label="한 주기 시간표와 현재 시점"></canvas></div>
+<p class="cap">지금 이 순간의 두 발 (위에서 본 그림). 채운 발 = 바닥에 닿음, 점선 발 = 공중.</p>
+<div class="plot"><canvas id="cv2" role="img" aria-label="현재 시점 두 발의 접지 상태"></canvas></div>
+<div class="tablewrap"><table id="tbl"></table></div>
+<div class="observe"><h2>관찰할 것</h2><ol>
+<li>"Perry 평소 속도"에서 %GC를 0 → 100으로 천천히 움직여 보세요. 두 발이 모두 바닥에 있는 구간은 0–12 %와 50–62 % 두 번뿐이고, 둘의 합은 24 %입니다(Day I1 흔한 오류 2).</li>
+<li>오른발이 pre-swing(50–62 %)일 때 왼발은 무엇을 하나요? 왼발 IC 직후의 하중 반응입니다. 두 다리는 반 주기 어긋난 한 쌍이라, 한쪽의 사건이 다른 쪽 phase의 경계가 됩니다(Perry 9장의 양측 짝).</li>
+<li>프리셋을 바꿔 보세요. 탐색기는 OT를 stance % − 50으로 계산합니다. Whittle 6판 예시(stance 57 %)에서는 이 계산이 교재에 적힌 실제 OT 7 %와 맞습니다. Winter 부록 A 피험자(약 61 %)의 OT 약 11 %는 같은 관계로 계산한 값입니다. 이 기록들은 한 사람, 한 속도의 값이지 정상 기준이 아닙니다.</li>
+<li>stance %를 50까지 내리면 double stance가 0이 됩니다. 걷기의 정의(언제나 한 발 이상 접지)가 끝나는 지점이고, 그보다 짧으면 두 발이 다 뜨는 float가 생기는 달리기입니다([P] 1·18장, [W] 2장).</li>
+<li>stride time을 바꾸면 cadence(= 120 ÷ stride time)와 phase의 ms 길이만 바뀝니다. IC phase(2 %)는 1.06 s 주기에서 약 21 ms로, 초당 30장 영상의 한 장(33 ms)보다 짧습니다.</li>
+<li>주의: 이 탐색기는 "속도 → stance %" 곡선을 그리지 않습니다. 교재는 빨라질수록 stance·double stance 비율이 줄고 느린 쪽에서 변화가 크다는 방향만 주므로, 속도와 stance %는 따로 고르게 했습니다.</li>
+</ol></div>
+<p class="cap">수치 출처: Perry & Burnfield 2판 1–2장(평소 속도 82 m/min의 62/38/12 %와 8 phase 구간), 23장(정상 cadence 113 steps/min → stride time 약 1.06 s); Richards & Levine 편 Whittle's Gait Analysis 6판 2장(7사건, 예시 피험자 cadence 136 → 0.88 s, OT 7 %, TO 57 %); Winter 5판 부록 A(사건 표시로 계산한 stance 약 61 %, stride 약 0.99 s). 화면 구성과 표는 새로 만든 것입니다.</p>
+<script data-calc>// ---- 공통 계산 함수 (DOM 없음: Node에서 그대로 검산 가능) ----
+// 오른발 IC = 0 %. S = stance %(좌우 대칭, 두 다리는 정확히 50 % 어긋난다고 가정).
+// 정의에서 바로 나오는 경계: OT = S − 50(= double stance 한 번), OI = 50, TO = S.
+// HR·FA·TV는 정의로 정해지지 않으므로 Perry 평소 속도의 평균 위치(31, 75, 87 %)에 고정한다.
+const FIXED={HR:31,FA:75,TV:87};
+const PERRY_DEFAULT=62;
+function bounds(S){const OT=S-50;return{IC:0,ICend:Math.min(2,OT),OT,HR:FIXED.HR,OI:50,TO:S,FA:FIXED.FA,TV:FIXED.TV,end:100};}
+function perryPhases(S){const b=bounds(S);return[
+  ['IC','initial contact',0,b.ICend,'WA'],['LR','loading response',b.ICend,b.OT,'WA'],['MSt','mid stance',b.OT,b.HR,'SLS'],['TSt','terminal stance',b.HR,b.OI,'SLS'],
+  ['PSw','pre-swing',b.OI,b.TO,'SLA'],['ISw','initial swing',b.TO,b.FA,'SLA'],['MSw','mid swing',b.FA,b.TV,'SLA'],['TSw','terminal swing',b.TV,100,'SLA']];}
+function whittlePeriods(S){const b=bounds(S);return[
+  ['loading response','IC → OT',0,b.OT],['mid-stance','OT → HR',b.OT,b.HR],['terminal stance','HR → OI',b.HR,b.OI],['pre-swing','OI → TO',b.OI,b.TO],
+  ['initial swing','TO → FA',b.TO,b.FA],['mid-swing','FA → TV',b.FA,b.TV],['terminal swing','TV → 다음 IC',b.TV,100]];}
+function rightStance(p,S){return p<S;}
+function leftStance(p,S){return ((p-50+100)%100)<S;}          // 왼발은 반 주기 늦게 같은 순서
+function find(list,p){for(const r of list)if(p>=r[2]&&p<r[3])return r;return list[list.length-1];}
+function stateAt(p,S){const r=rightStance(p,S),l=leftStance(p,S),ph=find(perryPhases(S),p),wp=whittlePeriods(S).find(w=>p>=w[2]&&p<w[3])||null;
+  return{right:r,left:l,double:r&&l,phase:ph[0],task:ph[4],whittle:wp?wp[0]:null};}
+// 한 주기 안의 double stance 총합(%): 수치 적분으로 정의 관계를 검산
+function doubleTotal(S,n=2000){let c=0;for(let i=0;i<n;i++){const p=100*(i+.5)/n;if(rightStance(p,S)&&leftStance(p,S))c++;}return 100*c/n;}
+function cadence(T){return 120/T;}
+</script>
+<script>// ---- 공통 화면 도우미 ----
+(function(){const q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')document.documentElement.dataset.theme=q;})();
+function C(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function $(id){return document.getElementById(id);}
+function val(id){const e=$(id);return e.type==='checkbox'?e.checked:(e.type==='range'||e.type==='number')?+e.value:e.value;}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function setupCanvas(id,h){const cv=$(id),w=Math.max(240,cv.parentElement.clientWidth),r=window.devicePixelRatio||1;
+  cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,w,h);
+  ctx.font='12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';return{ctx,w,h,cv};}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)/(d1-d0)*(r1-r0);}
+function txt(ctx,s,x,y,o={}){ctx.save();ctx.fillStyle=o.color||C('fg');ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.size||o.bold)ctx.font=(o.bold?'600 ':'')+(o.size||12)+'px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(o.rot){ctx.translate(x,y);ctx.rotate(o.rot);ctx.fillText(s,0,0);}else ctx.fillText(s,x,y);ctx.restore();}
+function line(ctx,pts,color,w=1.5,dash){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;if(dash)ctx.setLineDash(dash);ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
+function bind(ids,fn,show={}){for(const id of ids){const e=$(id),o=document.querySelector(`output[for="${id}"]`);
+  const upd=()=>{if(o)o.textContent=show[id]?show[id](val(id)):e.value;};upd();e.addEventListener('input',()=>{upd();fn(id);});e.addEventListener('change',()=>{upd();fn(id);});}}
+function redrawOn(fn){let q=0;const run=()=>{q=0;fn();if(parent!==window)parent.postMessage({type:'viz-height',height:document.body.scrollHeight},'*');};
+  const later=()=>{if(!q)q=requestAnimationFrame(run);};addEventListener('resize',later);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',later);run();return later;}
+
+function box(ctx,x0,x1,y,h,fill,stroke,dash){ctx.save();if(fill){ctx.fillStyle=fill;ctx.fillRect(x0,y,x1-x0,h);}ctx.strokeStyle=stroke;ctx.lineWidth=1;if(dash)ctx.setLineDash(dash);ctx.strokeRect(x0+.5,y+.5,x1-x0-1,h-1);ctx.restore();}
+function draw(){const p=val('p'),S=val('S'),T=val('T'),b=bounds(S),st=stateAt(p,S),moved=S!==PERRY_DEFAULT,ms=v=>Math.round(v/100*T*1000);
+  $('stats').innerHTML=[['지금',fmt(p,1)+' % · '+ms(p)+' ms'],['Perry phase',st.phase+' ('+st.task+')'],['Whittle 구간',st.whittle||'—'],
+    ['오른발',st.right?'stance (바닥)':'swing (공중)'],['왼발',st.left?'stance (바닥)':'swing (공중)'],['두 발 모두 바닥?',st.double?'예 — double stance':'아니요'],
+    ['double stance 한 번',fmt(S-50,1)+' %'],['cadence',fmt(cadence(T),0)+' steps/min']]
+    .map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+  $('verdict').innerHTML=S<=50?`stance 50 % → double stance 0 %. 두 발이 동시에 바닥에 있는 순간이 사라집니다. 여기가 걷기의 끝이고, 더 짧아지면 두 발이 다 뜨는 float가 생기는 달리기입니다.`
+    :`stance ${fmt(S,1)} % = 50 % + double stance ${fmt(S-50,1)} %. 한 주기의 double stance 총합 ${fmt(2*(S-50),1)} % (수치 적분 검산 ${fmt(doubleTotal(S),1)} %), single support는 한 다리당 ${fmt(100-S,1)} %.`
+    +(moved?' <b>HR·FA·TV는 정상 평균 위치에 고정</b>되어 있어, 이 stance %에서 MSt/TSt·swing 안의 경계는 근거가 없습니다.':'');
+  {const {ctx,w,h}=setupCanvas('cv1',250),L=86,R=w-12,sx=lin(0,100,L,R),rows=[['Perry phase',8],['오른발',52],['왼발',90],['두 발 접지',128]],H=28;
+   rows.forEach(([n,y])=>txt(ctx,n,4,y+H/2+4,{bold:1,size:12}));
+   for(const [ab,,a,e] of perryPhases(S)){if(e<=a)continue;const sw=a>=S;box(ctx,sx(a),sx(e),8,H,sw?null:C('fill1'),C('grid'));if(sx(e)-sx(a)>24)txt(ctx,ab,(sx(a)+sx(e))/2,8+H/2+4,{align:'center',size:11})}
+   const seg=(y,a,e,on)=>{if(e<=a)return;box(ctx,sx(a),sx(e),y,H,on?C('fill1'):null,on?C('c1'):C('muted'),on?null:[4,3]);};
+   seg(52,0,S,1);seg(52,S,100,0);
+   seg(90,0,S-50,1);seg(90,S-50,50,0);seg(90,50,100,1);
+   ctx.fillStyle=C('c5');ctx.globalAlpha=.35;for(const [a,e] of [[0,S-50],[50,S]])if(e>a)ctx.fillRect(sx(a),128,sx(e)-sx(a),H);ctx.globalAlpha=1;
+   box(ctx,sx(0),sx(100),128,H,null,C('grid'));
+   const ev=[['IC',0,0],['OT',b.OT,0],['HR',b.HR,1],['OI',50,0],['TO',S,0],['FA',b.FA,1],['TV',b.TV,1],['IC',100,0]];
+   ev.forEach(([n,x,fixed],i)=>{line(ctx,[[sx(x),4],[sx(x),162]],fixed&&moved?C('muted'):C('grid'),1,fixed&&moved?[2,3]:[4,3]);
+     const yy=i%2?196:178;txt(ctx,n,sx(x),yy,{align:x===0?'left':x===100?'right':'center',bold:1,size:11,color:fixed&&moved?C('muted'):C('fg')});
+     txt(ctx,fmt(x,x%1?1:0)+'%',sx(x),yy+13,{align:x===0?'left':x===100?'right':'center',size:10,color:C('muted')});});
+   txt(ctx,'Whittle 사건',4,188,{bold:1,size:12});
+   line(ctx,[[sx(p),2],[sx(p),164]],C('c4'),2.5);txt(ctx,'▼',sx(p),236,{align:'center',color:C('c4'),size:12});txt(ctx,'지금',sx(p),248,{align:'center',color:C('c4'),size:10});}
+  {const {ctx,w,h}=setupCanvas('cv2',170),cx=w/2,foot=(x,y,on,lab)=>{ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.ellipse(0,0,17,40,0,0,2*Math.PI);
+     ctx.lineWidth=2;ctx.strokeStyle=on?C('c1'):C('muted');if(on){ctx.fillStyle=C('fill1');ctx.fill();}else ctx.setLineDash([5,4]);ctx.stroke();ctx.restore();
+     txt(ctx,lab,x,y+58,{align:'center',size:12,bold:1,color:on?C('c1'):C('muted')});};
+   // 앞뒤 위치는 위상만 대략 나타낸다(거리 축척 아님): stance 동안 발은 몸 뒤로, swing 동안 앞으로 이동
+   const pos=(q,S0)=>q<S0?30-60*q/S0:-30+60*(q-S0)/(100-S0),rq=p,lq=(p-50+100)%100;
+   foot(cx-48,80-pos(rq,S)*0.6,st.right,'오른발');foot(cx+48,80-pos(lq,S)*0.6,st.left,'왼발');
+   txt(ctx,'진행 방향 ↑',w-8,14,{align:'right',size:11,color:C('muted')});
+   txt(ctx,st.double?'두 발 모두 바닥 (double stance)':'한 발만 바닥 (single support)',8,14,{size:12,bold:1,color:st.double?C('c5'):C('fg')});}
+  $('tbl').innerHTML='<tr><th>Perry phase</th><th>과제</th><th>구간 %GC</th><th>길이 (ms)</th><th>끝 경계 = Whittle 사건</th></tr>'+
+    perryPhases(S).map(([ab,full,a,e,tk])=>{const wp=whittlePeriods(S).find(x=>Math.abs(x[3]-e)<1e-9),fx=moved&&['MSt','TSt','ISw','MSw','TSw'].includes(ab);
+      return `<tr class="${ab===st.phase?'now':''}"><td>${ab} ${full}</td><td>${tk}</td><td class="${fx?'fixed':''}">${fmt(a,1)}–${fmt(e,1)}</td><td>${Math.max(0,ms(e)-ms(a))}</td><td>${ab==='IC'?'(Whittle은 IC를 순간으로 봄)':wp?wp[1].split('→ ')[1]+' ('+wp[0]+'의 끝)':'—'}</td></tr>`;}).join('');}
+bind(['p','S','T'],()=>later(),{p:v=>fmt(v,1)+' %',S:v=>fmt(v,1)+' % (double stance '+fmt(v-50,1)+' %)',T:v=>fmt(v,2)+' s'});
+document.querySelectorAll('button[data-s]').forEach(bt=>bt.onclick=()=>{$('S').value=bt.dataset.s;if(bt.dataset.t)$('T').value=bt.dataset.t;['S','T'].forEach(id=>$(id).dispatchEvent(new Event('input')));});
+let timer=null;$('play').onclick=()=>{if(timer){clearInterval(timer);timer=null;$('play').textContent='▶ 재생';return;}
+  $('play').textContent='❚❚ 멈춤';timer=setInterval(()=>{$('p').value=(val('p')+0.5)%100;$('p').dispatchEvent(new Event('input'));},Math.max(10,val('T')*1000/200*4));};
+const later=redrawOn(draw);
+</script></body></html>

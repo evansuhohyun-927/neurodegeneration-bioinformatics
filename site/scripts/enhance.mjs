@@ -186,7 +186,8 @@ export function parseMeta(pre) {
   if (idx < 0 || !/^>\s*\*\*[^*]+:\*\*/.test(pre[idx])) return null;
   let end = idx;
   while (end < pre.length && /^>/.test(pre[end])) end++;
-  const text = pre.slice(idx, end).map((l) => l.replace(/^>\s?/, '')).join(' ');
+  // 빈 '>' 줄로 나뉜 문단은 별도 항목이므로 '·'로 이어 붙여 나눈다
+  const text = pre.slice(idx, end).map((l) => l.replace(/^>\s?/, '').trim() || '·').join(' ');
   const pairs = text.split(/\s+·\s+(?=\*\*)/).map((p) => p.match(/^\*\*([^*]+?):\*\*\s*(.*)$/)).filter(Boolean)
     .map(([, k, v]) => [k.trim(), v.trim()]);
   if (!pairs.length) return null;
