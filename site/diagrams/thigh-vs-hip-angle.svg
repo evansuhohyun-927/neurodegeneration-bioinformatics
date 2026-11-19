@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" role="img" aria-labelledby="thigh-vs-hip-angle-t thigh-vs-hip-angle-d">
+<title id="thigh-vs-hip-angle-t">thigh 각과 hip 각: 같은 허벅지, 다른 기준</title>
+<desc id="thigh-vs-hip-angle-d">세 칸에 오른쪽을 보고 걷는 사람의 골반과 허벅지를 옆에서 본 단순한 그림이 있다. 첫 칸은 thigh 각이다: 고관절을 지나는 수직 점선을 0°로 두고, 허벅지가 앞으로 20° 기울어 있으면 굴곡 20°다. Perry 본문이 쓰는 기준이며 골반 마커가 없는 Winter 자료로 계산할 수 있는 것도 이것이다. 둘째 칸은 같은 허벅지를 골반 기준으로 잰 hip 각이다: 뒤쪽 PSIS와 앞쪽 ASIS를 잇는 골반 선이 수평에서 앞으로 약 10° 숙어 있고(정상 기립의 평균), 골반에 붙은 기준선도 그만큼 뒤로 기울어 있어 같은 허벅지가 굴곡 30°로 측정된다. 3D 동작분석 장비가 흔히 보고하는 것이 이 각이다. 셋째 칸은 TSt 끝(약 50 %GC)의 겉보기 과신전이다: 허벅지가 수직선 뒤로 20° 넘어가 thigh 각은 신전 20°지만, 고관절만으로는 그만큼 펴지지 않고, 고관절의 끝까지 신전에 골반 전방경사 증가(3–7°)와 골반 후방 회전(약 5°)이 더해진 자세다. hip 각으로는 신전 약 10°다. 아래 띠: 같은 걸음에서 thigh 각은 IC 굴곡 20°, TSt 끝 신전 20°, MSw 최대 굴곡 25°이고 hip 각은 굴곡 30°에서 신전 10°까지(범위 40°)다. 두 각의 차이는 평균 약 10°의 골반 전방경사이며, 걷는 동안 골반 경사가 몇 도 변하므로 차이도 상수가 아니다. 근거: Perry &amp; Burnfield 2판 6장 Hip, 7장 Pelvis, 20장 Sagittal Plane Landmarks, Appendix A; Whittle 6판 2장 p.21. 그림의 비율과 골반 모양은 단순화다.</desc>
+<defs><marker id="thigh-vs-hip-angle-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="d-text d-strong" x="360.0" y="24.0" font-size="15" text-anchor="middle">thigh 각과 hip 각 — 같은 허벅지를 무엇에 대해 재는가</text>
+<text class="d-sub" x="360.0" y="42.0" font-size="12" text-anchor="middle">오른쪽을 보고 걷는 사람 · 허벅지 굴곡 +</text>
+<rect class="d-node" x="10.0" y="54.0" width="228.0" height="320.0" rx="8"/>
+<text class="d-text d-strong" x="124.0" y="76.0" font-size="13" text-anchor="middle">① thigh 각 (Perry 본문)</text>
+<text class="d-sub" x="124.0" y="94.0" font-size="11" text-anchor="middle">기준 = 수직선</text>
+<line class="d-line d-dash" x1="114.0" y1="160.0" x2="114.0" y2="320.0"/>
+<line class="d-line" x1="114.0" y1="160.0" x2="160.5" y2="287.8"/>
+<circle class="d-node" cx="114.0" cy="160.0" r="5"/>
+<circle class="d-node" cx="160.5" cy="287.8" r="5"/>
+<path class="d-line d-bad" d="M114.0,220.0 A60,60 0 0 0 134.5,216.4" marker-end="url(#thigh-vs-hip-angle-arrow)"/>
+<text class="d-text d-bad d-strong" x="156.0" y="244.0" font-size="13" text-anchor="start">굴곡 20°</text>
+<text class="d-sub" x="124.0" y="344.0" font-size="11" text-anchor="middle">골반 마커가 없어도 계산된다</text>
+<text class="d-sub" x="124.0" y="362.0" font-size="11" text-anchor="middle">(WinterTableA1로 오늘 구하는 각)</text>
+<rect class="d-a" x="246.0" y="54.0" width="228.0" height="320.0" rx="8"/>
+<text class="d-text d-strong" x="360.0" y="76.0" font-size="13" text-anchor="middle">② hip 각 (골반 기준)</text>
+<text class="d-sub" x="360.0" y="94.0" font-size="11" text-anchor="middle">기준 = 골반에 붙은 선</text>
+<polygon class="d-node" points="309.2,126.4 399.8,142.4 350.0,160.0"/>
+<line class="d-line" x1="309.2" y1="126.4" x2="399.8" y2="142.4"/>
+<circle class="d-node" cx="309.2" cy="126.4" r="4"/>
+<circle class="d-node" cx="399.8" cy="142.4" r="4"/>
+<text class="d-sub" x="305.2" y="118.4" font-size="10" text-anchor="middle">PSIS</text>
+<text class="d-sub" x="403.8" y="134.4" font-size="10" text-anchor="middle">ASIS</text>
+<text class="d-sub" x="336.0" y="164.0" font-size="10.5" text-anchor="end">골반 선이</text>
+<text class="d-sub" x="336.0" y="178.0" font-size="10.5" text-anchor="end">앞으로 10° 숙음</text>
+<line class="d-line d-dash" x1="350.0" y1="160.0" x2="350.0" y2="320.0"/>
+<line class="d-line d-good" x1="350.0" y1="160.0" x2="322.2" y2="317.6"/>
+<line class="d-line" x1="350.0" y1="160.0" x2="396.5" y2="287.8"/>
+<circle class="d-node" cx="350.0" cy="160.0" r="5"/>
+<circle class="d-node" cx="396.5" cy="287.8" r="5"/>
+<path class="d-line d-bad" d="M339.6,219.1 A60,60 0 0 0 370.5,216.4" marker-end="url(#thigh-vs-hip-angle-arrow)"/>
+<text class="d-text d-bad d-strong" x="392.0" y="244.0" font-size="13" text-anchor="start">굴곡 30°</text>
+<text class="d-text d-good" x="316.2" y="319.6" font-size="10.5" text-anchor="end">골반 기준선</text>
+<text class="d-sub" x="360.0" y="344.0" font-size="11" text-anchor="middle">같은 허벅지가 약 10° 더 굽어 보인다</text>
+<text class="d-sub" x="360.0" y="362.0" font-size="11" text-anchor="middle">(3D 장비가 흔히 보고하는 각)</text>
+<rect class="d-c" x="482.0" y="54.0" width="228.0" height="320.0" rx="8"/>
+<text class="d-text d-strong" x="596.0" y="76.0" font-size="13" text-anchor="middle">③ TSt 끝: 겉보기 과신전</text>
+<text class="d-sub" x="596.0" y="94.0" font-size="11" text-anchor="middle">약 50 %GC</text>
+<polygon class="d-node" points="565.2,126.4 655.8,142.4 606.0,160.0"/>
+<line class="d-line" x1="565.2" y1="126.4" x2="655.8" y2="142.4"/>
+<circle class="d-node" cx="565.2" cy="126.4" r="4"/>
+<circle class="d-node" cx="655.8" cy="142.4" r="4"/>
+<text class="d-sub" x="561.2" y="118.4" font-size="10" text-anchor="middle">PSIS</text>
+<text class="d-sub" x="659.8" y="134.4" font-size="10" text-anchor="middle">ASIS</text>
+<line class="d-line d-dash" x1="606.0" y1="160.0" x2="606.0" y2="320.0"/>
+<line class="d-line" x1="606.0" y1="160.0" x2="559.5" y2="287.8"/>
+<circle class="d-node" cx="606.0" cy="160.0" r="5"/>
+<circle class="d-node" cx="559.5" cy="287.8" r="5"/>
+<path class="d-line d-bad" d="M585.5,216.4 A60,60 0 0 0 606.0,220.0" marker-end="url(#thigh-vs-hip-angle-arrow)"/>
+<text class="d-text d-bad d-strong" x="614.0" y="256.0" font-size="12" text-anchor="start">thigh 각</text>
+<text class="d-text d-bad d-strong" x="614.0" y="272.0" font-size="12" text-anchor="start">신전 20°</text>
+<text class="d-text" x="596.0" y="310.0" font-size="11" text-anchor="middle">= 고관절 끝까지 신전</text>
+<text class="d-text" x="596.0" y="327.0" font-size="11" text-anchor="middle">+ 골반 전방경사 증가 3–7°</text>
+<text class="d-text" x="596.0" y="344.0" font-size="11" text-anchor="middle">+ 골반 후방 회전 약 5°</text>
+<text class="d-sub" x="596.0" y="362.0" font-size="11" text-anchor="middle">hip 각으로는 신전 약 10°</text>
+<rect class="d-d" x="10.0" y="384.0" width="700.0" height="86.0" rx="8"/>
+<text class="d-text d-strong" x="360.0" y="404.0" font-size="12.5" text-anchor="middle">같은 걸음, 두 곡선 (Perry 6장, 5° 반올림)</text>
+<text class="d-text" x="360.0" y="424.0" font-size="11.5" text-anchor="middle">thigh 각: IC 굴곡 20° → TSt 끝 신전 20° → MSw 굴곡 25°   ·   hip 각: 굴곡 30° → 신전 10° (범위 40°)</text>
+<text class="d-text" x="360.0" y="443.0" font-size="11.5" text-anchor="middle">차이 ≈ 골반 전방경사 평균 약 10° — 걷는 동안 골반 경사가 몇 도 오르내리므로 차이도 상수가 아니다</text>
+<text class="d-sub" x="360.0" y="461.0" font-size="11" text-anchor="middle">몸통을 숙이면 hip 각에만 굴곡으로 나타난다 · 허벅지 IMU가 재는 것은 thigh 각</text>
+</svg>

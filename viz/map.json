@@ -13,5 +13,6 @@
   "lessons/advanced/I-gait/day-I10.md": [{"file": "sampling-aliasing.html", "title": "표본화 속도와 aliasing", "height": 1010}, {"file": "filter-spectrum.html", "title": "필터: 시간 파형·power spectrum·위상 지연", "height": 1320}],
   "lessons/advanced/D-fmri/day-D4.md": [{"file": "hrf-glm.html", "title": "HRF convolution과 GLM 적합", "height": 1210}],
   "lessons/advanced/I-gait/day-I1.md": [{"file": "gait-cycle-explorer.html", "title": "보행 주기 탐색기: %GC와 두 발의 상태", "height": 1700}],
-  "lessons/advanced/I-gait/day-I2.md": [{"file": "rocker-explorer.html", "title": "rocker 회전축 따라가기 (개념용 단순 모형)", "height": 1550}]
+  "lessons/advanced/I-gait/day-I2.md": [{"file": "rocker-explorer.html", "title": "rocker 회전축 따라가기 (개념용 단순 모형)", "height": 1550}],
+  "lessons/advanced/I-gait/day-I3.md": [{"file": "joint-angle-explorer.html", "title": "관절각 탐색기: 분절각 세 개로 무릎·발목·고관절 각 만들기", "height": 1650}]
 }

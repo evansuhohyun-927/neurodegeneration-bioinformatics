@@ -1,0 +1,177 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>관절각 탐색기</title><style>:root{--bg:#ffffff;--fg:#1f2328;--muted:#57606a;--grid:#d0d7de;--panel:#f6f8fa;--accent:#0b5cad;
+--c1:#1f63c6;--c2:#c2410c;--c3:#047857;--c4:#b91c1c;--c5:#6d28d9;--fill1:rgba(31,99,198,.18);--fill2:rgba(194,65,12,.18);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;padding:12px 16px 16px;max-width:960px;margin:0 auto;overflow-x:hidden}
+h1{font-size:1.1rem;margin:0 0 4px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.controls label{display:flex;flex-direction:column;font-size:.88rem;gap:2px}
+.controls label.inline{flex-direction:row;align-items:center;gap:6px}
+.controls output{font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.88rem;color:var(--fg);background:var(--bg);border:1px solid var(--grid);border-radius:6px;padding:4px 10px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plot{width:100%;margin:6px 0}
+.plot canvas{display:block;width:100%;touch-action:pan-y}
+.cap{font-size:.82rem;color:var(--muted);margin:0 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin:8px 0}
+.stat{background:var(--panel);border:1px solid var(--grid);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--grid);padding:4px 6px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{background:var(--panel)}
+.tablewrap{overflow-x:auto}
+.note{font-size:.88rem;background:var(--panel);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0}
+.observe{margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+.observe h2{font-size:.95rem;margin:0 0 4px}
+.observe ol{margin:0;padding-left:1.3em;font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;margin:2px 0}
+.legend span{white-space:nowrap}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
+</style></head><body>
+<h1>관절각 탐색기: 분절각 세 개로 무릎·발목·고관절 각 만들기</h1>
+<p class="lead">오른쪽을 보고 걷는 오른 다리를 옆에서 본 막대 그림입니다. 대퇴·하퇴·발의 <b>분절각</b>(원위 → 근위 마커 벡터가 앞쪽 수평선과 이루는 각, 반시계 +)을 움직이면, 그 차로 만든 <b>관절각</b>이 여러 부호 규약에서 각각 어떤 숫자가 되는지 함께 바뀝니다. 마커 쌍은 Day I3과 같습니다(대퇴 knee → hip, 하퇴 ankle → fibula head, 발 mt5 → heel).</p>
+<div class="controls">
+  <label>대퇴 분절각 θ_thigh: <output for="th"></output><input type="range" id="th" min="50" max="150" step="1" value="110"></label>
+  <label>하퇴 분절각 θ_leg: <output for="tl"></output><input type="range" id="tl" min="30" max="150" step="1" value="90"></label>
+  <label>발 분절각 θ_foot: <output for="tf"></output><input type="range" id="tf" min="100" max="240" step="1" value="180"></label>
+  <label>골반 전방경사 (hip 각 계산용): <output for="tilt"></output><input type="range" id="tilt" min="0" max="20" step="1" value="10"></label>
+  <label class="inline"><input type="checkbox" id="mirror"> 왼쪽으로 걷는 영상(거울상)을 같은 식으로 계산</label>
+  <div class="btns"><span class="cap">Perry phase 자세(5° 반올림 값):</span><span id="presets"></span></div>
+</div>
+<div class="stats" id="stats"></div>
+<p class="note" id="verdict"></p>
+<div class="legend"><span style="color:var(--c1)">─ 분절</span><span style="color:var(--c4)">◜ 관절각 호</span><span style="color:var(--muted)">┅ 0° 기준선</span><span style="color:var(--c3)">─ 골반 기준선</span></div>
+<div class="plot"><canvas id="cv1" role="img" aria-label="다리 막대 그림과 관절각"></canvas></div>
+<div class="tablewrap"><table><thead><tr><th>규약</th><th>식</th><th>지금 값</th></tr></thead><tbody id="tbl"></tbody></table></div>
+<div class="observe"><h2>관찰할 것</h2><ol>
+<li>발 슬라이더만 움직여 보세요. 발목각은 바뀌지만 무릎각은 그대로입니다. 관절각은 이웃한 두 분절만의 관계입니다.</li>
+<li>대퇴와 하퇴를 같은 값으로 맞추면 무릎은 0°(완전 신전)입니다. 하퇴를 대퇴보다 더 크게 하면 무릎이 음수, 즉 과신전입니다. 이때 "부호 없는 각"(arccos)은 굴곡과 똑같은 숫자를 내서 둘을 구분하지 못합니다.</li>
+<li>발목 식의 −90°는 "정강이와 발이 직각일 때 0°"로 부르자는 약속입니다. [Wi] 본문 식(족저굴곡 +)과 이 레슨 식(배측굴곡 +)은 언제나 부호만 반대입니다.</li>
+<li>골반 전방경사를 0°에서 20°로 바꿔 보세요. 허벅지는 그대로인데 골반 기준 hip 각만 바뀝니다. thigh 각과 hip 각의 차이가 골반 경사입니다(Perry 평균 약 10°).</li>
+<li>"거울상"을 켜면 같은 다리를 왼쪽으로 걷는 영상에서 잰 분절각(180° − θ)으로 같은 식을 계산합니다. 무릎과 thigh 각은 부호가 뒤집히고, 발목은 +90° 때문에 180°나 어긋납니다. 걷는 방향이 다른 자료는 x 부호를 먼저 맞춘 뒤 계산합니다.</li>
+<li>Perry phase 단추로 IC → LR 끝 → TSt 끝 → PSw 끝 → ISw 끝 → MSw 끝을 차례로 눌러 보세요. 무릎의 작은 봉우리(LR)와 큰 봉우리(ISw), 발목이 TSt 끝 배측굴곡에서 PSw 끝 족저굴곡으로 뒤집히는 모습이 보입니다. 단추의 자세는 phase 끝의 대표값만 이은 것이라 그 사이의 곡선 모양은 보여 주지 않습니다.</li>
+</ol></div>
+<script data-calc>// ---- 계산 함수 (DOM 없음: Node에서 그대로 검산 가능) ----
+// 각도는 모두 도(°). 분절각 = 원위 → 근위 마커 벡터가 +x(진행 방향)와 이루는 각, 반시계 +.
+function wrap180(x){return ((x+180)%360+360)%360-180;}            // [-180, 180)
+// Day I3 예시 1과 같은 식
+function jointAngles(th,tl,tf,tilt=10){const knee=wrap180(th-tl),ankle=wrap180(tf-tl-90),thighV=wrap180(th-90);
+  return{knee,ankleDF:ankle,anklePF:-ankle,thighV,hip:thighV+tilt,kneeIncluded:180-knee,kneeUnsigned:Math.abs(knee),kneeT2D:-knee};}
+// 임상식 세 값(thigh 각, 무릎, 발목 DF+) → 분절각 세 개
+function segFromClinical(thighV,knee,ankle){const th=90+thighV,tl=th-knee,tf=tl+90+ankle;return{th,tl,tf};}
+// 피험자가 왼쪽으로 걸으면(또는 x 부호가 반대면) 화면의 분절각은 180° − θ
+function mirrorSeg(t){return 180-t;}
+// 막대 그림 좌표(수학 좌표, y 위 +, 고관절 = 원점). s = 대퇴 길이
+function legGeometry(th,tl,tf,s){const r=d=>d*Math.PI/180,u=d=>[Math.cos(r(d)),Math.sin(r(d))];
+  const hip=[0,0],[tx,ty]=u(th),knee=[-s*tx,-s*ty],[lx,ly]=u(tl),ankle=[knee[0]-s*lx,knee[1]-s*ly],fib=[knee[0]-0.13*s*lx,knee[1]-0.13*s*ly];
+  const [fx,fy]=u(tf),[vx,vy]=u(tf+90),heel=[ankle[0]+0.15*s*fx+0.17*s*vx,ankle[1]+0.15*s*fy+0.17*s*vy];
+  const mt5=[heel[0]-0.6*s*fx,heel[1]-0.6*s*fy],toe=[mt5[0]-0.18*s*fx,mt5[1]-0.18*s*fy];
+  return{hip,knee,fib,ankle,heel,mt5,toe};}
+// Perry & Burnfield 2판 4–6장의 phase 끝 대표값(5° 반올림). [이름, %GC, thigh 각, 무릎, 발목(DF+)]
+const PRESETS=[["IC",0,20,5,0],["LR 끝",12,20,20,0],["TSt 끝",50,-20,10,10],["PSw 끝",62,-10,40,-15],["ISw 끝",75,15,60,-5],["MSw 끝",87,25,25,0]];
+function clinicalWords(v,pos,neg,zero){const a=Math.abs(v);return a<0.5?zero:(v>0?pos:neg)+' '+a.toFixed(0)+'°';}
+</script>
+<script>// ---- 공통 화면 도우미 ----
+(function(){const q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')document.documentElement.dataset.theme=q;})();
+function C(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function $(id){return document.getElementById(id);}
+function val(id){const e=$(id);return e.type==='checkbox'?e.checked:(e.type==='range'||e.type==='number')?+e.value:e.value;}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function fmtP(p){return p<1e-4?'< 0.0001':p.toFixed(4);}
+function setupCanvas(id,h){const cv=$(id),w=Math.max(240,cv.parentElement.clientWidth),r=window.devicePixelRatio||1;
+  cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,w,h);
+  ctx.font='12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';return{ctx,w,h,cv};}
+function lin(d0,d1,r0,r1){return v=>r0+(v-d0)/(d1-d0)*(r1-r0);}
+function ticks(lo,hi,n=5){const raw=(hi-lo)/n,p=10**Math.floor(Math.log10(raw)),m=raw/p,st=(m<1.5?1:m<3.5?2:m<7.5?5:10)*p,out=[];
+  for(let v=Math.ceil(lo/st-1e-9)*st;v<=hi+1e-9*st;v+=st)out.push(Math.abs(v)<st*1e-9?0:v);return out;}
+function txt(ctx,s,x,y,o={}){ctx.save();ctx.fillStyle=o.color||C('fg');ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.size||o.bold)ctx.font=(o.bold?'600 ':'')+(o.size||12)+'px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(o.rot){ctx.translate(x,y);ctx.rotate(o.rot);ctx.fillText(s,0,0);}else ctx.fillText(s,x,y);ctx.restore();}
+// 축 그리기: box={l,r,t,b} 픽셀, xr/yr=[min,max]. 반환: sx, sy 변환 함수
+function axes(ctx,box,xr,yr,o={}){const sx=lin(xr[0],xr[1],box.l,box.r),sy=lin(yr[0],yr[1],box.b,box.t);
+  ctx.save();ctx.strokeStyle=C('grid');ctx.lineWidth=1;ctx.fillStyle=C('muted');ctx.font='11px -apple-system,sans-serif';
+  if(!o.noX){ctx.textAlign='center';ctx.textBaseline='top';for(const v of (o.xt||ticks(xr[0],xr[1],o.nx||5))){const x=sx(v);ctx.beginPath();ctx.moveTo(x,box.t);ctx.lineTo(x,box.b);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fx||(v=>+v.toPrecision(6)))(v),x,box.b+3);}}
+  if(!o.noY){ctx.textAlign='right';ctx.textBaseline='middle';for(const v of (o.yt||ticks(yr[0],yr[1],o.ny||4))){const y=sy(v);ctx.beginPath();ctx.moveTo(box.l,y);ctx.lineTo(box.r,y);ctx.globalAlpha=.5;ctx.stroke();ctx.globalAlpha=1;ctx.fillText((o.fy||(v=>+v.toPrecision(6)))(v),box.l-4,y);}}
+  ctx.strokeStyle=C('muted');ctx.strokeRect(box.l,box.t,box.r-box.l,box.b-box.t);ctx.restore();
+  if(o.xlab)txt(ctx,o.xlab,(box.l+box.r)/2,box.b+30,{align:'center',color:C('muted'),size:12});
+  if(o.ylab)txt(ctx,o.ylab,12,(box.t+box.b)/2,{align:'center',base:'middle',color:C('muted'),size:12,rot:-Math.PI/2});
+  return{sx,sy};}
+// 모양 표식: 색만으로 구분하지 않도록 circle / tri / square / cross / diamond
+function mark(ctx,shape,x,y,r,color,filled=true){ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.6;ctx.beginPath();
+  if(shape==='circle')ctx.arc(x,y,r,0,2*Math.PI);
+  else if(shape==='tri'){ctx.moveTo(x,y-r*1.2);ctx.lineTo(x+r*1.1,y+r*0.8);ctx.lineTo(x-r*1.1,y+r*0.8);ctx.closePath();}
+  else if(shape==='square')ctx.rect(x-r*.9,y-r*.9,r*1.8,r*1.8);
+  else if(shape==='diamond'){ctx.moveTo(x,y-r*1.3);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*1.3);ctx.lineTo(x-r,y);ctx.closePath();}
+  else if(shape==='cross'){ctx.moveTo(x-r,y-r);ctx.lineTo(x+r,y+r);ctx.moveTo(x+r,y-r);ctx.lineTo(x-r,y+r);ctx.lineWidth=2.2;ctx.stroke();ctx.restore();return;}
+  if(filled){ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1;}ctx.stroke();ctx.restore();}
+function line(ctx,pts,color,w=1.5,dash){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;if(dash)ctx.setLineDash(dash);ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
+// 슬라이더 값 표시 + 변경 시 콜백
+function bind(ids,fn,show={}){for(const id of ids){const e=$(id),o=document.querySelector(`output[for="${id}"]`);
+  const upd=()=>{if(o)o.textContent=show[id]?show[id](val(id)):e.value;};upd();e.addEventListener('input',()=>{upd();fn(id);});e.addEventListener('change',()=>{upd();fn(id);});}}
+// 다시 그리기: 창 크기·테마 변화 때. iframe 부모에 실제 높이를 알려 준다({type:'viz-height'}).
+function redrawOn(fn){let q=0;const run=()=>{q=0;fn();if(parent!==window)parent.postMessage({type:'viz-height',height:document.body.scrollHeight},'*');};
+  const later=()=>{if(!q)q=requestAnimationFrame(run);};addEventListener('resize',later);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',later);run();return later;}
+
+// 수학 각도 a1 → a2 로 호 그리기(화면 y는 아래가 +)
+function arcDeg(ctx,cx,cy,r,a1,a2,color,w=2){a2=a1+wrap180(a2-a1);ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;ctx.beginPath();
+  const n=Math.max(8,Math.ceil(Math.abs(a2-a1)/4));for(let i=0;i<=n;i++){const a=(a1+(a2-a1)*i/n)*Math.PI/180,x=cx+r*Math.cos(a),y=cy-r*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+  ctx.stroke();ctx.restore();}
+function midDeg(a1,a2){return a1+wrap180(a2-a1)/2;}
+function deg0(v){const r=Math.round(v);return (r===0?0:r)+'°';}
+function ray(ctx,p,deg,len,color,dash,w=1.2){const a=deg*Math.PI/180;line(ctx,[p,[p[0]+len*Math.cos(a),p[1]-len*Math.sin(a)]],color,w,dash);}
+function setPose(thV,k,an){const s=segFromClinical(thV,k,an);$('th').value=s.th;$('tl').value=s.tl;$('tf').value=s.tf;['th','tl','tf'].forEach(id=>$(id).dispatchEvent(new Event('input')));}
+$('presets').innerHTML=PRESETS.map((p,i)=>`<button data-i="${i}">${p[0]} (${p[1]}%)</button>`).join('');
+document.querySelectorAll('#presets button').forEach(b=>b.onclick=()=>{const p=PRESETS[+b.dataset.i];setPose(p[2],p[3],p[4]);});
+
+function draw(){const mir=val('mirror'),tilt=val('tilt');let th=val('th'),tl=val('tl'),tf=val('tf');
+  if(mir){th=mirrorSeg(th);tl=mirrorSeg(tl);tf=mirrorSeg(tf);}
+  const J=jointAngles(th,tl,tf,mir?-tilt:tilt),T0=jointAngles(val('th'),val('tl'),val('tf'),tilt);
+  $('stats').innerHTML=[['무릎 (굴곡 +)',deg0(J.knee)],['발목 (배측굴곡 +, 이 레슨)',deg0(J.ankleDF)],['thigh 각 (수직 기준)',deg0(J.thighV)],['hip 각 (골반 기준)',deg0(J.hip)],
+    ['계산에 쓴 분절각',`${deg0(th)} / ${deg0(tl)} / ${deg0(tf)}`]].map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+  const words=`무릎 ${clinicalWords(T0.knee,'굴곡','과신전','완전 신전')}, 발목 ${clinicalWords(T0.ankleDF,'배측굴곡','족저굴곡','중립(0°)')}, 대퇴 ${clinicalWords(T0.thighV,'굴곡','신전','수직')}`;
+  $('verdict').innerHTML=mir?`⚠️ 거울상 화면의 분절각(180° − θ)에 오른쪽 보행용 식을 그대로 썼습니다. 실제 자세는 <b>${words}</b>인데, 무릎·thigh 각은 부호가 뒤집혔고 발목은 ${deg0(J.ankleDF)}로 180° 어긋났습니다. x 부호를 먼저 뒤집어 맞춘 뒤 계산해야 합니다.`
+    :`임상에서 말하면: <b>${words}</b>. 그래프에서는 굴곡·배측굴곡을 +로 그리지만, 말로는 "−10°" 대신 "족저굴곡 10°"라고 합니다.`;
+  $('tbl').innerHTML=[['이 레슨 = [Wi] 부록 A.4','발목 = θ_foot − θ_leg − 90°',deg0(J.ankleDF)],['[Wi] 본문 3.6.2','발목 = θ_leg − θ_foot + 90°',deg0(J.anklePF)],
+    ['이 레슨','무릎 = θ_thigh − θ_leg',deg0(J.knee)],['BMC transformation_2d','무릎 = θ_leg − θ_thigh (굴곡이 −)',deg0(J.kneeT2D)],
+    ['사이각 표기','편 무릎 = 180°',deg0(J.kneeIncluded)],['부호 없는 각 (arccos)','|θ_thigh − θ_leg|',deg0(J.kneeUnsigned)],
+    ['thigh 각','θ_thigh − 90°',deg0(J.thighV)],['hip 각 (골반 기준)','thigh 각 + 골반 전방경사',deg0(J.hip)]]
+    .map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+  // ---- 막대 그림
+  const {ctx,w,h}=setupCanvas('cv1',390),s=Math.min(118,w*0.26),G=legGeometry(th,tl,tf,s),ox=w*0.5+(mir?s*0.25:-s*0.25),oy=78;
+  const P=q=>[ox+q[0],oy-q[1]];const hip=P(G.hip),knee=P(G.knee),fib=P(G.fib),ankle=P(G.ankle),heel=P(G.heel),mt5=P(G.mt5),toe=P(G.toe);
+  // 골반 선(전방경사 = 앞쪽이 아래로)과 골반 기준선
+  const fwd=mir?180:0,tl_=mir?-tilt:tilt,pc=[hip[0]+20*Math.cos((90-tl_)*Math.PI/180),hip[1]-20*Math.sin((90-tl_)*Math.PI/180)];
+  ray(ctx,pc,fwd-tl_,34,C('muted'),null,2);ray(ctx,pc,fwd+180-tl_,34,C('muted'),null,2);
+  ray(ctx,hip,-90-tl_,s*0.95,C('c3'),[6,4],1.5);ray(ctx,hip,-90,s*0.95,C('muted'),[3,4]);
+  // 분절
+  line(ctx,[hip,knee,ankle],C('c1'),4);ctx.save();ctx.fillStyle=C('fill1');ctx.strokeStyle=C('c1');ctx.lineWidth=2;ctx.beginPath();[ankle,heel,mt5,toe].forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+  // 0° 기준선: 무릎 = 대퇴 연장선, 발목 = 하퇴에 직각인 발(중립)
+  ray(ctx,knee,th+180,s*0.55,C('muted'),[3,4]);ray(ctx,ankle,tl-90,s*0.55,C('muted'),[3,4]);
+  // 관절각 호
+  const R=Math.max(22,s*0.28);
+  arcDeg(ctx,...knee,R,th+180,tl+180,C('c4'));arcDeg(ctx,...ankle,R*0.9,tl-90,tf+180,C('c4'));arcDeg(ctx,...hip,R*1.2,-90,th+180,C('c4'));arcDeg(ctx,...hip,R*1.55,-90-tl_,th+180,C('c3'),1.5);
+  const lab=(p,deg,r,t)=>{const a=deg*Math.PI/180;txt(ctx,t,p[0]+r*Math.cos(a),p[1]-r*Math.sin(a),{align:'center',base:'middle',color:C('c4'),bold:1,size:12});};
+  const side=mir?-1:1;
+  lab(knee,midDeg(th+180,tl+180),R+24,`무릎 ${deg0(J.knee)}`);lab(ankle,midDeg(tl-90,tf+180),R+30,`발목 ${deg0(J.ankleDF)}`);
+  txt(ctx,`thigh 각 ${deg0(J.thighV)} — 고관절의 빨간 호 (수직 점선 기준)`,12,20,{color:C('c4'),bold:1,size:12});
+  txt(ctx,`hip 각 ${deg0(J.hip)} — 고관절의 초록 호 (골반 기준선 기준)`,12,40,{color:C('c3'),bold:1,size:12});
+  // 마커
+  [[hip,'hip',-7],[knee,'knee',-7],[fib,'fibula',14],[ankle,'ankle',16],[heel,'heel',-7],[mt5,'mt5',16]].forEach(([p,n,dy])=>{mark(ctx,'circle',p[0],p[1],4.5,C('c2'));txt(ctx,n,p[0]+side*9,p[1]+dy,{color:C('muted'),size:11,align:mir?'right':'left'});});
+  mark(ctx,'cross',toe[0],toe[1],3.5,C('muted'));
+  // 진행 방향 표시
+  txt(ctx,mir?'← 진행 방향 (거울상 화면)':'진행 방향 →',mir?w-12:12,h-14,{align:mir?'right':'left',color:C('muted'),size:12});}
+bind(['th','tl','tf','tilt','mirror'],()=>later(),{th:v=>v+'°',tl:v=>v+'°',tf:v=>v+'°',tilt:v=>v+'°'});
+const later=redrawOn(draw);
+</script></body></html>
