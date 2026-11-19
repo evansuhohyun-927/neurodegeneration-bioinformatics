@@ -10,7 +10,7 @@
 | 0주차 — 코딩 기초 | 7일 | 코딩이 처음이면 필수 | 터미널, Python, pandas, Git |
 | 1–6주차 — 본 과정 | 42일 | 필수 | NASA OSDR OSD-536(마우스 뇌 nCounter 패널) + PhysioNet PD 운동 데이터 |
 | 보충 단원 | 7일 | 선택 | 서열 데이터베이스, 정렬, 치환 행렬, BLAST, 계통수 |
-| 심화 파트 A–H | 파트당 7일 | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI, 임상 예측·조기진단 ML |
+| 심화 파트 A–I | 파트당 7일(I는 21일 + 이론 노트) | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI, 임상 예측·조기진단 ML, 보행분석 |
 
 필수 과정은 7주(49일)이고, 한 주에 약 9–11시간(레슨 7개)이 듭니다. 복습과 보고서 작성 주간(3·5·6주차)은 더 걸릴 수 있습니다.
 
@@ -153,6 +153,7 @@
 | [E — EHR(전자건강기록) 2차 분석](lessons/advanced/E-ehr/day-E1.md) | Python | 병원 기록으로 임상 질문에 답할 때. 교란과 편향이 핵심. | [가이드](crash-course/ehr.md) |
 | [G — AI·생성형 AI in 바이오메디컬](lessons/advanced/G-ai-biomed/day-G1.md) | Python | 5주차 모델링의 다음 단계. 생성 모델, 신약 ML, 단백질 구조, LLM 검증. | [가이드](crash-course/ai-biomed.md) |
 | [H — 임상 예측·조기진단 ML](lessons/advanced/H-clinical-prediction/day-H1.md) | Python | 진단·예후·조기진단 모델을 어떻게 평가·보고하는가. 보정, 임계값, 결정 곡선, 생존 예측, 외부 검증. | [가이드](crash-course/clinical-prediction.md) |
+| [I — 보행분석: 이론에서 웨어러블 로봇까지](lessons/advanced/I-gait/day-I1.md) | Python | 보행 주기·운동학·운동역학·EMG 이론, 센서 신호처리와 보행 변수, 파킨슨병 보행동결(FOG) 탐지, 웨어러블 로봇 제어. 3주 21레슨 + [이론 노트 12편](lessons/advanced/I-gait-theory/index.md). | [가이드](crash-course/gait-analysis.md) |
 
 ### 심화 A — R과 Bioconductor
 
@@ -223,6 +224,55 @@
 - [ ] [Day H5 — 종단·생존 예측: 언제 발병하는가](lessons/advanced/H-clinical-prediction/day-H5.md)
 - [ ] [Day H6 — 외부 검증과 데이터셋 이동: 다른 기관에 가면 무엇이 무너지나](lessons/advanced/H-clinical-prediction/day-H6.md)
 - [ ] [Day H7 — 보고와 규제, 그리고 정직한 조기 선별 baseline 미니 프로젝트](lessons/advanced/H-clinical-prediction/day-H7.md)
+
+### 심화 I — 보행분석: 이론에서 웨어러블 로봇까지
+
+3주 21레슨(실습)과, 실습 없이 이론만 깊게 다루는 이론 노트 12편으로 되어 있다. 이론만 먼저 읽으려면 [이론 노트 목록](lessons/advanced/I-gait-theory/index.md)에서 시작한다.
+
+**1주차 — 정상 보행의 이론**
+
+- [ ] [Day I1 — 보행 주기와 보행의 언어: stride, stance, 8개 phase](lessons/advanced/I-gait/day-I1.md)
+- [ ] [Day I2 — 보행의 기능 과제와 foot rocker: 몸은 무엇으로 앞으로 가는가](lessons/advanced/I-gait/day-I2.md)
+- [ ] [Day I3 — 관절 운동학: 마커 좌표로 시상면 각도 곡선 만들고 읽기](lessons/advanced/I-gait/day-I3.md)
+- [ ] [Day I4 — 운동역학: 지면반력, 관절 모멘트, 파워](lessons/advanced/I-gait/day-I4.md)
+- [ ] [Day I5 — 근육 활동과 EMG: 정류, envelope, 정규화, onset을 직접 구현하기](lessons/advanced/I-gait/day-I5.md)
+- [ ] [Day I6 — 에너지와 동역학적 보행: 역진자, 충돌, 그리고 걷기의 비용](lessons/advanced/I-gait/day-I6.md)
+- [ ] [Day I7 — 보행의 신경 조절과 이중과제 비용 + 1주차 정리](lessons/advanced/I-gait/day-I7.md)
+
+**2주차 — 측정과 신호처리**
+
+- [ ] [Day I8 — 측정 시스템 개관과 선택: 질문이 장비를 고른다](lessons/advanced/I-gait/day-I8.md)
+- [ ] [Day I9 — IMU의 원리: 가속도계는 중력도 재고, 자이로는 흘러간다](lessons/advanced/I-gait/day-I9.md)
+- [ ] [Day I10 — 신호처리 I: 표본화, 미분과 잡음, cutoff를 residual로 고르기](lessons/advanced/I-gait/day-I10.md)
+- [ ] [Day I11 — 신호처리 II: 시간 정규화, ensemble average, 그리고 센서 융합](lessons/advanced/I-gait/day-I11.md)
+- [ ] [Day I12 — gait event 검출: 문턱 하나에도 규칙이 필요하다](lessons/advanced/I-gait/day-I12.md)
+- [ ] [Day I13 — 보행 변수: 평균, 변동성, 비대칭, 그리고 속도라는 함정](lessons/advanced/I-gait/day-I13.md)
+- [ ] [Day I14 — 측정 신뢰도와 타당도: Bland–Altman과 ICC를 손으로 + 2주차 정리](lessons/advanced/I-gait/day-I14.md)
+
+**3주차 — 병적 보행, FOG, 웨어러블 로봇**
+
+- [ ] [Day I15 — 병적 보행의 원리: 일차 장애와 대치 동작을 가려 읽기](lessons/advanced/I-gait/day-I15.md)
+- [ ] [Day I16 — 신경계 질환의 보행: 뇌졸중, 뇌성마비, 파킨슨병을 같은 변수로 비교하기](lessons/advanced/I-gait/day-I16.md)
+- [ ] [Day I17 — 보행동결(FOG)의 이론: 정의, 유형, 네트워크, 그리고 근거의 세기](lessons/advanced/I-gait/day-I17.md)
+- [ ] [Day I18 — FOG 신호: freeze index와 에너지 threshold를 Daphnet으로 직접 계산하기](lessons/advanced/I-gait/day-I18.md)
+- [ ] [Day I19 — FOG 탐지 모델: 참가자 단위 검증과 event 단위 평가](lessons/advanced/I-gait/day-I19.md)
+- [ ] [Day I20 — 중재와 웨어러블 로봇: 임상 근거는 어디까지이고, 실시간 제어는 무엇이 다른가](lessons/advanced/I-gait/day-I20.md)
+- [ ] [Day I21 — 캡스톤: FOG 탐지 미니 프로젝트 보고서와 5분 발표](lessons/advanced/I-gait/day-I21.md)
+
+**이론 노트**
+
+- [ ] [T01 — 보행 주기와 기능 과제: phase 체계, rocker, 전진의 동력](lessons/advanced/I-gait-theory/note-T01.md)
+- [ ] [T02 — 운동학: 좌표계와 부호 규약, 분절각·관절각, 2D에서 3D로](lessons/advanced/I-gait-theory/note-T02.md)
+- [ ] [T03 — 운동역학과 역동역학: 지면반력, 관절 모멘트, joint power와 그 한계](lessons/advanced/I-gait-theory/note-T03.md)
+- [ ] [T04 — 근육과 EMG: 근육 역학, EMG 기록·처리·정규화, EMG–힘 관계의 한계](lessons/advanced/I-gait-theory/note-T04.md)
+- [ ] [T05 — 에너지와 동역학적 보행: 역진자, step-to-step transition, six determinants 논쟁, O2 cost](lessons/advanced/I-gait-theory/note-T05.md)
+- [ ] [T06 — 보행의 신경 조절: 척수에서 피질까지, automaticity와 dual-task, 파킨슨병의 네트워크 변화](lessons/advanced/I-gait-theory/note-T06.md)
+- [ ] [T07 — 균형·자세 제어와 협응](lessons/advanced/I-gait-theory/note-T07.md)
+- [ ] [T08 — 측정 원리와 오차](lessons/advanced/I-gait-theory/note-T08.md)
+- [ ] [T09 — 신호처리의 이론](lessons/advanced/I-gait-theory/note-T09.md)
+- [ ] [T10 — 병적 보행의 원리와 임상 지표](lessons/advanced/I-gait-theory/note-T10.md)
+- [ ] [T11 — 보행동결(FOG)](lessons/advanced/I-gait-theory/note-T11.md)
+- [ ] [T12 — 보조기·의지·웨어러블 로봇](lessons/advanced/I-gait-theory/note-T12.md)
 
 ## 저작권과 출처
 

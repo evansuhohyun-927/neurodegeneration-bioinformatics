@@ -10,5 +10,6 @@
   "lessons/advanced/C-neural-signals/day-C3.md": [{"file": "filter-spectrum.html", "title": "필터: 시간 파형·power spectrum·위상 지연", "height": 1320}],
   "lessons/week-5/day-33.md": [{"file": "leakage.html", "title": "참가자 누수: 행 단위 vs 참가자 단위 분할", "height": 1320}],
   "lessons/week-5/day-34.md": [{"file": "roc.html", "title": "기준값, confusion matrix, ROC와 유병률", "height": 1330}],
+  "lessons/advanced/I-gait/day-I10.md": [{"file": "sampling-aliasing.html", "title": "표본화 속도와 aliasing", "height": 1010}, {"file": "filter-spectrum.html", "title": "필터: 시간 파형·power spectrum·위상 지연", "height": 1320}],
   "lessons/advanced/D-fmri/day-D4.md": [{"file": "hrf-glm.html", "title": "HRF convolution과 GLM 적합", "height": 1210}]
 }

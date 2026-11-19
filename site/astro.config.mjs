@@ -33,6 +33,8 @@ export default defineConfig({
         group('심화 E — EHR 2차 분석', 'lessons/advanced/e-ehr'),
         group('심화 G — AI·생성형 AI', 'lessons/advanced/g-ai-biomed'),
         group('심화 H — 임상 예측·조기진단 ML', 'lessons/advanced/h-clinical-prediction'),
+        group('심화 I — 보행분석 (실습)', 'lessons/advanced/i-gait'),
+        group('심화 I — 보행분석 이론 노트', 'lessons/advanced/i-gait-theory'),
         group('Crash Course', 'crash-course'),
         {
           label: '참고',
