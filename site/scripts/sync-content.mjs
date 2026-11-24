@@ -119,6 +119,7 @@ const GROUPS = [
   { dir: 'lessons/advanced/H-clinical-prediction', name: '심화 H', title: '임상 예측·조기진단 ML', desc: '보정, 임계값, decision curve, 외부 검증' },
   { dir: 'lessons/advanced/I-gait', name: '심화 I', title: '보행분석: 이론에서 웨어러블 로봇까지', desc: '보행 주기, 신호처리, FOG 탐지, 로봇 제어' },
   { dir: 'lessons/advanced/I-gait-theory', name: '심화 I 이론', title: '보행분석 이론 노트', desc: '실습 없이 이론만 깊게 12편' },
+  { dir: 'lessons/advanced/J-biomechanics-methods', name: '심화 J', title: '생체역학 연구방법 교재 노트', desc: 'Research Methods in Biomechanics 장별 정리 16편 + 영상' },
   { dir: 'crash-course', name: 'Crash Course', title: '급할 때 보는 가이드', desc: '분야별 30–45분 압축 가이드' },
 ];
 const titleOf = (src) => (fs.readFileSync(path.join(REPO, src), 'utf8').match(/^# (.+)$/m) || [, src])[1].trim();

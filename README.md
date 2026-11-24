@@ -10,7 +10,7 @@
 | 0주차 — 코딩 기초 | 7일 | 코딩이 처음이면 필수 | 터미널, Python, pandas, Git |
 | 1–6주차 — 본 과정 | 42일 | 필수 | NASA OSDR OSD-536(마우스 뇌 nCounter 패널) + PhysioNet PD 운동 데이터 |
 | 보충 단원 | 7일 | 선택 | 서열 데이터베이스, 정렬, 치환 행렬, BLAST, 계통수 |
-| 심화 파트 A–I | 파트당 7일(I는 21일 + 이론 노트) | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI, 임상 예측·조기진단 ML, 보행분석 |
+| 심화 파트 A–J | 파트당 7일(I는 21일 + 이론 노트, J는 교재 노트 16편) | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI, 임상 예측·조기진단 ML, 보행분석, 생체역학 연구방법 |
 
 필수 과정은 7주(49일)이고, 한 주에 약 9–11시간(레슨 7개)이 듭니다. 복습과 보고서 작성 주간(3·5·6주차)은 더 걸릴 수 있습니다.
 
@@ -154,6 +154,7 @@
 | [G — AI·생성형 AI in 바이오메디컬](lessons/advanced/G-ai-biomed/day-G1.md) | Python | 5주차 모델링의 다음 단계. 생성 모델, 신약 ML, 단백질 구조, LLM 검증. | [가이드](crash-course/ai-biomed.md) |
 | [H — 임상 예측·조기진단 ML](lessons/advanced/H-clinical-prediction/day-H1.md) | Python | 진단·예후·조기진단 모델을 어떻게 평가·보고하는가. 보정, 임계값, 결정 곡선, 생존 예측, 외부 검증. | [가이드](crash-course/clinical-prediction.md) |
 | [I — 보행분석: 이론에서 웨어러블 로봇까지](lessons/advanced/I-gait/day-I1.md) | Python | 보행 주기·운동학·운동역학·EMG 이론, 센서 신호처리와 보행 변수, 파킨슨병 보행동결(FOG) 탐지, 웨어러블 로봇 제어. 3주 21레슨 + [이론 노트 12편](lessons/advanced/I-gait-theory/index.md). | [가이드](crash-course/gait-analysis.md) |
+| [J — 생체역학 연구방법: 교재 노트](lessons/advanced/J-biomechanics-methods/index.md) | 없음(읽기) | 보행 연구실의 측정·계산 방법을 교재 한 권으로 처음부터 끝까지. *Research Methods in Biomechanics* 2판을 장 순서대로 정리한 노트 16편과 장별 영상. 심화 I의 이론 노트와 짝을 이룬다. | [가이드](crash-course/gait-analysis.md) |
 
 ### 심화 A — R과 Bioconductor
 
@@ -274,10 +275,17 @@
 - [ ] [T11 — 보행동결(FOG)](lessons/advanced/I-gait-theory/note-T11.md)
 - [ ] [T12 — 보조기·의지·웨어러블 로봇](lessons/advanced/I-gait-theory/note-T12.md)
 
+### 심화 J — 생체역학 연구방법: 교재 노트
+
+Robertson 외, *Research Methods in Biomechanics* 2판을 장 순서대로 따라가는 노트 16편이다. 실습 코드는 없고, 노트마다 교재 절 지도·영상·자기 점검이 있다. 읽는 순서와 영상 목록은 [노트 목록](lessons/advanced/J-biomechanics-methods/index.md)에 있다.
+
+<!-- J-CHECKLIST -->
+
 ## 저작권과 출처
 
 - 레슨의 글·예시·퀴즈·코드는 이 과정을 위해 새로 쓴 것이다. 글은 CC BY 4.0, 코드는 MIT ([LICENSE.md](LICENSE.md)).
 - 심화 파트는 여러 교재를 읽고 주제와 깊이를 정했지만, 설명·예시·코드·퀴즈는 모두 새로 썼다. 교재는 각 레슨의 "더 읽을거리"에 서지와 출판사 공식 페이지로만 소개한다.
+- 심화 J는 교재 한 권(*Research Methods in Biomechanics* 2판)을 장 순서대로 따라가는 학습 노트다. 설명·표·자기 점검 문항은 새로 썼고, 교재의 문장·그림·표·연습문제는 옮기지 않았다. 교재 본문은 저장소에 없으며, 그림과 표는 번호와 쪽으로만 가리킨다.
 - 영상은 **링크로만** 소개한다. 영상·자막·썸네일·슬라이드는 각 제작자의 저작물이며 이 저장소에 복제하지 않는다.
 - 데이터셋 원본은 저장소에 넣지 않는다. 내려받는 방법과 버전·인용은 `data/README.md`에 기록한다.
 - 그림은 직접 만든 코드로 생성한 것만 쓴다. 논문·교과서 그림은 옮기지 않고 출처를 링크한다.

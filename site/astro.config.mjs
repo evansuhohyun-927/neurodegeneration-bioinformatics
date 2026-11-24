@@ -35,6 +35,7 @@ export default defineConfig({
         group('심화 H — 임상 예측·조기진단 ML', 'lessons/advanced/h-clinical-prediction'),
         group('심화 I — 보행분석 (실습)', 'lessons/advanced/i-gait'),
         group('심화 I — 보행분석 이론 노트', 'lessons/advanced/i-gait-theory'),
+        group('심화 J — 생체역학 연구방법 교재 노트', 'lessons/advanced/j-biomechanics-methods'),
         group('Crash Course', 'crash-course'),
         {
           label: '참고',
