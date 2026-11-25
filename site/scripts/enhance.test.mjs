@@ -1,6 +1,6 @@
 // 퀴즈 파서 자기 점검: node scripts/enhance.test.mjs
 import assert from 'node:assert/strict';
-import { parseOptions, answerIndex, transformQuiz } from './enhance.mjs';
+import { parseOptions, answerIndex, transformQuiz, parseMeta } from './enhance.mjs';
 
 const inline = parseOptions('질문? (a) `x(a)` (b) 둘 (c) 셋');
 assert.deepEqual(inline.options.map((o) => o.text), ['`x(a)`', '둘', '셋']);
@@ -18,4 +18,10 @@ assert.equal(q.total, 2);
 assert.equal(q.clickable, 1);
 assert.ok(q.lines.join('\n').includes('data-answer="1"'));
 assert.ok(q.lines.join('\n').includes('먼저 답을 적어 본 뒤 펼치기'));
+const m1 = parseMeta(['> **교재 노트** · 심화 파트 J · **읽는 시간:** 45분 · **함께 읽기:** [T03](a.md), [I4](b.md)', '', '본문']);
+assert.deepEqual(m1.pairs, [['구분', '**교재 노트** · 심화 파트 J'], ['읽는 시간', '45분'], ['함께 읽기', '[T03](a.md), [I4](b.md)']]);
+assert.deepEqual(m1.rest, ['', '본문']);
+assert.deepEqual(parseMeta(['> **이론 노트** · 노트 12편 · 실습: [Day I1](x.md)']).pairs, [['구분', '**이론 노트** · 노트 12편 · 실습: [Day I1](x.md)']]);
+assert.deepEqual(parseMeta(['> **주차:** 1주 · **예상 시간:** 90분']).pairs, [['주차', '1주'], ['예상 시간', '90분']]);
+assert.equal(parseMeta(['> **주의** 이건 인용문이다']), null);
 console.log('enhance self-test ok');

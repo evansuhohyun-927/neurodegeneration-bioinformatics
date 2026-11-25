@@ -240,7 +240,9 @@ function convert(src) {
   if (src === 'README.md') fm.push('tableOfContents: false');
   fm.push('---', '');
   while (out.length && !out[0].trim()) out.shift();
-  return fm.join('\n') + out.join('\n');
+  // 표 칸의 숫자 범위(63–78)가 대시 뒤에서 줄바꿈되지 않게 word joiner(U+2060)를 끼운다
+  const page = out.map((l) => (l.startsWith('|') ? l.replace(/(\d)–(\d)/g, '$1\u2060–\u2060$2') : l));
+  return fm.join('\n') + page.join('\n');
 }
 
 // ---------- 쓰기 ----------

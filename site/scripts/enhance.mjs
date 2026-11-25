@@ -183,13 +183,18 @@ function clickItem(stemLines, detailLines, num, src) {
 // 머리 인용줄 "> **주차:** … · **예상 시간:** …" → [[키, 값]]
 export function parseMeta(pre) {
   const idx = pre.findIndex((l) => l.trim());
-  if (idx < 0 || !/^>\s*\*\*[^*]+:\*\*/.test(pre[idx])) return null;
+  // '**주차:** …' 처럼 key로 시작하거나, '**이론 노트** · …' 처럼 굵은 구분 이름으로 시작하는 머리 줄
+  if (idx < 0 || !/^>\s*\*\*[^*]+(:\*\*|\*\*\s+·)/.test(pre[idx])) return null;
   let end = idx;
   while (end < pre.length && /^>/.test(pre[end])) end++;
   // 빈 '>' 줄로 나뉜 문단은 별도 항목이므로 '·'로 이어 붙여 나눈다
   const text = pre.slice(idx, end).map((l) => l.replace(/^>\s?/, '').trim() || '·').join(' ');
-  const pairs = text.split(/\s+·\s+(?=\*\*)/).map((p) => p.match(/^\*\*([^*]+?):\*\*\s*(.*)$/)).filter(Boolean)
-    .map(([, k, v]) => [k.trim(), v.trim()]);
+  const pairs = [], lead = [];
+  for (const p of text.split(/\s+·\s+(?=\*\*[^*]+:\*\*)/)) {
+    const m = p.match(/^\*\*([^*]+?):\*\*\s*(.*)$/);
+    if (m) pairs.push([m[1].trim(), m[2].trim()]); else lead.push(p.trim());
+  }
+  if (lead.length) pairs.unshift(['구분', lead.join(' · ')]);
   if (!pairs.length) return null;
   return { pairs, rest: [...pre.slice(0, idx), ...pre.slice(end)] };
 }
