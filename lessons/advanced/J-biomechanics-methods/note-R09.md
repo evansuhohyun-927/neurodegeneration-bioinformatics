@@ -11,7 +11,10 @@
 - Hill 모델이 설명하지 못하는 현상과, 그 자리를 메우는 네 가지 다른 모델.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R09 -->
+- [Biomechanics of Movement | Lecture 4.2: Basic Muscle Properties: Force-Length and Force-Velocity — Biomechanics of Movement](https://www.youtube.com/watch?v=XkgDBZfGezs)
+- [Lecture 5.4: Putting it All Together to Model Muscle-Tendon Force — Biomechanics of Movement](https://www.youtube.com/watch?v=-FSTsbr3XVQ)
+- [The Hill model - isotonic and isometric contractions — Mechanisms and Logic in Human Physiology](https://www.youtube.com/watch?v=No2wGqJq-uA)
+- **무엇에 주목할까:** 근육의 힘–길이, 힘–속도 관계를 먼저 익힙니다. 그다음 이 성질들을 합쳐 근–건 힘을 모델링하는 강의와 힐 모델 설명을 이어서 봅니다.
 
 ## 핵심 질문
 1. 신경 자극이 같아도 근육 힘이 달라지는 이유는 무엇이고, 모델은 그것을 어떻게 나누어 표현하는가?

@@ -11,7 +11,10 @@
 - 결과 제시법: time series, trajectory, ensemble average, angle-angle diagram, phase plot.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R01 -->
+- [Angular Kinematics in Human Movement | Measuring Joint and Segment Angles in Biomechanics | #041 — ALZUBE Academy](https://www.youtube.com/watch?v=NFRz5nN4X_E)
+- [Numerical Differentiation with Finite Difference Derivatives — Steve Brunton](https://www.youtube.com/watch?v=9fGaTU1-f-0)
+- [Biomechanics of Movement | Lecture 7.6: Inverse Kinematics: Filtering & Differentiating Motion Data — Biomechanics of Movement](https://www.youtube.com/watch?v=bGltq_nHEZ0)
+- **무엇에 주목할까:** 분절각과 관절각을 어떻게 정의하고 측정하는지 먼저 확인합니다. 이어서 유한차분으로 위치 자료를 수치 미분하는 방법과, 운동 자료를 미분하기 전에 필터링이 왜 필요한지에 주목합니다.
 
 ## 핵심 질문
 1. 평면에서 분절 하나를 기술하려면 숫자가 몇 개 필요하고, 그래서 마커는 최소 몇 개인가?

@@ -11,7 +11,10 @@
 - 기계적 효율(ME)의 분자와 분모를 정하는 일이 왜 어려운지.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R06 -->
+- [Biomechanics of Movement | Lecture 2.3: Energy Exchange Mechanisms in Walking — Biomechanics of Movement](https://www.youtube.com/watch?v=4EN3q80pQys)
+- [Advanced Joint Kinetics - Joint Power - Chapter 1 of 3 — Bassett Biomechanics](https://www.youtube.com/watch?v=wlbQQaTa_CQ)
+- [Easiest way to understand Biomechanical Work and Power in sports — Biomechanics Coach](https://www.youtube.com/watch?v=JjLMslq3Izk)
+- **무엇에 주목할까:** 보행에서 에너지가 교환되는 메커니즘, 관절 파워, 그리고 생체역학에서의 일과 파워 개념을 다룹니다. 일·에너지·파워가 서로 어떻게 연결되는지를 중심으로 보시면 좋습니다.
 
 ## 핵심 질문
 1. 평지를 일정한 속도로 걸으면 외적 일이 0인데, 왜 대사 에너지는 계속 드는가?

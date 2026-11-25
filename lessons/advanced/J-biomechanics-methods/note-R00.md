@@ -10,7 +10,9 @@
 - 계산 결과를 유효숫자 3자리(첫 자리가 1이면 4자리)로 보고하는 규칙과 SI 숫자 표기법.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R00 -->
+- [Biomechanics of Movement | Lecture 1.1: Why Do We Study Movement? — Biomechanics of Movement](https://www.youtube.com/watch?v=NfOZx0Nychc)
+- [Biomechanics of Movement | Lecture 1.2: How We Produce and Study Movement — Biomechanics of Movement](https://www.youtube.com/watch?v=j7oNHDZk2wQ)
+- **무엇에 주목할까:** 움직임을 왜 연구하는지, 그리고 사람이 움직임을 어떻게 만들어 내고 어떤 방법으로 연구하는지를 설명하는 스탠퍼드 강의 두 편입니다. 생체역학이 다루는 질문의 범위와 측정·모델링·시뮬레이션으로 이어지는 분석 흐름을 책 전체의 지도로 삼아 보시면 좋습니다.
 
 ## 핵심 질문
 1. 운동학(kinematics)과 운동역학(kinetics)은 각각 어떤 질문에 답하는가?

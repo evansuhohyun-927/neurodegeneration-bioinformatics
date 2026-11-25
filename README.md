@@ -280,7 +280,22 @@
 
 Robertson 외, *Research Methods in Biomechanics* 2판을 장 순서대로 따라가는 노트 16편이다. 실습 코드는 없고, 노트마다 교재 절 지도·영상·자기 점검이 있다. 읽는 순서와 영상 목록은 [노트 목록](lessons/advanced/J-biomechanics-methods/index.md)에 있다.
 
-<!-- J-CHECKLIST -->
+- [ ] [R00 — Introduction: 생체역학 분석 기법의 지도와 측정에서 해석까지의 흐름](lessons/advanced/J-biomechanics-methods/note-R00.md)
+- [ ] [R01 — Planar Kinematics: 평면 운동학 — 좌표계, 영상 측정, 미분, 각도](lessons/advanced/J-biomechanics-methods/note-R01.md)
+- [ ] [R02 — Three-Dimensional Kinematics: 3차원 운동학 — 좌표 변환, 분절 좌표계, 자세 추정, 관절각](lessons/advanced/J-biomechanics-methods/note-R02.md)
+- [ ] [R03 — Body Segment Parameters: 분절 질량·질량중심·관성모멘트를 어떻게 얻는가](lessons/advanced/J-biomechanics-methods/note-R03.md)
+- [ ] [R04 — Forces and Their Measurement: 힘·모멘트·충격량의 원리와 측정 장비](lessons/advanced/J-biomechanics-methods/note-R04.md)
+- [ ] [R05 — Two-Dimensional Inverse Dynamics: 평면 역동역학으로 관절의 알짜 힘과 모멘트 구하기](lessons/advanced/J-biomechanics-methods/note-R05.md)
+- [ ] [R06 — Energy, Work, and Power: 에너지·일·파워와 관절 파워 분석](lessons/advanced/J-biomechanics-methods/note-R06.md)
+- [ ] [R07 — Three-Dimensional Kinetics: 3D 역동역학, 모멘트 표현 좌표계, 유도 가속도 분석](lessons/advanced/J-biomechanics-methods/note-R07.md)
+- [ ] [R08 — Electromyographic Kinesiology: EMG 신호의 기원, 기록·처리, 진폭·주파수 해석과 응용](lessons/advanced/J-biomechanics-methods/note-R08.md)
+- [ ] [R09 — Muscle Modeling: Hill 근육 모델, 근육별 매개변수 추정, 그리고 Hill 모델 너머](lessons/advanced/J-biomechanics-methods/note-R09.md)
+- [ ] [R10 — Computer Simulation of Human Movement: 모델을 세우고, 운동방정식을 풀고, 결과를 조심해서 읽기](lessons/advanced/J-biomechanics-methods/note-R10.md)
+- [ ] [R11 — Musculoskeletal Modeling: 뼈대에 근육과 제어를 얹어 근력을 추정하고, 그 추정을 조심해서 믿기](lessons/advanced/J-biomechanics-methods/note-R11.md)
+- [ ] [R12 — Signal Processing: 신호의 주파수 분해, 표본화, 평활화와 디지털 필터](lessons/advanced/J-biomechanics-methods/note-R12.md)
+- [ ] [R13 — Dynamical Systems Analysis of Coordination: 협응과 변동성을 relative phase와 vector coding으로 재기](lessons/advanced/J-biomechanics-methods/note-R13.md)
+- [ ] [R14 — Analysis of Biomechanical Waveform Data: 곡선 전체를 PCA와 FDA로 줄이고 비교하기](lessons/advanced/J-biomechanics-methods/note-R14.md)
+- [ ] [R15 — Appendices A–I: 단위, 전자 기초, 벡터·행렬, 수치 계산](lessons/advanced/J-biomechanics-methods/note-R15.md)
 
 ### 심화 K — 멀티모달 FOG 데이터 분석
 

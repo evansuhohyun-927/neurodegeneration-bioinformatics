@@ -10,7 +10,10 @@
 - Butterworth 저역통과 필터의 계수를 cutoff와 표본화율에서 직접 계산하는 다섯 단계, 그리고 critically damped·고역통과 변형.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R12 -->
+- [Shannon Nyquist Sampling Theorem — Steve Brunton](https://www.youtube.com/watch?v=FcXZ28BX-xE)
+- [But what is the Fourier Transform?  A visual introduction. — 3Blue1Brown](https://www.youtube.com/watch?v=spUNpyF58BY)
+- [Butterworth Low-Pass Filters — John Cimbala](https://www.youtube.com/watch?v=SJoYjXHRwdk)
+- **무엇에 주목할까:** 섀넌–나이퀴스트 표본화 정리, 푸리에 변환의 시각적 의미, 버터워스 저역통과 필터를 차례로 봅니다. 표본화 주파수와 신호의 주파수 성분이 어떤 관계에 있는지에 주목합니다.
 
 ## 핵심 질문
 1. 시간 영역의 파형과 주파수 영역의 스펙트럼은 같은 정보를 어떻게 다르게 보여 주는가?

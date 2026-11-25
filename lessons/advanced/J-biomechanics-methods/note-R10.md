@@ -11,7 +11,10 @@
 - 시뮬레이션 결과를 과하게 읽지 않기 위한 세 가지 해석 지침.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R10 -->
+- [Biomechanics of Movement | Lecture 10.1: Muscle-Driven Simulations: What Are They & How To Use Them — Biomechanics of Movement](https://www.youtube.com/watch?v=jP0IFCHTU3E)
+- [Equations of Motion for the Double Pendulum (2DOF) Using Lagrange's Equations — Good Vibrations with Freeball](https://www.youtube.com/watch?v=tc2ah-KnDXw)
+- [Runge-Kutta Integrator Overview:  All Purpose Numerical Integration of Differential Equations — Steve Brunton](https://www.youtube.com/watch?v=HOWJp8NV5xU)
+- **무엇에 주목할까:** 근육 구동 시뮬레이션이 무엇이고 어떻게 쓰이는지 개관합니다. 라그랑주 방정식으로 이중 진자의 운동방정식을 유도하는 과정과, 룽게–쿠타 방법으로 미분방정식을 수치 적분하는 방법을 확인합니다.
 
 ## 핵심 질문
 1. 자전거 타는 사람의 "가장 좋은 모델"은 하나인가?

@@ -11,7 +11,9 @@
 - 협응 변동성은 주기 전체의 표준편차가 아니라 주기 간(between-cycle) 표준편차로 재야 한다는 것.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R13 -->
+- [ISBS 2020: Hannah Eve Wyatt COORDINATION VARIABILITY IN OVERGROUND RUNNING + WALKING AT PREFERRED .. — ISBS](https://www.youtube.com/watch?v=Bea1SuL6bb4)
+- [Variability, stability, complexity and adaptability - Prof. Joseph Hamill — Neuromech TV](https://www.youtube.com/watch?v=cAsbF1LUqCQ)
+- **무엇에 주목할까:** 걷기와 달리기에서의 협응 변동성을 다룬 학회 발표와, 변동성·안정성·복잡성·적응성을 주제로 한 Joseph Hamill 교수의 강연입니다. 강연은 약 90분으로 길지만 이 장의 주제를 직접 다루므로 나누어 보시기를 권합니다.
 
 ## 핵심 질문
 1. 두 분절의 "협응"을 숫자 하나 또는 곡선 하나로 나타내려면 무엇을 재야 하는가?

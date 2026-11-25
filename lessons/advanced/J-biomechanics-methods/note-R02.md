@@ -10,7 +10,10 @@
 - Cardan 각은 벡터가 아니므로 더하고 빼거나 그대로 미분할 수 없다는 것, 그래서 정규화와 각속도 계산이 따로 필요하다는 것.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R02 -->
+- [Biomechanics of Movement | Lecture 7.2: Measuring Movement with Marker-Based Motion Capture — Biomechanics of Movement](https://www.youtube.com/watch?v=4RfsjdG9mhE)
+- [Biomechanics of Movement | Lecture 7.5: Inverse Kinematics: Calculating Transformations — Biomechanics of Movement](https://www.youtube.com/watch?v=ExTA9sSQKKo)
+- [Mastering 3D Rotations: Euler Angles Explained | Finite Rotation Series (Part 1 of 4) — Good Vibrations with Freeball](https://www.youtube.com/watch?v=D1lnrQg5NAM)
+- **무엇에 주목할까:** 마커 기반 모션 캡처로 움직임을 측정하는 과정과, 기준 좌표계 사이의 변환을 계산하는 과정을 따라갑니다. 오일러 각 영상에서는 회전 순서에 따라 3차원 자세 표현이 어떻게 달라지는지를 살펴봅니다.
 
 ## 핵심 질문
 1. 회전행렬 R의 세 행은 무엇이고, R의 역행렬은 왜 전치행렬인가?

@@ -10,7 +10,11 @@
 - 부록 F–I가 책의 어느 장을 받치는 자료인지(이중 진자 시뮬레이션은 10장, Fourier 변환과 재표본화는 12장).
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R15 -->
+- [Dot products and duality | Chapter 9, Essence of linear algebra — 3Blue1Brown](https://www.youtube.com/watch?v=LyGKycYT2v0)
+- [Cross products | Chapter 10, Essence of linear algebra — 3Blue1Brown](https://www.youtube.com/watch?v=eu6i7WJeinw)
+- [Linear transformations and matrices | Chapter 3, Essence of linear algebra — 3Blue1Brown](https://www.youtube.com/watch?v=kYB8IZa5AuE)
+- [ECE2026 L19: Sampling: Analog-to-Digital Conversion — Lantertronics](https://www.youtube.com/watch?v=Es2cUTqRJYw)
+- **무엇에 주목할까:** 내적, 외적, 선형변환으로서의 행렬을 기하학적으로 설명하는 영상입니다. 마지막 영상에서는 표본화를 통한 아날로그–디지털 변환을 다룹니다.
 
 ## 핵심 질문
 1. "76.4 W", "20.5 sec.", "watts/kg" 중 SI 규칙에 맞는 표기는 어느 것인가?

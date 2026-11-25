@@ -11,7 +11,10 @@
 - BSP 오차가 결과에 크게 번지는 상황과 그렇지 않은 상황.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R03 -->
+- [Body segments parameters in Biomechanics — Biomechanics Coach](https://www.youtube.com/watch?v=8hyPiha-lFU)
+- [Video Lecture - Center of Mass — Skeletal Biomechanics BME3503](https://www.youtube.com/watch?v=SpFFeEXE6eg)
+- [29.4 Parallel Axis Theorem — MIT OpenCourseWare](https://www.youtube.com/watch?v=r2Qb0vsxa8Y)
+- **무엇에 주목할까:** 신체 분절 매개변수가 무엇이며 질량 중심을 어떻게 구하는지를 다루는 강의입니다. 평행축 정리 영상으로 질량 중심 기준 관성모멘트를 다른 축으로 옮기는 계산을 함께 확인합니다.
 
 ## 핵심 질문
 1. 살아 있는 사람의 분절 질량과 관성모멘트는 직접 잴 수 없는데, 어떤 근거로 추정하는가?

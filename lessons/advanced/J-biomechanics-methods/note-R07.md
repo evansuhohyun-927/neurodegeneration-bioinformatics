@@ -11,7 +11,10 @@
 - 유도 가속도 분석(IAA)이 "모멘트는 건너지 않는 관절도 가속시킨다"를 보여 주는 방식.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R07 -->
+- [The moment of inertia tensor | Chapter 25 Classical Mechanics 2 — Sabetta Talks Math](https://www.youtube.com/watch?v=HxH7fAQjt70)
+- [Euler's Equations of Rotation — AccPhys](https://www.youtube.com/watch?v=uhFYNHyAHs0)
+- [ME7230. March 23. 3D dynamics: basic Newton-Euler equations — Manoj Srinivasan](https://www.youtube.com/watch?v=LhCUEyS5e-M)
+- **무엇에 주목할까:** 관성 텐서, 오일러의 회전 방정식, 3차원 뉴턴–오일러 방정식을 다루는 역학 강의입니다. 생체역학 전용 영상은 아니므로, 3차원 역동역학의 바탕이 되는 강체 회전 운동방정식을 이해하는 데 초점을 둡니다.
 
 ## 핵심 질문
 1. 분절을 "좌표계 + 관성"으로만 정의한다는 말은 무슨 뜻인가?

@@ -12,7 +12,10 @@
 - 압력 분포 센서, 체내 힘 변환기, 등속성 동력계가 재는 것과 재지 못하는 것.
 
 ## 🎬 함께 보면 좋은 영상
-<!-- VIDEOS:R04 -->
+- [Biomechanics of Movement | Lecture 7.3: Measuring Movement: Force Plates & Markerless Motion Capture — Biomechanics of Movement](https://www.youtube.com/watch?v=7EdzFlRE8vY)
+- [Biomechanics of Movement | Lecture 2.2: The Walking Gait Cycle and Ground Reaction Forces — Biomechanics of Movement](https://www.youtube.com/watch?v=LAOS8I6dFy4)
+- [Impulse - Momentum — John Mercer](https://www.youtube.com/watch?v=HQbpO2D6WOo)
+- **무엇에 주목할까:** 지면반력기로 힘을 측정하는 방법과 보행 주기에서 나타나는 지면반력 패턴을 봅니다. 충격량–운동량 영상에서는 힘–시간 곡선과 운동량 변화의 관계를 확인합니다.
 
 ## 핵심 질문
 1. 가만히 서 있는 사람에게는 중력이 계속 작용하는데 왜 가속하지 않는가?
