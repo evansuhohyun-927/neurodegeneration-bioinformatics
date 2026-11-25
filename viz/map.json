@@ -14,5 +14,7 @@
   "lessons/advanced/D-fmri/day-D4.md": [{"file": "hrf-glm.html", "title": "HRF convolution과 GLM 적합", "height": 1210}],
   "lessons/advanced/I-gait/day-I1.md": [{"file": "gait-cycle-explorer.html", "title": "보행 주기 탐색기: %GC와 두 발의 상태", "height": 1700}],
   "lessons/advanced/I-gait/day-I2.md": [{"file": "rocker-explorer.html", "title": "rocker 회전축 따라가기 (개념용 단순 모형)", "height": 1550}],
-  "lessons/advanced/I-gait/day-I3.md": [{"file": "joint-angle-explorer.html", "title": "관절각 탐색기: 분절각 세 개로 무릎·발목·고관절 각 만들기", "height": 1650}]
+  "lessons/advanced/I-gait/day-I3.md": [{"file": "joint-angle-explorer.html", "title": "관절각 탐색기: 분절각 세 개로 무릎·발목·고관절 각 만들기", "height": 1650}],
+  "lessons/advanced/I-gait/day-I4.md": [{"file": "grf-moment-explorer.html", "title": "GRF 벡터·모멘트·파워 탐색기: 벡터 하나로 세 관절의 모멘트와 파워 부호 읽기", "height": 2350}],
+  "lessons/advanced/I-gait/day-I5.md": [{"file": "emg-onset-explorer.html", "title": "EMG onset 탐색기: cutoff·threshold·최소 지속 시간이 onset을 얼마나 옮기나", "height": 1560}]
 }

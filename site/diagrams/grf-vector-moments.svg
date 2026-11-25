@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 600" role="img" aria-labelledby="grf-vector-moments-t grf-vector-moments-d">
+<title id="grf-vector-moments-t">GRF 벡터로 읽는 외부 모멘트와 내부 모멘트</title>
+<desc id="grf-vector-moments-d">오른쪽을 보고 걷는 오른 다리를 옆에서 본 막대 그림 두 장면이다. 빨간 화살표는 바닥이 발을 미는 지면반력(GRF) 벡터이고 그 작용선을 점선으로 늘였다. 각 관절 중심에서 작용선으로 내린 초록 점선이 모멘트 팔이다. 왼쪽 ① LR 끝(약 12% GC)에는 압력중심(COP)이 뒤꿈치 쪽에 있고 벡터가 위로 갈수록 뒤로 기울어(제동) 고관절의 앞, 무릎의 뒤, 발목의 뒤를 지난다. 그래서 외부 모멘트(Perry·Whittle이 말하는 요구)는 고관절 굴곡, 무릎 굴곡, 발목 족저굴곡이고, 이를 버티는 내부 모멘트(Winter 곡선의 이름)는 고관절 신전(고관절 신전근), 무릎 신전(vastii), 발목 배측굴곡(전경골근이 원심성으로 발을 내림)이다. 오른쪽 ② TSt(약 45% GC)에는 뒤꿈치가 들리고 COP가 중족골두 아래로 옮겨 가며 벡터가 앞으로 기운다(추진). 벡터는 고관절의 뒤, 무릎의 앞, 발목의 앞을 지나고 발목의 모멘트 팔이 가장 길다. 외부 모멘트는 고관절 신전, 무릎 신전, 발목 배측굴곡이고 내부 모멘트는 고관절 굴곡(주로 앞쪽 인대의 수동 긴장), 무릎 굴곡(작음, 정렬로 안정), 발목 족저굴곡(가자미근·비복근)이다. 외부 모멘트 = GRF × 모멘트 팔이며, 정적 근사에서는 내부 모멘트가 크기는 같고 방향만 반대다. 이 근사는 관절 아래 분절의 무게와 가속을 빼므로 발목에서는 잘 맞고 고관절과 swing에서는 틀린다(Whittle 2장 p.25). 벡터 위치의 규칙은 Perry &amp; Burnfield 3장과 22장의 정성적 서술을 따랐고, 자세·각도·COP는 설명용 근사값이다.</desc>
+<defs><marker id="grf-vector-moments-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-arrowhead" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<text class="d-text d-strong" x="360.0" y="24.0" font-size="15" text-anchor="middle">GRF 벡터 하나로 세 관절의 모멘트 읽기 — 외부(요구)와 내부(반응)</text>
+<text class="d-sub" x="360.0" y="44.0" font-size="12" text-anchor="middle">빨간 화살표 = 바닥이 발을 미는 힘 · 초록 점선 = 모멘트 팔 · 외부 모멘트 = GRF × 모멘트 팔</text>
+<rect class="d-node" x="20.0" y="58.0" width="330.0" height="352.0" rx="8"/>
+<text class="d-text d-strong" x="185.0" y="78.0" font-size="13" text-anchor="middle">① LR 끝 (약 12% GC): 제동</text>
+<line class="d-line" x1="30.0" y1="400.0" x2="340.0" y2="400.0"/>
+<path class="d-b" d="M170.0,400.0 L185.0,379.0 L221.0,400.0 L236.0,400.0 Z"/>
+<path class="d-line" d="M141.9,140.6 L185.0,259.0 L185.0,379.0"/>
+<line class="d-line d-dash d-bad" x1="176.0" y1="400.0" x2="155.0" y2="100.0"/>
+<line class="d-line d-bad" x1="176.0" y1="400.0" x2="165.5" y2="250.4" marker-end="url(#grf-vector-moments-arrow)"/>
+<text class="d-text d-bad d-strong" x="157.5" y="254.4" font-size="12" text-anchor="end">GRF</text>
+<circle class="d-node d-bad" cx="176.0" cy="400.0" r="4"/>
+<text class="d-text d-bad" x="176.0" y="416.0" font-size="11" text-anchor="middle">COP</text>
+<line class="d-line d-dash d-good" x1="141.9" y1="140.6" x2="157.8" y2="139.5"/>
+<circle class="d-node d-good" cx="141.9" cy="140.6" r="5"/>
+<text class="d-text d-strong" x="130.9" y="137.6" font-size="11" text-anchor="end">고관절: 벡터 앞 5 cm</text>
+<text class="d-sub" x="130.9" y="151.6" font-size="11" text-anchor="end">외부 굴곡 → 내부 신전</text>
+<line class="d-line d-dash d-good" x1="185.0" y1="259.0" x2="166.2" y2="260.3"/>
+<circle class="d-node d-good" cx="185.0" cy="259.0" r="5"/>
+<text class="d-text d-strong" x="196.0" y="256.0" font-size="11" text-anchor="start">무릎: 벡터 뒤 6 cm</text>
+<text class="d-sub" x="196.0" y="270.0" font-size="11" text-anchor="start">외부 굴곡 → 내부 신전</text>
+<line class="d-line d-dash d-good" x1="185.0" y1="379.0" x2="174.6" y2="379.7"/>
+<circle class="d-node d-good" cx="185.0" cy="379.0" r="5"/>
+<text class="d-text d-strong" x="199.0" y="358.0" font-size="11" text-anchor="start">발목: 벡터 뒤 3 cm</text>
+<text class="d-sub" x="199.0" y="372.0" font-size="11" text-anchor="start">외부 족저굴곡 → 내부 배측굴곡</text>
+<text class="d-sub" x="30.0" y="96.0" font-size="11" text-anchor="start">진행 방향 →</text>
+<text class="d-text d-strong" x="26.0" y="432.0" font-size="11" text-anchor="start">관절</text>
+<text class="d-text d-strong" x="72.0" y="432.0" font-size="11" text-anchor="start">외부(요구)</text>
+<text class="d-text d-strong" x="152.0" y="432.0" font-size="11" text-anchor="start">내부(반응)</text>
+<text class="d-text d-strong" x="232.0" y="432.0" font-size="11" text-anchor="start">흔한 담당</text>
+<line class="d-line d-dash" x1="24.0" y1="438.0" x2="346.0" y2="438.0"/>
+<text class="d-text" x="26.0" y="452.0" font-size="11" text-anchor="start">고관절</text>
+<text class="d-text" x="72.0" y="452.0" font-size="11" text-anchor="start">굴곡</text>
+<text class="d-text d-strong" x="152.0" y="452.0" font-size="11" text-anchor="start">신전</text>
+<text class="d-sub" x="232.0" y="452.0" font-size="11" text-anchor="start">고관절 신전근</text>
+<line class="d-line d-dash" x1="24.0" y1="458.0" x2="346.0" y2="458.0"/>
+<text class="d-text" x="26.0" y="472.0" font-size="11" text-anchor="start">무릎</text>
+<text class="d-text" x="72.0" y="472.0" font-size="11" text-anchor="start">굴곡</text>
+<text class="d-text d-strong" x="152.0" y="472.0" font-size="11" text-anchor="start">신전</text>
+<text class="d-sub" x="232.0" y="472.0" font-size="11" text-anchor="start">대퇴사두근(vastii)</text>
+<line class="d-line d-dash" x1="24.0" y1="478.0" x2="346.0" y2="478.0"/>
+<text class="d-text" x="26.0" y="492.0" font-size="11" text-anchor="start">발목</text>
+<text class="d-text" x="72.0" y="492.0" font-size="11" text-anchor="start">족저굴곡</text>
+<text class="d-text d-strong" x="152.0" y="492.0" font-size="11" text-anchor="start">배측굴곡</text>
+<text class="d-sub" x="232.0" y="492.0" font-size="11" text-anchor="start">전경골근(원심성)</text>
+<rect class="d-node" x="370.0" y="58.0" width="330.0" height="352.0" rx="8"/>
+<text class="d-text d-strong" x="535.0" y="78.0" font-size="13" text-anchor="middle">② TSt (약 45% GC): 추진</text>
+<line class="d-line" x1="380.0" y1="400.0" x2="690.0" y2="400.0"/>
+<path class="d-b" d="M458.1,382.6 L479.4,368.0 L506.0,400.0 L521.0,400.0 Z"/>
+<path class="d-line" d="M575.1,141.7 L532.0,260.1 L479.4,368.0"/>
+<line class="d-line d-dash d-bad" x1="507.5" y1="400.0" x2="576.8" y2="100.0"/>
+<line class="d-line d-bad" x1="507.5" y1="400.0" x2="541.2" y2="253.8" marker-end="url(#grf-vector-moments-arrow)"/>
+<text class="d-text d-bad d-strong" x="549.2" y="257.8" font-size="12" text-anchor="start">GRF</text>
+<circle class="d-node d-bad" cx="507.5" cy="400.0" r="4"/>
+<text class="d-text d-bad" x="507.5" y="416.0" font-size="11" text-anchor="middle">COP</text>
+<line class="d-line d-dash d-good" x1="575.1" y1="141.7" x2="567.5" y2="140.0"/>
+<circle class="d-node d-good" cx="575.1" cy="141.7" r="5"/>
+<text class="d-text d-strong" x="586.1" y="138.7" font-size="11" text-anchor="start">고관절: 벡터 뒤 3 cm</text>
+<text class="d-sub" x="586.1" y="152.7" font-size="11" text-anchor="start">외부 신전 → 내부 굴곡</text>
+<line class="d-line d-dash d-good" x1="532.0" y1="260.1" x2="539.4" y2="261.8"/>
+<circle class="d-node d-good" cx="532.0" cy="260.1" r="5"/>
+<text class="d-text d-strong" x="521.0" y="257.1" font-size="11" text-anchor="end">무릎: 벡터 앞 3 cm</text>
+<text class="d-sub" x="521.0" y="271.1" font-size="11" text-anchor="end">외부 신전 → 내부 굴곡</text>
+<line class="d-line d-dash d-good" x1="479.4" y1="368.0" x2="513.1" y2="375.7"/>
+<circle class="d-node d-good" cx="479.4" cy="368.0" r="5"/>
+<text class="d-text d-strong" x="521.5" y="347.0" font-size="11" text-anchor="start">발목: 벡터 앞 12 cm</text>
+<text class="d-sub" x="521.5" y="361.0" font-size="11" text-anchor="start">외부 배측굴곡 → 내부 족저굴곡</text>
+<text class="d-sub" x="380.0" y="96.0" font-size="11" text-anchor="start">진행 방향 →</text>
+<text class="d-text d-strong" x="376.0" y="432.0" font-size="11" text-anchor="start">관절</text>
+<text class="d-text d-strong" x="422.0" y="432.0" font-size="11" text-anchor="start">외부(요구)</text>
+<text class="d-text d-strong" x="502.0" y="432.0" font-size="11" text-anchor="start">내부(반응)</text>
+<text class="d-text d-strong" x="582.0" y="432.0" font-size="11" text-anchor="start">흔한 담당</text>
+<line class="d-line d-dash" x1="374.0" y1="438.0" x2="696.0" y2="438.0"/>
+<text class="d-text" x="376.0" y="452.0" font-size="11" text-anchor="start">고관절</text>
+<text class="d-text" x="422.0" y="452.0" font-size="11" text-anchor="start">신전</text>
+<text class="d-text d-strong" x="502.0" y="452.0" font-size="11" text-anchor="start">굴곡</text>
+<text class="d-sub" x="582.0" y="452.0" font-size="11" text-anchor="start">앞쪽 인대(수동)</text>
+<line class="d-line d-dash" x1="374.0" y1="458.0" x2="696.0" y2="458.0"/>
+<text class="d-text" x="376.0" y="472.0" font-size="11" text-anchor="start">무릎</text>
+<text class="d-text" x="422.0" y="472.0" font-size="11" text-anchor="start">신전</text>
+<text class="d-text d-strong" x="502.0" y="472.0" font-size="11" text-anchor="start">굴곡</text>
+<text class="d-sub" x="582.0" y="472.0" font-size="11" text-anchor="start">작음, 정렬·뒤쪽 조직</text>
+<line class="d-line d-dash" x1="374.0" y1="478.0" x2="696.0" y2="478.0"/>
+<text class="d-text" x="376.0" y="492.0" font-size="11" text-anchor="start">발목</text>
+<text class="d-text" x="422.0" y="492.0" font-size="11" text-anchor="start">배측굴곡</text>
+<text class="d-text d-strong" x="502.0" y="492.0" font-size="11" text-anchor="start">족저굴곡</text>
+<text class="d-sub" x="582.0" y="492.0" font-size="11" text-anchor="start">가자미근·비복근</text>
+<text class="d-text" x="360.0" y="528.0" font-size="12" text-anchor="middle">같은 순간을 Perry는 "벡터가 무릎 뒤 → 굴곡 요구", Winter는 "무릎 신전 모멘트"라고 부른다. 크기는 같고 방향(관점)만 반대다.</text>
+<text class="d-sub" x="360.0" y="548.0" font-size="11" text-anchor="middle">벡터 근사는 관절 아래 분절의 무게·가속을 뺀다: 발목은 잘 맞고, 고관절과 swing에서는 틀린다([W] 2장 p.25).</text>
+<text class="d-sub" x="360.0" y="566.0" font-size="11" text-anchor="middle">근육 이름은 정상 보행에서 흔한 담당일 뿐이다. 인대·관절낭·보조기도 같은 모멘트를 낼 수 있으니 EMG로 확인한다.</text>
+<text class="d-sub" x="360.0" y="588.0" font-size="11" text-anchor="middle">자세·COP·기울기는 Perry 3·22장의 정성적 규칙에 맞춘 설명용 근사값 (오른쪽을 보고 걷는 오른 다리)</text>
+</svg>

@@ -1,0 +1,201 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GRF 벡터·모멘트·파워 탐색기</title><style>:root{--bg:#ffffff;--fg:#1f2328;--muted:#57606a;--grid:#d0d7de;--panel:#f6f8fa;--accent:#0b5cad;
+--c1:#1f63c6;--c2:#c2410c;--c3:#047857;--c4:#b91c1c;--c5:#6d28d9;--fill1:rgba(31,99,198,.18);--fill2:rgba(194,65,12,.18);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6edf3;--muted:#9da7b3;--grid:#30363d;--panel:#161b22;--accent:#58a6ff;
+--c1:#6cb6ff;--c2:#ffa657;--c3:#56d364;--c4:#ff7b72;--c5:#d2a8ff;--fill1:rgba(108,182,255,.22);--fill2:rgba(255,166,87,.22);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;padding:12px 16px 16px;max-width:960px;margin:0 auto;overflow-x:hidden}
+h1{font-size:1.1rem;margin:0 0 4px}
+h2.sec{font-size:.98rem;margin:14px 0 4px}
+.lead{margin:0 0 12px;color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;background:var(--panel);border:1px solid var(--grid);border-radius:8px;padding:10px 12px;margin-bottom:10px}
+.controls label{display:flex;flex-direction:column;font-size:.88rem;gap:2px}
+.controls label.inline{flex-direction:row;align-items:center;gap:6px}
+.controls output{font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,button{font:inherit;font-size:.88rem;color:var(--fg);background:var(--bg);border:1px solid var(--grid);border-radius:6px;padding:4px 10px}
+button{cursor:pointer;font-weight:600}
+button:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plot{width:100%;margin:6px 0}
+.plot canvas{display:block;width:100%;touch-action:pan-y}
+.cap{font-size:.82rem;color:var(--muted);margin:0 0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;margin:8px 0}
+.stat{background:var(--panel);border:1px solid var(--grid);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--grid);padding:4px 6px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+td.l{text-align:left}
+th{background:var(--panel)}
+.tablewrap{overflow-x:auto}
+.note{font-size:.88rem;background:var(--panel);border-left:3px solid var(--accent);padding:6px 10px;margin:8px 0}
+.observe{margin-top:12px;border-top:1px solid var(--grid);padding-top:8px}
+.observe h2{font-size:.95rem;margin:0 0 4px}
+.observe ol{margin:0;padding-left:1.3em;font-size:.9rem}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.84rem;margin:2px 0}
+.legend span{white-space:nowrap}
+</style></head><body>
+<h1>GRF 벡터·모멘트·파워 탐색기: 벡터 하나로 세 관절의 모멘트와 파워 부호 읽기</h1>
+<p class="lead">오른쪽을 보고 걷는 오른 다리의 stance 한 순간을 옆에서 본 막대 그림입니다(체질량 70 kg인 가상 인물). 다리 자세, 압력중심(COP), 지면반력(GRF)의 크기와 기울기를 바꾸면, 벡터가 각 관절의 앞을 지나는지 뒤를 지나는지, 그때의 <b>모멘트 팔</b>, <b>외부 모멘트</b>(Perry·Whittle의 "요구"), <b>내부 모멘트</b>(Winter 곡선의 이름)가 함께 바뀝니다. 아래 파워 칸에서는 관절이 움직이는 방향을 정해 파워 = 모멘트 × 각속도의 부호를 확인합니다.</p>
+<div class="controls">
+  <div class="btns"><span class="cap">대표 순간(설명용 근사 자세):</span><span id="presets"></span></div>
+  <label>정강이 기울기 (수직에서 앞으로 +): <output for="shank"></output><input type="range" id="shank" min="-15" max="45" step="1" value="0"></label>
+  <label>무릎 굴곡: <output for="knee"></output><input type="range" id="knee" min="0" max="60" step="1" value="20"></label>
+  <label>뒤꿈치 들림 (중족골두를 축으로): <output for="heel"></output><input type="range" id="heel" min="0" max="60" step="1" value="0"></label>
+  <label>COP 위치 (발목 바로 아래 기준, 앞 +): <output for="cop"></output><input type="range" id="cop" min="-8" max="20" step="0.5" value="-3"></label>
+  <label>GRF 기울기 (앞으로 기울면 +, 추진 / 뒤로 −, 제동): <output for="tilt"></output><input type="range" id="tilt" min="-20" max="20" step="1" value="-4"></label>
+  <label>GRF 크기 (체중의 배수): <output for="mag"></output><input type="range" id="mag" min="0.1" max="1.4" step="0.05" value="1.1"></label>
+</div>
+<div class="stats" id="stats"></div>
+<p class="note" id="verdict"></p>
+<div class="legend"><span style="color:var(--c4)">━ GRF 벡터(바닥이 발을 미는 힘)</span><span style="color:var(--c4)">┅ 그 작용선</span><span style="color:var(--c3)">┅ 모멘트 팔(관절 중심 → 작용선 수직 거리)</span><span style="color:var(--c1)">─ 다리 분절</span><span style="color:var(--muted)">▬ 발이 닿은 범위</span></div>
+<div class="plot"><canvas id="cv1" role="img" aria-label="다리 막대 그림, GRF 벡터, 관절별 모멘트 팔"></canvas></div>
+<div class="tablewrap"><table><thead><tr><th>관절</th><th>벡터 위치</th><th>모멘트 팔</th><th>외부 모멘트 (요구)</th><th>내부 모멘트 (반응)</th><th>N·m/kg</th><th>흔한 담당 (정상 보행)</th></tr></thead><tbody id="tbl"></tbody></table></div>
+<p class="cap">아래 막대: 내부 모멘트를 문헌의 흔한 그래프 관례대로 "신전(발목은 족저굴곡) = 위쪽"으로 그린 것. 빈 막대는 같은 크기의 외부 모멘트(방향 반대).</p>
+<div class="plot"><canvas id="cv2" role="img" aria-label="세 관절의 내부·외부 모멘트 막대그래프"></canvas></div>
+<h2 class="sec">파워 = 내부 모멘트 × 관절 각속도</h2>
+<div class="controls">
+  <label>관절: <select id="pj"><option value="hip">고관절</option><option value="knee" selected>무릎</option><option value="ankle">발목</option></select></label>
+  <label>관절 각속도 (+ = 굴곡, 발목은 배측굴곡 방향): <output for="omega"></output><input type="range" id="omega" min="-400" max="400" step="10" value="200"></label>
+</div>
+<div class="stats" id="pstats"></div>
+<p class="note" id="pverdict"></p>
+<div class="observe"><h2>관찰할 것</h2><ol>
+<li>"LR 끝"을 누르세요. 벡터가 고관절 앞, 무릎 뒤, 발목 뒤를 지납니다. 무릎 줄을 보면 외부 모멘트는 "굴곡"(Perry의 굴곡 요구), 내부 모멘트는 "신전"(Winter 곡선의 신전 모멘트)입니다. 같은 순간을 두 이름으로 부른 것입니다.</li>
+<li>"TSt"를 누르면 벡터가 앞으로 기울고 COP가 앞발로 옮겨 갑니다. 발목의 모멘트 팔이 세 관절 중 가장 커지고, 고관절은 벡터가 뒤로 지나 외부 신전 → 내부 굴곡이 됩니다. 이 고관절 굴곡 모멘트는 근육보다 앞쪽 인대의 수동 긴장이 낸다고 Perry는 설명합니다.</li>
+<li>COP 슬라이더만 발목 뒤에서 앞으로 천천히 옮겨 보세요. 발목 모멘트가 0을 지나 부호와 이름이 바뀌는 지점은 벡터가 발목 중심을 정확히 지나는 순간입니다. 그때 모멘트 팔은 0입니다.</li>
+<li>"웅크린 자세"를 누르세요. 같은 체중인데 무릎이 벡터에서 멀어져 무릎의 외부 굴곡 모멘트가 MSt 끝보다 훨씬 커집니다. 굽힌 무릎으로 걸으면 대퇴사두근 부담이 커지는 이유입니다.</li>
+<li>파워 칸에서 각속도를 +와 −로 바꿔 보세요. 내부 모멘트와 관절이 움직이는 방향이 같으면 생성(+), 반대면 흡수(−), 각속도가 0이면 모멘트가 커도 파워는 0입니다. "PSw"의 발목 생성은 Perry가 근섬유 수축보다 아킬레스건의 탄성 반동으로 설명하는 구간이므로, 부호만으로 "구심성 수축"이라고 단정하지 않습니다.</li>
+<li>COP를 발이 닿지 않은 곳(뒤꿈치가 들렸는데 뒤꿈치 쪽)으로 옮기면 경고가 뜹니다. COP는 발이 닿은 범위 안에만 있을 수 있습니다. 다만 그 범위 안이라면 실제로 아무것도 닿지 않은 아치 아래에도 찍힐 수 있습니다(압력의 평균 위치이므로).</li>
+</ol></div>
+<p class="cap">계산은 정적 근사(벡터 근사)입니다: 관절 아래 분절의 무게와 가속도를 뺐으므로 발목에서는 역동역학과 거의 같지만 고관절로 갈수록, 그리고 swing에서는 틀립니다. 대표 순간의 자세·COP·기울기는 Perry·Whittle의 정성적 서술(벡터가 관절의 어느 쪽을 지나는가)에 맞춘 설명용 근사값이며 측정값이 아닙니다. 다리 길이(정강이 0.40 m, 대퇴 0.42 m, 발목 높이 0.07 m)도 가상의 값입니다.</p>
+<script data-calc>// ---- 계산 함수 (DOM 없음: Node에서 그대로 검산 가능) ----
+// 좌표: x = 진행 방향(앞 +), y = 위 +, 단위 m. 반시계(CCW) 모멘트 = +. 원점 = 뒤꿈치를 대고 섰을 때 발목 바로 아래 바닥.
+const BODY_KG=70,G=9.81;
+const LEN={shank:0.40,thigh:0.42,ankleH:0.07,mt:0.12,heel:0.05,toe:0.17};
+function rad(d){return d*Math.PI/180;}
+function cross2(r,f){return r[0]*f[1]-r[1]*f[0];}
+// 자세: shank = 정강이가 수직에서 앞으로 기운 각, knee = 무릎 굴곡, heel = 중족골두(MT)를 축으로 뒤꿈치가 들린 각 (모두 도)
+function pose(shank,knee,heel){const b=rad(heel),MT=[LEN.mt,0];
+  const rot=q=>{const x=q[0]-MT[0],y=q[1]-MT[1];return[MT[0]+x*Math.cos(b)+y*Math.sin(b),MT[1]-x*Math.sin(b)+y*Math.cos(b)];}; // MT 둘레 시계 방향 회전
+  const ankle=rot([0,LEN.ankleH]),heelP=rot([-LEN.heel,0]),toe=[LEN.toe,0];
+  const knee_=[ankle[0]+LEN.shank*Math.sin(rad(shank)),ankle[1]+LEN.shank*Math.cos(rad(shank))];
+  const thighLean=shank-knee;                                   // 대퇴가 수직에서 앞으로 기운 각(+ = 고관절이 무릎보다 앞 = 고관절 신전 쪽)
+  const hip=[knee_[0]+LEN.thigh*Math.sin(rad(thighLean)),knee_[1]+LEN.thigh*Math.cos(rad(thighLean))];
+  const contact=heel<2?[-LEN.heel,LEN.toe]:[LEN.mt-0.02,LEN.toe]; // 발이 바닥에 닿은 x 범위
+  return{ankle,heel:heelP,MT,toe,knee:knee_,hip,contact,ankleDF:shank-heel,thighFlex:-thighLean,kneeFlex:knee};}
+// GRF: 크기 mag(체중 배수), 기울기 tilt(도, + = 위로 갈수록 앞으로). COP는 발목의 현재 x 바로 아래에서 cop(m)만큼 앞.
+function grf(mag,tilt){const F=mag*BODY_KG*G;return[F*Math.sin(rad(tilt)),F*Math.cos(rad(tilt))];}
+// 지면반력이 관절 J에 만드는 외부 모멘트(CCW +, N·m)와 모멘트 팔(m)
+function extMoment(J,cop,F){const M=cross2([cop[0]-J[0],cop[1]-J[1]],F);return{M,arm:Math.abs(M)/Math.hypot(F[0],F[1])};}
+// 작용선이 높이 y에서 지나는 x
+function lineX(cop,F,y){return cop[0]+F[0]/F[1]*(y-cop[1]);}
+// CCW 부호를 해부학 이름으로 (오른쪽을 보고 걷는 사람). 고관절: CCW = 굴곡, 무릎: CCW = 신전, 발목: CCW = 배측굴곡
+const CCW_NAME={hip:['굴곡','신전'],knee:['신전','굴곡'],ankle:['배측굴곡','족저굴곡']};
+function momentName(joint,Mccw,eps=0.05){if(Math.abs(Mccw)<eps)return'거의 0';return Mccw>0?CCW_NAME[joint][0]:CCW_NAME[joint][1];}
+// 해부학 각속도(°/s, + = 굴곡, 발목은 배측굴곡)를 CCW 각속도(rad/s)로
+function omegaCCW(joint,degPerS){return rad(joint==='knee'?-degPerS:degPerS);}
+// 파워 = 내부 모멘트(CCW) × 관절 각속도(CCW). 정적 근사에서 내부 = −외부
+function jointPower(joint,Mext,degPerS){const Mint=-Mext;return Mint*omegaCCW(joint,degPerS);}
+function powerWord(P,eps=0.5){return Math.abs(P)<eps?'0 (등척성 또는 모멘트 0)':P>0?'생성 (+)':'흡수 (−)';}
+// 정상 보행에서 그 내부 모멘트를 흔히 담당하는 구조 (Perry 3·22장, Whittle 2장의 서술을 줄인 것)
+const CARRIER={hip:{'신전':'고관절 신전근(대둔근·햄스트링)','굴곡':'고관절 굴곡근, TSt에는 앞쪽 인대의 수동 긴장'},
+  knee:{'신전':'대퇴사두근(LR에는 vastii)','굴곡':'햄스트링·비복근, 또는 뒤쪽 관절낭(수동)'},
+  ankle:{'족저굴곡':'가자미근·비복근','배측굴곡':'전경골근 등 앞쪽 근육(pretibial)'}};
+function solve(s){const P=pose(s.shank,s.knee,s.heel),F=grf(s.mag,s.tilt),cop=[P.ankle[0]+s.cop/100,0],out={P,F,cop,j:{}};
+  for(const k of ['hip','knee','ankle']){const J=P[k],e=extMoment(J,cop,F),side=lineX(cop,F,J[1])>J[0]?'앞':'뒤';
+    out.j[k]={J,Mext:e.M,arm:e.arm,side,ext:momentName(k,e.M),int:momentName(k,-e.M)};}
+  out.inContact=cop[0]>=P.contact[0]-1e-9&&cop[0]<=P.contact[1]+1e-9;return out;}
+// 대표 순간: [이름, 정강이, 무릎, 뒤꿈치, COP(cm), 기울기, 크기, 파워 관절, 각속도]
+const PRESETS=[["LR 끝 (약 12%)",0,20,0,-3,-4,1.1,'knee',200],["MSt 끝 (약 30%)",10,5,0,8,0,0.8,'ankle',60],
+  ["TSt (약 45%)",26,6,20,null,13,1.1,'ankle',60],["PSw (약 55%)",40,35,50,null,15,0.4,'ankle',-250],["웅크린 자세 (crouch)",25,45,0,3,0,1.0,'knee',100]];
+</script>
+<script>// ---- 공통 화면 도우미 ----
+(function(){const q=new URLSearchParams(location.search).get('theme');if(q==='dark'||q==='light')document.documentElement.dataset.theme=q;})();
+function C(n){return getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();}
+function $(id){return document.getElementById(id);}
+function val(id){const e=$(id);return e.type==='checkbox'?e.checked:(e.type==='range'||e.type==='number')?+e.value:e.value;}
+function fmt(x,d=2){return Number.isFinite(x)?x.toFixed(d):'—';}
+function setupCanvas(id,h){const cv=$(id),w=Math.max(240,cv.parentElement.clientWidth),r=window.devicePixelRatio||1;
+  cv.width=Math.round(w*r);cv.height=Math.round(h*r);cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx.setTransform(r,0,0,r,0,0);ctx.clearRect(0,0,w,h);
+  ctx.font='12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';return{ctx,w,h,cv};}
+function txt(ctx,s,x,y,o={}){ctx.save();ctx.fillStyle=o.color||C('fg');ctx.textAlign=o.align||'left';ctx.textBaseline=o.base||'alphabetic';
+  if(o.size||o.bold)ctx.font=(o.bold?'600 ':'')+(o.size||12)+'px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(o.rot){ctx.translate(x,y);ctx.rotate(o.rot);ctx.fillText(s,0,0);}else ctx.fillText(s,x,y);ctx.restore();}
+function mark(ctx,shape,x,y,r,color,filled=true){ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.6;ctx.beginPath();
+  if(shape==='circle')ctx.arc(x,y,r,0,2*Math.PI);
+  else if(shape==='square')ctx.rect(x-r*.9,y-r*.9,r*1.8,r*1.8);
+  if(filled){ctx.globalAlpha=.85;ctx.fill();ctx.globalAlpha=1;}ctx.stroke();ctx.restore();}
+function line(ctx,pts,color,w=1.5,dash){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=w;if(dash)ctx.setLineDash(dash);ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.restore();}
+function arrow(ctx,p,q,color,w=3){line(ctx,[p,q],color,w);const a=Math.atan2(q[1]-p[1],q[0]-p[0]),L=11;ctx.save();ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(q[0],q[1]);
+  ctx.lineTo(q[0]-L*Math.cos(a-0.4),q[1]-L*Math.sin(a-0.4));ctx.lineTo(q[0]-L*Math.cos(a+0.4),q[1]-L*Math.sin(a+0.4));ctx.closePath();ctx.fill();ctx.restore();}
+function bind(ids,fn,show={}){for(const id of ids){const e=$(id),o=document.querySelector(`output[for="${id}"]`);
+  const upd=()=>{if(o)o.textContent=show[id]?show[id](val(id)):e.value;};upd();e.addEventListener('input',()=>{upd();fn(id);});e.addEventListener('change',()=>{upd();fn(id);});}}
+function redrawOn(fn){let q=0;const run=()=>{q=0;fn();if(parent!==window)parent.postMessage({type:'viz-height',height:document.body.scrollHeight},'*');};
+  const later=()=>{if(!q)q=requestAnimationFrame(run);};addEventListener('resize',later);matchMedia('(prefers-color-scheme: dark)').addEventListener('change',later);run();return later;}
+const JNAME={hip:'고관절',knee:'무릎',ankle:'발목'};
+function setSlider(id,v){$(id).value=v;$(id).dispatchEvent(new Event('input'));}
+$('presets').innerHTML=PRESETS.map((p,i)=>`<button data-i="${i}">${p[0]}</button>`).join('');
+document.querySelectorAll('#presets button').forEach(b=>b.onclick=()=>{const p=PRESETS[+b.dataset.i];
+  setSlider('shank',p[1]);setSlider('knee',p[2]);setSlider('heel',p[3]);
+  const cop=p[4]===null?Math.round((LEN.mt-pose(p[1],p[2],p[3]).ankle[0])*200)/2+0.5:p[4];   // null = 중족골두 바로 앞
+  setSlider('cop',cop);setSlider('tilt',p[5]);setSlider('mag',p[6]);$('pj').value=p[7];setSlider('omega',p[8]);});
+
+function draw(){const s={shank:val('shank'),knee:val('knee'),heel:val('heel'),cop:val('cop'),tilt:val('tilt'),mag:val('mag')},R=solve(s),P=R.P;
+  $('stats').innerHTML=[['무릎 굴곡',P.kneeFlex.toFixed(0)+'°'],['발목 (배측굴곡 +)',P.ankleDF.toFixed(0)+'°'],['대퇴 (수직 기준, 굴곡 +)',P.thighFlex.toFixed(0)+'°'],
+    ['GRF',fmt(Math.hypot(...R.F),0)+' N'],['전후 성분 (+ 추진)',fmt(R.F[0],0)+' N']].map(([k,v])=>`<div class="stat"><span>${k}</span><b>${v}</b></div>`).join('');
+  const K=R.j.knee;
+  $('verdict').innerHTML=(R.inContact?'':'⚠️ COP가 발이 닿은 범위 밖에 있습니다. 실제로는 불가능한 위치입니다. ')+
+    `무릎을 Perry식으로 읽으면: 벡터가 무릎 <b>${K.side==='앞'?'앞으로':'뒤로'}</b> ${fmt(K.arm*100,1)} cm 떨어져 지나 <b>외부 ${K.ext} 모멘트</b>(요구) ${fmt(Math.abs(K.Mext),1)} N·m. Winter 곡선으로는 같은 크기의 <b>내부 ${K.int} 모멘트</b>(반응)입니다.`;
+  $('tbl').innerHTML=['hip','knee','ankle'].map(k=>{const j=R.j[k];const car=(CARRIER[k][j.int]||'—');
+    return `<tr><td>${JNAME[k]}</td><td class="l">${j.side}</td><td>${fmt(j.arm*100,1)} cm</td><td class="l">${j.ext} ${fmt(Math.abs(j.Mext),1)} N·m</td><td class="l">${j.int}</td><td>${fmt(Math.abs(j.Mext)/BODY_KG,2)}</td><td class="l">${car}</td></tr>`;}).join('');
+  // ---- 막대 그림
+  {const {ctx,w,h}=setupCanvas('cv1',430),sc=Math.min(w/1.05,390/1.0),x0=w*0.36,y0=h-28,X=p=>[x0+p[0]*sc,y0-p[1]*sc];
+   line(ctx,[[8,y0],[w-8,y0]],C('muted'),1.5);
+   line(ctx,[X([P.contact[0],0]),X([P.contact[1],0])],C('muted'),6);
+   const foot=[P.heel,P.ankle,P.MT,P.toe].map(X);ctx.save();ctx.fillStyle=C('fill1');ctx.strokeStyle=C('c1');ctx.lineWidth=2;ctx.beginPath();foot.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+   line(ctx,[X(P.hip),X(P.knee),X(P.ankle)],C('c1'),4);
+   // 작용선과 벡터
+   const top=1.0,ytop=[lineX(R.cop,R.F,top),top];line(ctx,[X(R.cop),X(ytop)],C('c4'),1.2,[5,5]);
+   const Fn=Math.hypot(...R.F),Lv=0.55*s.mag/1.1,tip=X([R.cop[0]+Lv*R.F[0]/Fn,Lv*R.F[1]/Fn]);arrow(ctx,X(R.cop),tip,C('c4'),3.5);
+   txt(ctx,'GRF',tip[0]-8,tip[1]-4,{align:'right',color:C('c4'),bold:1});
+   // 모멘트 팔: 관절 중심에서 작용선으로 내린 수선
+   const u=[R.F[0]/Fn,R.F[1]/Fn];
+   for(const k of ['hip','knee','ankle']){const j=R.j[k],J=j.J,t=(J[0]-R.cop[0])*u[0]+(J[1]-R.cop[1])*u[1],foot_=[R.cop[0]+t*u[0],R.cop[1]+t*u[1]];
+     line(ctx,[X(J),X(foot_)],C('c3'),1.6,[3,3]);mark(ctx,'circle',...X(J),5,C('c2'));
+     const l1=`${JNAME[k]}: 벡터 ${j.side} ${fmt(j.arm*100,1)} cm`;ctx.font='600 12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+     let right=X(J)[0]>=X(foot_)[0];if(!right&&X(J)[0]-12-ctx.measureText(l1).width<4)right=true;   // 왼쪽 글자가 화면 밖으로 나가면 오른쪽에
+     const tx=X(J)[0]+(right?12:-12),dy=k==='ankle'?-26:0;   // 발목 글자는 발 그림 위로
+     txt(ctx,l1,tx,X(J)[1]-4+dy,{align:right?'left':'right',color:C('fg'),bold:1,size:12});
+     txt(ctx,`외부 ${j.ext} → 내부 ${j.int}`,tx,X(J)[1]+12+dy,{align:right?'left':'right',color:C('muted'),size:11});}
+   mark(ctx,'square',...X(R.cop),4,R.inContact?C('c4'):C('muted'));txt(ctx,'COP',X(R.cop)[0],y0+16,{align:'center',color:C('c4'),size:11});
+   txt(ctx,'진행 방향 →',12,18,{color:C('muted')});}
+  // ---- 막대그래프 (내부 모멘트, 신전·족저굴곡 = 위)
+  {const {ctx,w,h}=setupCanvas('cv2',230),ks=['hip','knee','ankle'],up={hip:'신전',knee:'신전',ankle:'족저굴곡'};
+   const vals=ks.map(k=>{const j=R.j[k];const mag=Math.abs(j.Mext)/BODY_KG;return j.int===up[k]?mag:(j.int==='거의 0'?0:-mag);});
+   const top=24,bot=h-40,M=Math.max(0.6,...vals.map(Math.abs))*1.05,yc=(top+bot)/2,sy=(bot-top)/2/M,bw=Math.min(90,w/8);
+   line(ctx,[[40,yc],[w-10,yc]],C('muted'),1);txt(ctx,'+ 신전 (발목 족저굴곡)',44,top-8,{color:C('muted'),size:11});txt(ctx,'− 굴곡 (발목 배측굴곡)',44,bot+14,{color:C('muted'),size:11});
+   ks.forEach((k,i)=>{const cx=40+(w-50)*(i+0.5)/3,v=vals[i];ctx.save();ctx.fillStyle=C('c1');ctx.globalAlpha=.75;ctx.fillRect(cx-4-bw/2,yc-Math.max(0,v)*sy,bw/2,Math.abs(v)*sy);ctx.restore();
+     ctx.save();ctx.strokeStyle=C('c2');ctx.lineWidth=1.6;ctx.strokeRect(cx+4,yc-Math.max(0,-v)*sy,bw/2,Math.abs(v)*sy);ctx.restore();
+     txt(ctx,`${JNAME[k]}: 내부 ${v>=0?'+':'−'}${fmt(Math.abs(v),2)}`,cx,h-6,{align:'center',size:12,bold:1});});
+   txt(ctx,'■ 내부  □ 외부 (N·m/kg)',w-12,top-8,{align:'right',color:C('muted'),size:11});}
+  // ---- 파워
+  {const k=$('pj').value,om=val('omega'),j=R.j[k],Pw=jointPower(k,j.Mext,om);
+   const dir=k==='ankle'?(om>0?'배측굴곡':om<0?'족저굴곡':'정지'):(om>0?'굴곡':om<0?'신전':'정지');
+   $('pstats').innerHTML=[['내부 모멘트',`${j.int} ${fmt(Math.abs(j.Mext),1)} N·m`],['관절 운동',`${dir} ${Math.abs(om)}°/s = ${fmt(Math.abs(rad(om)),2)} rad/s`],
+     ['파워',`${fmt(Pw,1)} W`],['체질량당',`${fmt(Pw/BODY_KG,2)} W/kg`],['판정',powerWord(Pw)]].map(([a,b])=>`<div class="stat"><span>${a}</span><b>${b}</b></div>`).join('');
+   const same=Math.abs(Pw)<0.5?null:Pw>0;
+   $('pverdict').innerHTML=same===null?'각속도나 모멘트가 0이면 파워는 0입니다. 모멘트가 커도 관절이 움직이지 않으면(등척성) 에너지는 오가지 않습니다.'
+     :same?`내부 모멘트(${j.int})와 관절 운동(${dir})의 방향이 <b>같아서</b> 관절이 에너지를 <b>생성</b>합니다. 흔히 구심성으로 읽지만, 건·인대가 저장했던 탄성 에너지를 내놓는 경우(PSw 발목)도 같은 부호입니다.`
+     :`내부 모멘트(${j.int})와 관절 운동(${dir})의 방향이 <b>반대라서</b> 관절이 에너지를 <b>흡수</b>합니다. 흔히 원심성으로 읽지만, 늘어나는 것이 근섬유인지 힘줄·인대인지는 파워만으로 알 수 없습니다.`;}
+}
+bind(['shank','knee','heel','cop','tilt','mag','omega'],()=>later(),{shank:v=>v+'°',knee:v=>v+'°',heel:v=>v+'°',cop:v=>(v>0?'+':'')+v+' cm',tilt:v=>(v>0?'+':'')+v+'°',mag:v=>(+v).toFixed(2)+' BW',omega:v=>(v>0?'+':'')+v+'°/s'});
+$('pj').addEventListener('change',()=>later());
+const later=redrawOn(draw);
+</script></body></html>
