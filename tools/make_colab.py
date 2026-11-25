@@ -17,14 +17,15 @@ REPO_URL = "https://github.com/evansuhohyun-927/neurodegeneration-bioinformatics
 SOURCES = (
     [f"lessons/week-{i}/*.md" for i in range(7)]
     + ["lessons/supplement/*.md"]
-    + [f"lessons/advanced/{p}-*/*.md" for p in "ACDEGHI"]  # B(MATLAB)는 Colab에서 실행 불가라 제외
+    + [f"lessons/advanced/{p}-*/*.md" for p in "ACDEGHIK"]  # B(MATLAB)는 Colab에서 실행 불가라 제외
     + ["crash-course/*.md"]
 )
 SKIP_SECTIONS = ("퀴즈", "체크리스트")
 
 # import 이름 -> Colab 기본 런타임에 없어 설치해야 하는 pip 패키지
 PIP = {"rdkit": "rdkit", "nilearn": "nilearn", "nibabel": "nibabel", "wfdb": "wfdb",
-       "pywt": "PyWavelets", "lifelines": "lifelines", "esm": "fair-esm"}
+       "pywt": "PyWavelets", "lifelines": "lifelines", "esm": "fair-esm",
+       "mne": "mne", "neurokit2": "neurokit2"}
 BIOC = ("DESeq2", "limma", "SummarizedExperiment")
 
 # 내 컴퓨터(터미널·conda·git·외부 도구)에서만 의미 있는 bash 블록, R의 renv 프로젝트 명령

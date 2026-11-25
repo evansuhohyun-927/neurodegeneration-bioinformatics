@@ -256,6 +256,7 @@ for start in range(0, t.size - win + 1, 4 * step):          # 출력은 2 s 간�
 - 보행 변수와 신뢰도: [Day I13](../lessons/advanced/I-gait/day-I13.md), [Day I14](../lessons/advanced/I-gait/day-I14.md)
 - 질환 보행과 FOG: [Day I16](../lessons/advanced/I-gait/day-I16.md), [Day I17](../lessons/advanced/I-gait/day-I17.md), [Day I18](../lessons/advanced/I-gait/day-I18.md), [Day I19](../lessons/advanced/I-gait/day-I19.md)
 - 중재·웨어러블 로봇과 캡스톤: [Day I20](../lessons/advanced/I-gait/day-I20.md), [Day I21](../lessons/advanced/I-gait/day-I21.md)
+- EEG·EMG·피부전도도까지 함께 쓰는 멀티모달 FOG 분석: [심화 K](../lessons/advanced/K-multimodal-fog/day-K1.md)(K1–K5)
 
 **이론 노트(실습 없이 깊게)** — [이론 노트 목록](../lessons/advanced/I-gait-theory/index.md)
 - [T01 보행 주기와 기능 과제](../lessons/advanced/I-gait-theory/note-T01.md) · [T02 운동학](../lessons/advanced/I-gait-theory/note-T02.md) · [T03 운동역학과 역동역학](../lessons/advanced/I-gait-theory/note-T03.md) · [T04 근육과 EMG](../lessons/advanced/I-gait-theory/note-T04.md) · [T05 에너지와 동역학적 보행](../lessons/advanced/I-gait-theory/note-T05.md) · [T06 보행의 신경 조절](../lessons/advanced/I-gait-theory/note-T06.md)

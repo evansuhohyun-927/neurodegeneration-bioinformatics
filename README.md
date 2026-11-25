@@ -10,7 +10,7 @@
 | 0주차 — 코딩 기초 | 7일 | 코딩이 처음이면 필수 | 터미널, Python, pandas, Git |
 | 1–6주차 — 본 과정 | 42일 | 필수 | NASA OSDR OSD-536(마우스 뇌 nCounter 패널) + PhysioNet PD 운동 데이터 |
 | 보충 단원 | 7일 | 선택 | 서열 데이터베이스, 정렬, 치환 행렬, BLAST, 계통수 |
-| 심화 파트 A–J | 파트당 7일(I는 21일 + 이론 노트, J는 교재 노트 16편) | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI, 임상 예측·조기진단 ML, 보행분석, 생체역학 연구방법 |
+| 심화 파트 A–K | 파트당 5–7일(I는 21일 + 이론 노트, J는 교재 노트 16편) | 선택 | R, MATLAB, 신경신호, fMRI, EHR, AI·생성형 AI, 임상 예측·조기진단 ML, 보행분석, 생체역학 연구방법, 멀티모달 FOG 데이터 |
 
 필수 과정은 7주(49일)이고, 한 주에 약 9–11시간(레슨 7개)이 듭니다. 복습과 보고서 작성 주간(3·5·6주차)은 더 걸릴 수 있습니다.
 
@@ -155,6 +155,7 @@
 | [H — 임상 예측·조기진단 ML](lessons/advanced/H-clinical-prediction/day-H1.md) | Python | 진단·예후·조기진단 모델을 어떻게 평가·보고하는가. 보정, 임계값, 결정 곡선, 생존 예측, 외부 검증. | [가이드](crash-course/clinical-prediction.md) |
 | [I — 보행분석: 이론에서 웨어러블 로봇까지](lessons/advanced/I-gait/day-I1.md) | Python | 보행 주기·운동학·운동역학·EMG 이론, 센서 신호처리와 보행 변수, 파킨슨병 보행동결(FOG) 탐지, 웨어러블 로봇 제어. 3주 21레슨 + [이론 노트 12편](lessons/advanced/I-gait-theory/index.md). | [가이드](crash-course/gait-analysis.md) |
 | [J — 생체역학 연구방법: 교재 노트](lessons/advanced/J-biomechanics-methods/index.md) | 없음(읽기) | 보행 연구실의 측정·계산 방법을 교재 한 권으로 처음부터 끝까지. *Research Methods in Biomechanics* 2판을 장 순서대로 정리한 노트 16편과 장별 영상. 심화 I의 이론 노트와 짝을 이룬다. | [가이드](crash-course/gait-analysis.md) |
+| [K — 멀티모달 FOG 데이터 분석](lessons/advanced/K-multimodal-fog/day-K1.md) | Python (MNE, NeuroKit2) | 파킨슨병 FOG 공개 데이터(EEG·EMG·IMU·피부전도도)로 데이터 점검, 모달 간 동기화, 모달별 신호처리, 환자 단위 검증과 센서 기여도. 심화 I의 FOG 레슨(I17–I19) 다음 단계. 5레슨. | [가이드](crash-course/gait-analysis.md) |
 
 ### 심화 A — R과 Bioconductor
 
@@ -280,6 +281,16 @@
 Robertson 외, *Research Methods in Biomechanics* 2판을 장 순서대로 따라가는 노트 16편이다. 실습 코드는 없고, 노트마다 교재 절 지도·영상·자기 점검이 있다. 읽는 순서와 영상 목록은 [노트 목록](lessons/advanced/J-biomechanics-methods/index.md)에 있다.
 
 <!-- J-CHECKLIST -->
+
+### 심화 K — 멀티모달 FOG 데이터 분석
+
+Zhang 외(2022)가 공개한 파킨슨병 보행동결 멀티모달 데이터(EEG·EMG·가속도·자이로·피부전도도, CC BY 4.0)로 하는 5레슨이다. 필터·freeze index·참가자 단위 검증 같은 기본기는 심화 I(I5, I10, I18, I19)에 있으므로, 여기서는 여러 모달을 함께 다룰 때 새로 생기는 문제만 다룬다. 모든 레슨은 합성 데이터로 먼저 연습하고, 빈칸 실습(모범답안 접기) 뒤에 실제 데이터로 해 본다.
+
+- [ ] [Day K1 — 멀티모달 FOG 데이터셋 해부: 파일 구조, 라벨, 그리고 "직접 세어 보기"](lessons/advanced/K-multimodal-fog/day-K1.md)
+- [ ] [Day K2 — 표본화의 출처와 모달 간 동기화: "500 Hz로 맞췄다"를 의심하기](lessons/advanced/K-multimodal-fog/day-K2.md)
+- [ ] [Day K3 — EMG와 피부전도도를 NeuroKit2로: 라이브러리 기본값 읽기와 단위의 한계](lessons/advanced/K-multimodal-fog/day-K3.md)
+- [ ] [Day K4 — EEG를 MNE로: 배열을 Raw로, 전극 위치, theta·beta 파워, 그리고 걷는 중 EEG의 함정](lessons/advanced/K-multimodal-fog/day-K4.md)
+- [ ] [Day K5 — 멀티모달 모델: 환자 단위 검증, 결측 모달, 그리고 센서 기여도를 묻는 올바른 방법](lessons/advanced/K-multimodal-fog/day-K5.md)
 
 ## 저작권과 출처
 

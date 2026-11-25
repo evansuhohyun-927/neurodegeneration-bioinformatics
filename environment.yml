@@ -20,3 +20,5 @@ dependencies:
   - pip
   - pip:
       - wfdb   # PhysioNet의 WFDB 형식을 읽을 때만 필요 (선택)
+      - mne        # EEG 분석 (심화 K)
+      - neurokit2  # EMG·피부전도도 처리 (심화 K)
